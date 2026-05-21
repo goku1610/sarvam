@@ -1,10 +1,12 @@
 import os
 import asyncio
 import json
+import re
 import threading
 import uuid
 from typing import Any
 from datetime import datetime
+from urllib.parse import urlsplit, urlunsplit
 from fastapi import FastAPI
 from fastapi.responses import StreamingResponse, HTMLResponse, FileResponse
 from fastapi.staticfiles import StaticFiles
@@ -197,6 +199,8 @@ class JsonSessionStore:
 
 
 session_store = JsonSessionStore()
+ROLLING_SUMMARY_BATCH_SIZE = 1
+ZERO_RESULT_SEARCH_RETRY_LIMIT = 2
 
 
 # Define the data model for the incoming request
@@ -266,6 +270,11 @@ class AnswerRequest(BaseModel):
     chunks: list[dict[str, Any]] = []
 
 
+class ContinueChatRequest(BaseModel):
+    session_id: str
+    message: str
+
+
 class SessionRequest(BaseModel):
     session_id: str | None = None
 
@@ -289,27 +298,143 @@ def trim_text(text: str, max_chars: int) -> str:
     return text[:max_chars].rsplit(" ", 1)[0] + "\n[Trimmed for context budget.]"
 
 
-def build_history_context(session: dict | None, max_chars: int = 5000) -> str:
+def normalize_citation_url(url: str) -> str:
+    """Normalize URLs enough to compare LLM citations against retrieved sources."""
+    cleaned_url = url.strip().rstrip(".,;:")
+    try:
+        parsed = urlsplit(cleaned_url)
+    except ValueError:
+        return cleaned_url.rstrip("/").lower()
+
+    scheme = parsed.scheme.lower()
+    netloc = parsed.netloc.lower().removeprefix("www.")
+    path = parsed.path.rstrip("/")
+    return urlunsplit((scheme, netloc, path, parsed.query, ""))
+
+
+def validate_answer_citations(answer: str, chunks: list[dict[str, Any]]) -> tuple[str, dict[str, Any]]:
+    """Keep only citations whose URLs came from selected source chunks."""
+    allowed_sources: dict[str, dict[str, str]] = {}
+    for chunk in chunks:
+        url = str(chunk.get("url", "")).strip()
+        if not url:
+            continue
+        normalized_url = normalize_citation_url(url)
+        allowed_sources[normalized_url] = {
+            "url": url,
+            "title": str(chunk.get("title", "Unknown Title")).strip() or "Unknown Title",
+            "domain": str(chunk.get("domain", "")).strip(),
+        }
+
+    citation_pattern = re.compile(r"\[([^\]]+)\]\((https?://[^)\s]+)\)")
+    removed_count = 0
+    corrected_count = 0
+
+    def replace_citation(match: re.Match) -> str:
+        nonlocal removed_count, corrected_count
+        label = match.group(1).strip()
+        cited_url = match.group(2).strip()
+        source = allowed_sources.get(normalize_citation_url(cited_url))
+
+        if not source:
+            removed_count += 1
+            return f"{label} [unverified citation removed]"
+
+        canonical_label = f"{source['title']} — {source['domain']}" if source["domain"] else source["title"]
+        canonical_citation = f"[{canonical_label}]({source['url']})"
+        if canonical_citation != match.group(0):
+            corrected_count += 1
+        return canonical_citation
+
+    validated_answer = citation_pattern.sub(replace_citation, answer)
+    if removed_count:
+        validated_answer += (
+            f"\n\nCitation validation note: removed {removed_count} citation"
+            f"{'' if removed_count == 1 else 's'} that did not match retrieved sources."
+        )
+
+    return validated_answer, {
+        "allowed_url_count": len(allowed_sources),
+        "corrected_citation_count": corrected_count,
+        "removed_citation_count": removed_count,
+    }
+
+
+def score_turn_relevance(turn: dict[str, Any], query: str) -> int:
+    query_terms = {
+        term
+        for term in re.findall(r"[a-z0-9]+", query.lower())
+        if len(term) > 2
+    }
+    if not query_terms:
+        return 0
+
+    turn_text = f"{turn.get('query', '')} {turn.get('final_answer', '')}".lower()
+    turn_terms = set(re.findall(r"[a-z0-9]+", turn_text))
+    return len(query_terms & turn_terms)
+
+
+def build_history_context(session: dict | None, max_chars: int = 5000, current_query: str = "") -> str:
     if not session:
         return ""
 
+    state = session.get("state", {})
     messages = session.get("messages", [])
     turns = session.get("turns", [])
     parts = []
+    rolling_summary = str(state.get("rolling_summary", "")).strip()
 
-    for message in messages[-6:]:
+    if rolling_summary:
+        parts.append(f"Conversation summary so far:\n{rolling_summary}")
+
+    newest_messages = []
+    for message in messages[-4:]:
         role = message.get("role", "unknown")
         content = trim_text(str(message.get("content", "")), 900)
         if content:
-            parts.append(f"{role}: {content}")
+            newest_messages.append(f"{role}: {content}")
+    if newest_messages:
+        parts.append("Newest messages:\n" + "\n".join(newest_messages))
 
-    for turn in turns[-3:]:
+    relevant_turns = []
+    if current_query.strip():
+        scored_turns = [
+            (score_turn_relevance(turn, current_query), index, turn)
+            for index, turn in enumerate(turns)
+        ]
+        relevant_turns = [
+            turn
+            for score, _index, turn in sorted(scored_turns, key=lambda item: (item[0], item[1]), reverse=True)
+            if score > 0
+        ][:2]
+
+    newest_turns = []
+    selected_turns = relevant_turns or turns[-2:]
+    for turn in selected_turns:
         query = turn.get("query", "")
         final_answer = trim_text(str(turn.get("final_answer", "")), 900)
         if query and final_answer:
-            parts.append(f"Prior turn query: {query}\nPrior answer summary: {final_answer}")
+            newest_turns.append(f"Prior turn query: {query}\nPrior answer excerpt: {final_answer}")
+    if newest_turns:
+        section_title = "Relevant prior turns" if relevant_turns else "Newest completed turns"
+        parts.append(f"{section_title}:\n" + "\n\n".join(newest_turns))
 
     return trim_text("\n\n".join(parts), max_chars)
+
+
+def format_turns_for_summary(turns: list[dict[str, Any]]) -> str:
+    formatted_turns = []
+    for index, turn in enumerate(turns, start=1):
+        query = trim_text(str(turn.get("query", "")), 700)
+        answer = trim_text(str(turn.get("final_answer", "")), 1200)
+        search_queries = turn.get("search_queries_issued", [])
+        formatted_turns.append(
+            f"Turn {index}\n"
+            f"User query: {query}\n"
+            f"Search queries: {json.dumps(search_queries)}\n"
+            f"Assistant answer: {answer}"
+        )
+    return "\n\n".join(formatted_turns)
 
 
 class ResearchPlanner:
@@ -586,6 +711,97 @@ class ResearchPlanner:
         except Exception:
             return []
 
+    def generate_zero_result_queries(
+        self,
+        user_query: str,
+        attempted_queries: list[str],
+        max_queries: int = 4,
+    ) -> list[str]:
+        current_date = datetime.now().strftime("%B %d, %Y")
+        prompt = (
+            "A web research search batch returned zero usable links. Generate alternative search queries that "
+            "are broader, use different wording, include likely official/primary-source terms when useful, and "
+            "avoid repeating attempted queries. Do not answer the user.\n\n"
+            f"Today's date is {current_date}.\n"
+            f"User research goal: {user_query}\n"
+            f"Attempted queries: {json.dumps(attempted_queries)}\n\n"
+            "Respond only with valid JSON in this exact shape:\n"
+            "{\"search_queries\":[\"query 1\",\"query 2\"]}"
+        )
+
+        try:
+            response = self.client.models.generate_content(
+                model=self.model_name,
+                contents=prompt,
+                config=types.GenerateContentConfig(
+                    thinking_config=types.ThinkingConfig(thinking_level="MINIMAL"),
+                    temperature=0.25,
+                ),
+            )
+            parsed_response = parse_json_object(response.text or "{}")
+            attempted = {
+                attempted_query.strip().lower()
+                for attempted_query in attempted_queries
+                if attempted_query.strip()
+            }
+            recovery_queries = []
+            for query in parsed_response.get("search_queries", []):
+                cleaned_query = str(query).strip()
+                if cleaned_query and cleaned_query.lower() not in attempted:
+                    recovery_queries.append(cleaned_query)
+            return recovery_queries[:max_queries]
+        except Exception:
+            return []
+
+    def plan_chat_research(
+        self,
+        user_message: str,
+        history_context: str,
+        prior_context: str,
+    ) -> dict[str, Any]:
+        current_date = datetime.now().strftime("%B %d, %Y")
+        prompt = (
+            "You are deciding whether a follow-up in a deep research chat needs fresh web research.\n"
+            f"Today's date is {current_date}.\n\n"
+            "Use fresh search when the user asks for a comparison/entity/metric/source that is missing from the "
+            "saved evidence, when they ask for current/latest data, or when answering would require facts not "
+            "already present. Do not search for simple summarization, rephrasing, explanation, or formatting of "
+            "already available evidence.\n\n"
+            "Respond only with valid JSON in this exact shape:\n"
+            "{\"needs_search\":true,\"search_queries\":[\"query 1\"],\"reason\":\"short reason\"}\n\n"
+            f"User follow-up: {user_message}\n\n"
+            f"Prior conversation summary/recent turns:\n{history_context or 'None'}\n\n"
+            f"Saved selected web context excerpt:\n{trim_text(prior_context, 6000) or 'None'}"
+        )
+
+        try:
+            response = self.client.models.generate_content(
+                model=self.model_name,
+                contents=prompt,
+                config=types.GenerateContentConfig(
+                    thinking_config=types.ThinkingConfig(thinking_level="MINIMAL"),
+                    temperature=0.1,
+                ),
+            )
+            parsed_response = parse_json_object(response.text or "{}")
+            queries = [
+                str(query).strip()
+                for query in parsed_response.get("search_queries", [])
+                if str(query).strip()
+            ][:3]
+            needs_search = bool(parsed_response.get("needs_search")) and bool(queries)
+            return {
+                "needs_search": needs_search,
+                "search_queries": queries if needs_search else [],
+                "reason": str(parsed_response.get("reason", "")).strip(),
+            }
+        except Exception:
+            return {
+                "needs_search": False,
+                "search_queries": [],
+                "reason": "search decision failed",
+            }
+
     def generate_answer_stream(
         self,
         user_query: str,
@@ -647,6 +863,129 @@ class ResearchPlanner:
                 f"Available evidence was collected from {len(source_catalog)} selected source snippets. "
                 f"Error: {error}"
             )
+
+    def generate_context_chat_stream(
+        self,
+        user_message: str,
+        history_context: str,
+        prior_web_context: str,
+        chunks: list[dict[str, Any]],
+    ):
+        source_catalog = [
+            {
+                "source_id": chunk.get("source_id", index + 1),
+                "title": chunk.get("title", "Unknown Title"),
+                "domain": chunk.get("domain", ""),
+                "url": chunk.get("url", ""),
+            }
+            for index, chunk in enumerate(chunks)
+        ]
+        current_date = datetime.now().strftime("%B %d, %Y")
+        prompt = (
+            "You are continuing the same deep research chat after an initial research answer. "
+            "Use the prior conversation context and previously selected web evidence to answer the user's "
+            "follow-up. Keep continuity with the session. For claim-heavy statements that rely on the saved "
+            "web evidence, cite the source using this exact shape: [Title — domain](URL). If the follow-up asks "
+            "for facts that are not supported by the saved evidence, say that the existing research context is "
+            "insufficient and propose the next search needed. Do not invent sources.\n\n"
+            f"Today's date: {current_date}\n"
+            f"User follow-up: {user_message}\n\n"
+            f"Relevant prior conversation/turns:\n{history_context or 'None'}\n\n"
+            f"Saved source catalog:\n{json.dumps(source_catalog, indent=2)}\n\n"
+            f"Saved selected web context:\n{prior_web_context or 'None'}\n\n"
+            "Now answer the follow-up."
+        )
+
+        contents = [
+            types.Content(
+                role="user",
+                parts=[types.Part.from_text(text=prompt)],
+            ),
+        ]
+        config = types.GenerateContentConfig(
+            thinking_config=types.ThinkingConfig(thinking_level="MINIMAL"),
+            temperature=0.2,
+        )
+
+        try:
+            response_stream = self.client.models.generate_content_stream(
+                model=self.model_name,
+                contents=contents,
+                config=config,
+            )
+            for chunk in response_stream:
+                if chunk.text:
+                    yield chunk.text
+        except Exception as error:
+            yield f"I could not continue the chat because the LLM call failed. Error: {error}"
+
+    def update_rolling_summary(
+        self,
+        existing_summary: str,
+        new_turns_text: str,
+        max_words: int = 200,
+    ) -> str:
+        prompt = (
+            "Update a cached rolling conversation summary for a deep research agent.\n"
+            "Preserve durable user goals, constraints, decisions, named entities, and useful findings. "
+            "Do not include transient UI details or implementation chatter unless it affects future answers. "
+            f"Keep the summary under {max_words} words.\n\n"
+            f"Existing summary:\n{existing_summary or 'None yet.'}\n\n"
+            f"Newest completed turns to merge:\n{new_turns_text}\n\n"
+            "Return only the updated summary paragraph."
+        )
+
+        try:
+            response = self.client.models.generate_content(
+                model=self.model_name,
+                contents=prompt,
+                config=types.GenerateContentConfig(
+                    thinking_config=types.ThinkingConfig(thinking_level="MINIMAL"),
+                    temperature=0.1,
+                ),
+            )
+            return trim_text((response.text or "").strip(), 1600)
+        except Exception:
+            fallback_summary = f"{existing_summary}\n\nRecent turns:\n{new_turns_text}".strip()
+            return trim_text(fallback_summary, 1600)
+
+
+async def refresh_rolling_summary_if_needed(session_id: str) -> None:
+    session = session_store.get(session_id)
+    if not session:
+        return
+
+    state = session.get("state", {})
+    turns = session.get("turns", [])
+    summarized_turn_count = int(state.get("rolling_summary_turn_count", 0) or 0)
+    unsummarized_count = len(turns) - summarized_turn_count
+    if unsummarized_count < ROLLING_SUMMARY_BATCH_SIZE:
+        return
+
+    new_turns = turns[summarized_turn_count:]
+    new_turns_text = format_turns_for_summary(new_turns)
+    if not new_turns_text.strip():
+        return
+
+    try:
+        planner = ResearchPlanner()
+        updated_summary = await asyncio.to_thread(
+            planner.update_rolling_summary,
+            str(state.get("rolling_summary", "")).strip(),
+            new_turns_text,
+        )
+        session_store.update_state(
+            session_id,
+            {
+                "rolling_summary": updated_summary,
+                "rolling_summary_turn_count": len(turns),
+                "rolling_summary_updated_at": datetime.now().isoformat(),
+            },
+            None,
+        )
+    except Exception as error:
+        print(f"Rolling summary update failed for session {session_id}: {error}")
+
 
 @app.post("/api/sessions")
 async def get_or_create_session(request: SessionRequest):
@@ -782,8 +1121,38 @@ async def execute_search(request: SearchRequest):
             return
 
         try:
-            yield json.dumps({"type": "progress", "message": "Searching the web"}) + "\n"
-            valid_pages = await scraper.execute_concurrent_research(queries)
+            attempted_queries = queries[:]
+            active_queries = queries[:]
+            valid_pages = []
+            for retry_index in range(ZERO_RESULT_SEARCH_RETRY_LIMIT + 1):
+                yield json.dumps({
+                    "type": "progress",
+                    "message": "Searching the web" if retry_index == 0 else "Retrying with broader search queries",
+                    "queries": active_queries,
+                }) + "\n"
+                valid_pages = await scraper.execute_concurrent_research(active_queries)
+                if valid_pages:
+                    break
+
+                try:
+                    recovery_queries = await asyncio.to_thread(
+                        ResearchPlanner().generate_zero_result_queries,
+                        request.query or " ".join(queries),
+                        attempted_queries,
+                    )
+                except Exception:
+                    recovery_queries = []
+                recovery_queries = [
+                    query
+                    for query in recovery_queries
+                    if query.strip().lower() not in {attempted_query.lower() for attempted_query in attempted_queries}
+                ]
+                if not recovery_queries:
+                    break
+
+                attempted_queries.extend(recovery_queries)
+                active_queries = recovery_queries
+
             yield json.dumps({"type": "progress", "message": "Fetching and cleaning sources"}) + "\n"
 
             for page in valid_pages:
@@ -811,12 +1180,16 @@ async def execute_search(request: SearchRequest):
                     request.session_id,
                     {
                         "opened_urls": [page["url"] for page in valid_pages],
+                        "fetched_pages": valid_pages,
                         "research_context": research_context,
+                        "selected_queries": attempted_queries,
                     },
                     {
                         "type": "context_selected",
                         "opened_url_count": len(valid_pages),
+                        "attempted_query_count": len(attempted_queries),
                         "selected_count": research_context["selected_count"],
+                        "unreachable_count": research_context.get("unreachable_count", 0),
                     },
                 )
             yield json.dumps({
@@ -825,6 +1198,8 @@ async def execute_search(request: SearchRequest):
                 "context": research_context["context"],
                 "chunk_count": research_context["chunk_count"],
                 "selected_count": research_context["selected_count"],
+                "unreachable_count": research_context.get("unreachable_count", 0),
+                "attempted_queries": attempted_queries,
             }) + "\n"
             yield json.dumps({"type": "done"}) + "\n"
         except Exception as error:
@@ -837,7 +1212,7 @@ async def execute_search(request: SearchRequest):
 async def generate_answer(request: AnswerRequest):
     planner = ResearchPlanner()
     session = session_store.get(request.session_id) if request.session_id else None
-    history_context = build_history_context(session)
+    history_context = build_history_context(session, current_query=request.query)
     context = trim_text(request.context, 28000)
 
     async def event_generator():
@@ -862,7 +1237,8 @@ async def generate_answer(request: AnswerRequest):
             yield json.dumps({"type": "token", "text": token}) + "\n"
             await asyncio.sleep(0)
 
-        final_answer = "".join(final_answer_parts).strip()
+        raw_answer = "".join(final_answer_parts).strip()
+        final_answer, citation_validation = validate_answer_citations(raw_answer, request.chunks)
         if request.session_id:
             session_store.append_message(request.session_id, "assistant", final_answer)
             session_store.record_turn(
@@ -877,13 +1253,250 @@ async def generate_answer(request: AnswerRequest):
                     }),
                     "context_snippets_selected": request.chunks,
                     "final_answer": final_answer,
+                    "citation_validation": citation_validation,
                 },
             )
             session_store.update_state(
                 request.session_id,
-                {"final_answer": final_answer},
-                {"type": "answer_generated", "citation_source_count": len(request.chunks)},
+                {
+                    "final_answer": final_answer,
+                    "citation_validation": citation_validation,
+                },
+                {
+                    "type": "answer_generated",
+                    "citation_source_count": len(request.chunks),
+                    **citation_validation,
+                },
             )
+            asyncio.create_task(refresh_rolling_summary_if_needed(request.session_id))
+
+        yield json.dumps({"type": "done", "answer": final_answer}) + "\n"
+
+    return StreamingResponse(event_generator(), media_type="application/x-ndjson")
+
+
+@app.post("/api/chat")
+async def continue_chat(request: ContinueChatRequest):
+    planner = ResearchPlanner()
+    scraper = WebSearchScraper()
+    user_message = request.message.strip()
+    if not user_message:
+        async def empty_message_event():
+            yield json.dumps({"type": "error", "message": "Message is required."}) + "\n"
+
+        return StreamingResponse(empty_message_event(), media_type="application/x-ndjson")
+
+    session_store.append_message(request.session_id, "user", user_message)
+    session = session_store.get(request.session_id)
+    state = session.get("state", {}) if session else {}
+    research_context = state.get("research_context") if isinstance(state.get("research_context"), dict) else {}
+    fetched_pages = state.get("fetched_pages") if isinstance(state.get("fetched_pages"), list) else []
+    recontextualized_context = (
+        build_context_from_pages(user_message, fetched_pages)
+        if fetched_pages
+        else research_context
+    )
+    prior_context = trim_text(str(recontextualized_context.get("context", "")), 18000)
+    prior_chunks = recontextualized_context.get("chunks", [])
+    if not isinstance(prior_chunks, list):
+        prior_chunks = []
+    history_context = build_history_context(session, current_query=user_message)
+
+    async def event_generator():
+        if not session:
+            yield json.dumps({"type": "error", "message": "Session was not found."}) + "\n"
+            return
+
+        if fetched_pages:
+            yield json.dumps({"type": "progress", "message": "Re-selecting saved source context"}) + "\n"
+            session_store.update_state(
+                request.session_id,
+                {"research_context": recontextualized_context},
+                {
+                    "type": "chat_context_reselected",
+                    "selected_count": recontextualized_context.get("selected_count", 0),
+                    "unreachable_count": recontextualized_context.get("unreachable_count", 0),
+                },
+            )
+            yield json.dumps({
+                "type": "context_ready",
+                "chunks": recontextualized_context.get("chunks", []),
+                "context": recontextualized_context.get("context", ""),
+                "chunk_count": recontextualized_context.get("chunk_count", 0),
+                "selected_count": recontextualized_context.get("selected_count", 0),
+                "unreachable_count": recontextualized_context.get("unreachable_count", 0),
+                "reused_saved_sources": True,
+            }) + "\n"
+
+        yield json.dumps({"type": "progress", "message": "Checking whether fresh research is needed"}) + "\n"
+        chat_research_plan = await asyncio.to_thread(
+            planner.plan_chat_research,
+            user_message,
+            history_context,
+            prior_context,
+        )
+        search_queries = chat_research_plan.get("search_queries", [])
+        fresh_context = {"chunks": [], "context": "", "unreachable_count": 0}
+        opened_urls: list[str] = []
+
+        if chat_research_plan.get("needs_search") and search_queries:
+            attempted_queries = search_queries[:]
+            active_queries = search_queries[:]
+            valid_pages = []
+            for retry_index in range(ZERO_RESULT_SEARCH_RETRY_LIMIT + 1):
+                yield json.dumps({
+                    "type": "progress",
+                    "message": (
+                        "Searching the web for follow-up context"
+                        if retry_index == 0
+                        else "Retrying follow-up search with broader queries"
+                    ),
+                    "queries": active_queries,
+                }) + "\n"
+                valid_pages = await scraper.execute_concurrent_research(active_queries)
+                if valid_pages:
+                    break
+
+                try:
+                    recovery_queries = await asyncio.to_thread(
+                        planner.generate_zero_result_queries,
+                        user_message,
+                        attempted_queries,
+                    )
+                except Exception:
+                    recovery_queries = []
+                recovery_queries = [
+                    query
+                    for query in recovery_queries
+                    if query.strip().lower() not in {attempted_query.lower() for attempted_query in attempted_queries}
+                ]
+                if not recovery_queries:
+                    break
+
+                attempted_queries.extend(recovery_queries)
+                active_queries = recovery_queries
+
+            search_queries = attempted_queries
+
+            yield json.dumps({"type": "progress", "message": "Fetching and cleaning follow-up sources"}) + "\n"
+            for page in valid_pages:
+                opened_urls.append(page.get("url", ""))
+                yield json.dumps({
+                    "type": "result",
+                    "title": page.get("title", ""),
+                    "url": page.get("url", ""),
+                    "domain": page.get("domain", ""),
+                    "content": page.get("content", "")[:300],
+                    "snippet": page.get("snippet", ""),
+                    "score": page.get("score"),
+                    "retrieved_at": page.get("retrieved_at", ""),
+                    "query": page.get("query", ""),
+                    "rank": page.get("rank"),
+                    "content_unreachable": page.get("content_unreachable", False),
+                }) + "\n"
+                await asyncio.sleep(0)
+
+            yield json.dumps({"type": "progress", "message": "Selecting follow-up context"}) + "\n"
+            fresh_context = build_context_from_pages(user_message, valid_pages)
+            combined_context_text = trim_text(
+                f"Previously selected context:\n{prior_context or 'None'}\n\n"
+                f"Fresh follow-up context:\n{fresh_context['context'] or 'None'}",
+                28000,
+            )
+            combined_research_context = {
+                "chunks": prior_chunks + fresh_context["chunks"],
+                "context": combined_context_text,
+                "chunk_count": len(prior_chunks) + fresh_context["chunk_count"],
+                "selected_count": len(prior_chunks) + fresh_context["selected_count"],
+                "unreachable_count": fresh_context.get("unreachable_count", 0),
+                "max_context_chars": fresh_context.get("max_context_chars", 24000),
+            }
+            session_store.update_state(
+                request.session_id,
+                {
+                    "research_context": combined_research_context,
+                    "fetched_pages": fetched_pages + valid_pages,
+                    "last_chat_search_queries": search_queries,
+                },
+                {
+                    "type": "chat_follow_up_researched",
+                    "query_count": len(search_queries),
+                    "opened_url_count": len(opened_urls),
+                    "selected_count": fresh_context["selected_count"],
+                    "unreachable_count": fresh_context.get("unreachable_count", 0),
+                },
+            )
+            yield json.dumps({
+                "type": "context_ready",
+                "chunks": fresh_context["chunks"],
+                "context": fresh_context["context"],
+                "chunk_count": fresh_context["chunk_count"],
+                "selected_count": fresh_context["selected_count"],
+                "unreachable_count": fresh_context.get("unreachable_count", 0),
+                "attempted_queries": search_queries,
+            }) + "\n"
+
+        yield json.dumps({"type": "progress", "message": "Generating answer with citations"}) + "\n"
+        answer_context = prior_context
+        answer_chunks = prior_chunks
+        if fresh_context.get("context"):
+            answer_context = trim_text(
+                f"Previously selected context:\n{prior_context or 'None'}\n\n"
+                f"Fresh follow-up context:\n{fresh_context['context']}",
+                28000,
+            )
+            answer_chunks = prior_chunks + fresh_context.get("chunks", [])
+
+        answer_parts = []
+        for token in planner.generate_answer_stream(
+            user_query=user_message,
+            plan=[
+                "Answer the follow-up using the prior conversation context.",
+                (
+                    "Fresh web research was run because saved evidence was insufficient."
+                    if search_queries
+                    else "No fresh search was needed; use saved research context."
+                ),
+            ],
+            search_queries=search_queries,
+            web_context=answer_context,
+            chunks=answer_chunks,
+            history_context=history_context,
+        ):
+            answer_parts.append(token)
+            yield json.dumps({"type": "token", "text": token}) + "\n"
+            await asyncio.sleep(0)
+
+        raw_answer = "".join(answer_parts).strip()
+        final_answer, citation_validation = validate_answer_citations(raw_answer, answer_chunks)
+        session_store.append_message(request.session_id, "assistant", final_answer)
+        session_store.record_turn(
+            request.session_id,
+            {
+                "query": user_message,
+                "search_queries_issued": search_queries,
+                "urls_opened": sorted({url for url in opened_urls if url}),
+                "context_snippets_selected": answer_chunks,
+                "final_answer": final_answer,
+                "citation_validation": citation_validation,
+                "answered_from_existing_context": not bool(search_queries),
+                "follow_up_search_reason": chat_research_plan.get("reason", ""),
+            },
+        )
+        session_store.update_state(
+            request.session_id,
+            {
+                "last_chat_answer": final_answer,
+                "citation_validation": citation_validation,
+            },
+            {
+                "type": "chat_message_answered",
+                "citation_source_count": len(answer_chunks),
+                "searched_follow_up": bool(search_queries),
+                **citation_validation,
+            },
+        )
+        asyncio.create_task(refresh_rolling_summary_if_needed(request.session_id))
 
         yield json.dumps({"type": "done", "answer": final_answer}) + "\n"
 

@@ -64,6 +64,26 @@ class WebSearchScraper:
             print(f"Search failed for query '{query}': {e}")
         return []
 
+    def build_unreachable_page(
+        self,
+        url: str,
+        title: str,
+        reason: str,
+        status: int | None = None,
+    ) -> Dict[str, Any]:
+        """Return a placeholder page when a relevant result cannot be fetched."""
+        status_note = f" HTTP status: {status}." if status is not None else ""
+        return {
+            "url": url,
+            "title": title or "Unknown Title",
+            "content": f"[Content unreachable] The page could not be read. Reason: {reason}.{status_note}",
+            "domain": url.split("//")[-1].split("/")[0],
+            "retrieved_at": datetime.now().isoformat(),
+            "content_unreachable": True,
+            "fetch_error": reason,
+            "http_status": status,
+        }
+
     async def fetch_and_clean_page(self, session: aiohttp.ClientSession, url: str, title: str) -> Optional[Dict[str, Any]]:
         """Downloads HTML and strips out boilerplate to save tokens."""
         try:
@@ -88,10 +108,18 @@ class WebSearchScraper:
                         "domain": url.split("//")[-1].split("/")[0], # Extract domain for citations
                         "retrieved_at": datetime.now().isoformat()
                     }
-        except Exception:
-            # Silently fail on timeouts to ensure the agent keeps moving
-            pass
-        return None
+                return self.build_unreachable_page(
+                    url,
+                    title,
+                    reason="non-200 response",
+                    status=response.status,
+                )
+        except asyncio.TimeoutError:
+            return self.build_unreachable_page(url, title, reason="request timed out")
+        except aiohttp.ClientError as error:
+            return self.build_unreachable_page(url, title, reason=type(error).__name__)
+        except Exception as error:
+            return self.build_unreachable_page(url, title, reason=type(error).__name__)
 
     def select_top_unique_results(
         self,
@@ -152,10 +180,10 @@ class WebSearchScraper:
             ]
             scraped_pages = await asyncio.gather(*fetch_tasks)
             
-            # Filter out any pages that failed to load or had no content
+            # Keep unreachable placeholders so the answerer knows evidence was missing.
             valid_pages = []
             for result, page in zip(selected_results, scraped_pages):
-                if page is not None and len(page['content']) > 50:
+                if page is not None and (page.get("content_unreachable") or len(page.get("content", "")) > 50):
                     page["query"] = result["query"]
                     page["rank"] = result["rank"]
                     page["snippet"] = result.get("snippet", "")

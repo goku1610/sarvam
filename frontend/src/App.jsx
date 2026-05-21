@@ -73,7 +73,7 @@ const StepIndicator = ({ label, className }) => (
 
 const renderInlineMarkdown = (text) => {
   const parts = [];
-  const tokenPattern = /(\[([^\]]+)\]\((https?:\/\/[^)\s]+)\)|\*\*([^*]+)\*\*|(https?:\/\/[^\s)]+))/g;
+  const tokenPattern = /(\[([^\]]+)\]\((https?:\/\/[^)\s]+)\)|\*\*([^*]+)\*\*|\*([^*\s][^*]*?)\*|(https?:\/\/[^\s)]+))/g;
   let lastIndex = 0;
   let match;
 
@@ -101,8 +101,14 @@ const renderInlineMarkdown = (text) => {
         </strong>
       );
     } else if (match[5]) {
-      const trailingPunctuation = match[5].match(/[.,;:!?]+$/)?.[0] || "";
-      const url = trailingPunctuation ? match[5].slice(0, -trailingPunctuation.length) : match[5];
+      parts.push(
+        <em key={`italic-${match.index}`} className="italic text-stone-100">
+          {match[5]}
+        </em>
+      );
+    } else if (match[6]) {
+      const trailingPunctuation = match[6].match(/[.,;:!?]+$/)?.[0] || "";
+      const url = trailingPunctuation ? match[6].slice(0, -trailingPunctuation.length) : match[6];
       parts.push(
         <a
           key={`bare-link-${match.index}`}
@@ -135,6 +141,7 @@ const MarkdownAnswer = ({ text }) => {
       {text.split(/\n+/).map((rawLine, index) => {
         const line = rawLine.trim();
         if (!line) return null;
+        if (/^[-*_]{3,}$/.test(line)) return null;
 
         const headingMatch = line.match(/^(#{1,4})\s+(.+)$/);
         if (headingMatch) {
@@ -175,6 +182,58 @@ const MarkdownAnswer = ({ text }) => {
           </p>
         );
       })}
+    </div>
+  );
+};
+
+const FollowUpInput = ({ onSend, isLoading = false }) => {
+  const [value, setValue] = React.useState("");
+  const textareaRef = React.useRef(null);
+
+  React.useEffect(() => {
+    if (!textareaRef.current) return;
+    textareaRef.current.style.height = "auto";
+    textareaRef.current.style.height = `${Math.min(textareaRef.current.scrollHeight, 180)}px`;
+  }, [value]);
+
+  const submit = () => {
+    const message = value.trim();
+    if (!message || isLoading) return;
+    onSend(message);
+    setValue("");
+  };
+
+  return (
+    <div className="rounded-[26px] border border-white/10 bg-[#17181b]/98 p-2 shadow-[0_18px_60px_rgba(0,0,0,0.32)] backdrop-blur">
+      <div className="flex items-end gap-2">
+        <Textarea
+          ref={textareaRef}
+          value={value}
+          onChange={(event) => setValue(event.target.value)}
+          onKeyDown={(event) => {
+            if (event.key === "Enter" && !event.shiftKey) {
+              event.preventDefault();
+              submit();
+            }
+          }}
+          disabled={isLoading}
+          placeholder="Continue this research chat"
+          className="max-h-[180px] text-[15px] leading-7"
+        />
+        <Button
+          type="button"
+          size="icon"
+          onClick={submit}
+          disabled={isLoading || !value.trim()}
+          className="mb-1 shrink-0"
+        >
+          {isLoading ? (
+            <Square className="h-4 w-4 fill-stone-950 animate-pulse" />
+          ) : (
+            <ArrowUp className="h-4 w-4" />
+          )}
+        </Button>
+      </div>
     </div>
   );
 };
@@ -1363,6 +1422,9 @@ function App() {
   const [researchContext, setResearchContext] = React.useState(null);
   const [finalAnswer, setFinalAnswer] = React.useState("");
   const [answerStatus, setAnswerStatus] = React.useState("");
+  const [followUpMessages, setFollowUpMessages] = React.useState([]);
+  const [isChatting, setIsChatting] = React.useState(false);
+  const [chatStatus, setChatStatus] = React.useState("");
   const [searchError, setSearchError] = React.useState("");
   const [sessionPendingDelete, setSessionPendingDelete] = React.useState(null);
   const sessionIdRef = React.useRef("");
@@ -1393,6 +1455,9 @@ function App() {
     setResearchContext(null);
     setFinalAnswer("");
     setAnswerStatus("");
+    setFollowUpMessages([]);
+    setIsChatting(false);
+    setChatStatus("");
     setSearchError("");
   };
 
@@ -1422,6 +1487,10 @@ function App() {
     if (Array.isArray(savedState.search_results)) setSearchResults(savedState.search_results);
     if (savedState.research_context) setResearchContext(savedState.research_context);
     if (typeof savedState.final_answer === "string") setFinalAnswer(savedState.final_answer);
+    if (Array.isArray(session?.messages)) {
+      const firstAssistantIndex = session.messages.findIndex((message) => message.role === "assistant");
+      setFollowUpMessages(firstAssistantIndex >= 0 ? session.messages.slice(firstAssistantIndex + 1) : []);
+    }
     if (typeof savedState.search_error === "string") setSearchError(savedState.search_error);
     if (typeof savedState.is_search_panel_open === "boolean") {
       setIsSearchPanelOpen(savedState.is_search_panel_open);
@@ -1689,6 +1758,9 @@ function App() {
     setResearchContext(null);
     setFinalAnswer("");
     setAnswerStatus("");
+    setFollowUpMessages([]);
+    setIsChatting(false);
+    setChatStatus("");
     setSearchError("");
     setSearchStatus("");
     setIsSearchPanelOpen(false);
@@ -1912,6 +1984,15 @@ function App() {
         setSearchStatus(event.message || "Searching and reading sources");
       }
       if (event.type === "context_ready") {
+        if (Array.isArray(event.attempted_queries) && event.attempted_queries.length > 0) {
+          searchedQueries = event.attempted_queries;
+          setSelectedQueries(event.attempted_queries);
+          setQueries((current) => {
+            const currentQuerySet = new Set(current.map((query) => query.toLowerCase()));
+            const newQueries = event.attempted_queries.filter((query) => !currentQuerySet.has(query.toLowerCase()));
+            return [...current, ...newQueries];
+          });
+        }
         const nextContext = {
           chunks: Array.isArray(event.chunks) ? event.chunks : [],
           context: event.context || "",
@@ -2074,6 +2155,14 @@ function App() {
         const answerDecoder = new TextDecoder("utf-8");
         let answerBuffer = "";
         let nextAnswer = "";
+        let finalAnswerFrame = null;
+        const flushFinalAnswer = () => {
+          if (finalAnswerFrame) return;
+          finalAnswerFrame = window.requestAnimationFrame(() => {
+            finalAnswerFrame = null;
+            setFinalAnswer(nextAnswer);
+          });
+        };
 
         while (true) {
           const { done, value } = await answerReader.read();
@@ -2091,10 +2180,14 @@ function App() {
             }
             if (event.type === "token") {
               nextAnswer += event.text || "";
-              setFinalAnswer(nextAnswer);
+              flushFinalAnswer();
             }
             if (event.type === "done") {
               nextAnswer = event.answer || nextAnswer;
+              if (finalAnswerFrame) {
+                window.cancelAnimationFrame(finalAnswerFrame);
+                finalAnswerFrame = null;
+              }
               setFinalAnswer(nextAnswer);
             }
             if (event.type === "error") {
@@ -2107,6 +2200,10 @@ function App() {
           const event = JSON.parse(answerBuffer);
           if (event.type === "done") {
             nextAnswer = event.answer || nextAnswer;
+            if (finalAnswerFrame) {
+              window.cancelAnimationFrame(finalAnswerFrame);
+              finalAnswerFrame = null;
+            }
             setFinalAnswer(nextAnswer);
           }
         }
@@ -2137,6 +2234,148 @@ function App() {
     }
   };
 
+  const continueChat = async (message) => {
+    const trimmedMessage = message.trim();
+    if (!trimmedMessage || isChatting || isSearching || !finalAnswer) return;
+
+    const activeSessionId = await ensureSession();
+    const userMessage = {
+      role: "user",
+      content: trimmedMessage,
+      timestamp: new Date().toISOString()
+    };
+
+    setFollowUpMessages((current) => [...current, userMessage]);
+    setIsChatting(true);
+    setChatStatus("Answering from chat context");
+    setError("");
+
+    let chatAnswerFrame = null;
+    try {
+      const response = await fetch("/api/chat", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          session_id: activeSessionId,
+          message: trimmedMessage
+        })
+      });
+
+      if (!response.ok || !response.body) {
+        throw new Error("Could not continue the chat.");
+      }
+
+      const assistantMessageId = `assistant-${Date.now()}`;
+      const assistantMessage = {
+        id: assistantMessageId,
+        role: "assistant",
+        content: "",
+        timestamp: new Date().toISOString()
+      };
+      setFollowUpMessages((current) => [...current, assistantMessage]);
+
+      const reader = response.body.getReader();
+      const decoder = new TextDecoder("utf-8");
+      let buffer = "";
+      let nextAnswer = "";
+      const seenFollowUpUrls = new Set(searchResults.map((result) => result.url).filter(Boolean));
+      const followUpContextChunks = [];
+      const flushChatAnswer = () => {
+        if (chatAnswerFrame) return;
+        chatAnswerFrame = window.requestAnimationFrame(() => {
+          chatAnswerFrame = null;
+          setFollowUpMessages((current) => current.map((item) => (
+            item.id === assistantMessageId ? { ...item, content: nextAnswer } : item
+          )));
+        });
+      };
+      const commitChatAnswer = () => {
+        if (chatAnswerFrame) {
+          window.cancelAnimationFrame(chatAnswerFrame);
+          chatAnswerFrame = null;
+        }
+        setFollowUpMessages((current) => current.map((item) => (
+          item.id === assistantMessageId ? { ...item, content: nextAnswer } : item
+        )));
+      };
+
+      const applyEvent = (event) => {
+        if (event.type === "progress") {
+          setChatStatus(event.message || "Answering from chat context");
+        }
+        if (event.type === "result") {
+          if (event.url && seenFollowUpUrls.has(event.url)) return;
+          if (event.url) seenFollowUpUrls.add(event.url);
+          setIsSearchPanelOpen(true);
+          setSearchResults((current) => [...current, event]);
+        }
+        if (event.type === "context_ready") {
+          const nextContext = {
+            chunks: Array.isArray(event.chunks) ? event.chunks : [],
+            context: event.context || "",
+            chunkCount: event.chunk_count || 0,
+            selectedCount: event.selected_count || 0,
+            unreachableCount: event.unreachable_count || 0
+          };
+          if (event.reused_saved_sources) {
+            setResearchContext(nextContext);
+            return;
+          }
+          followUpContextChunks.push(...nextContext.chunks);
+          setResearchContext((current) => ({
+            chunks: [...(current?.chunks || []), ...followUpContextChunks],
+            context: current?.context
+              ? `${current.context}\n\n${nextContext.context}`.trim()
+              : nextContext.context,
+            chunkCount: (current?.chunkCount || 0) + nextContext.chunkCount,
+            selectedCount: (current?.selectedCount || 0) + nextContext.selectedCount,
+            unreachableCount: (current?.unreachableCount || 0) + nextContext.unreachableCount
+          }));
+        }
+        if (event.type === "token") {
+          nextAnswer += event.text || "";
+          flushChatAnswer();
+        }
+        if (event.type === "done") {
+          nextAnswer = event.answer || nextAnswer;
+          commitChatAnswer();
+        }
+        if (event.type === "error") {
+          throw new Error(event.message || "Could not continue the chat.");
+        }
+      };
+
+      while (true) {
+        const { done, value } = await reader.read();
+        if (done) break;
+
+        buffer += decoder.decode(value, { stream: true });
+        const lines = buffer.split("\n");
+        buffer = lines.pop() || "";
+
+        lines.forEach((line) => {
+          if (!line.trim()) return;
+          applyEvent(JSON.parse(line));
+        });
+      }
+
+      if (buffer.trim()) {
+        applyEvent(JSON.parse(buffer));
+      }
+
+      fetchSessionHistory();
+    } catch (requestError) {
+      setError(requestError.message || "Could not continue the chat.");
+      setFollowUpMessages((current) => current.filter((messageItem) => messageItem.content !== ""));
+    } finally {
+      if (chatAnswerFrame) {
+        window.cancelAnimationFrame(chatAnswerFrame);
+      }
+      setIsChatting(false);
+      setChatStatus("");
+    }
+  };
+
   const canReopenSearchPanel = !isSearchPanelOpen && (searchResults.length > 0 || isSearching || Boolean(searchError));
   const hasResearchStarted = Boolean(
     isSearching ||
@@ -2159,6 +2398,8 @@ function App() {
       isSearching ||
       searchResults.length > 0 ||
       finalAnswer ||
+      followUpMessages.length > 0 ||
+      isChatting ||
       searchError
   );
   const visibleSessionHistory = sessionHistory.filter((session) => {
@@ -2170,7 +2411,6 @@ function App() {
   return (
     <div className="min-h-screen px-4 py-6 md:px-8 lg:py-6">
       <motion.div
-        layout
         transition={{ duration: 0.36, ease: [0.22, 1, 0.36, 1] }}
         className="mx-auto flex min-h-[calc(100vh-3rem)] w-full max-w-[1640px] items-start gap-5"
       >
@@ -2188,7 +2428,6 @@ function App() {
         />
 
         <motion.main
-          layout
           transition={{ duration: 0.46, ease: [0.22, 1, 0.36, 1] }}
           className={cn(
             "flex min-h-[calc(100vh-3rem)] min-w-0 flex-1 justify-center",
@@ -2196,13 +2435,15 @@ function App() {
           )}
         >
           <motion.section
-            layout
             animate={{
               y: hasWorkspaceContent ? 0 : -8,
               maxWidth: hasWorkspaceContent ? 1120 : 880
             }}
             transition={{ duration: 0.46, ease: [0.22, 1, 0.36, 1] }}
-            className="w-full rounded-[34px] border border-white/10 bg-[#141517]/95 p-5 shadow-[0_30px_90px_rgba(0,0,0,0.45)] backdrop-blur md:p-7"
+            className={cn(
+              "w-full rounded-[34px] border border-white/10 bg-[#141517]/95 p-5 shadow-[0_30px_90px_rgba(0,0,0,0.45)] backdrop-blur md:p-7",
+              finalAnswer && "pb-36"
+            )}
           >
             <div className="mb-5">
               <div className="flex flex-col gap-4 md:flex-row md:items-start md:justify-between">
@@ -2284,10 +2525,10 @@ function App() {
             <AnimatePresence>
               {(answerStatus || finalAnswer) && (
                 <motion.div
-                  initial={{ opacity: 0, y: 12 }}
+                  initial={{ opacity: 0, y: 8 }}
                   animate={{ opacity: 1, y: 0 }}
-                  exit={{ opacity: 0, y: 12 }}
-                  transition={{ duration: 0.24, ease: "easeOut" }}
+                  exit={{ opacity: 0, y: 8 }}
+                  transition={{ duration: 0.18, ease: "easeOut" }}
                   className="mt-5 overflow-hidden rounded-[28px] border border-white/10 bg-[#17181b] shadow-[0_18px_60px_rgba(0,0,0,0.28)]"
                 >
                   <div className="border-b border-white/8 px-5 py-4">
@@ -2307,12 +2548,62 @@ function App() {
               )}
             </AnimatePresence>
 
+            <AnimatePresence>
+              {finalAnswer && (
+                <motion.div
+                  initial={{ opacity: 0, y: 8 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  exit={{ opacity: 0, y: 8 }}
+                  transition={{ duration: 0.18, ease: "easeOut" }}
+                  className="mt-5"
+                >
+                  {followUpMessages.length > 0 && (
+                    <div className="mb-5 space-y-3">
+                      {followUpMessages.map((message, index) => (
+                        <div
+                          key={message.id || `${message.role}-${message.timestamp || index}`}
+                          className={cn(
+                            "rounded-[24px] border px-5 py-4",
+                            message.role === "user"
+                              ? "ml-auto max-w-[82%] border-[#d6c3a1]/20 bg-[#d6c3a1]/[0.07] text-stone-100"
+                              : "mr-auto max-w-full border-white/10 bg-[#17181b] text-stone-100"
+                          )}
+                        >
+                          {message.role === "assistant" ? (
+                            message.content ? (
+                              <MarkdownAnswer text={message.content} />
+                            ) : (
+                              <StepIndicator label={chatStatus || "Answering from chat context"} />
+                            )
+                          ) : (
+                            <p className="m-0 whitespace-pre-wrap text-[15px] leading-7">{message.content}</p>
+                          )}
+                        </div>
+                      ))}
+                    </div>
+                  )}
+
+                  {isChatting && followUpMessages.every((message) => message.content) ? (
+                    <StepIndicator label={chatStatus || "Answering from chat context"} className="mb-4" />
+                  ) : null}
+
+                  <div className="h-1" />
+                </motion.div>
+              )}
+            </AnimatePresence>
+
             {error ? (
               <div className="mt-4 rounded-2xl border border-red-400/20 bg-red-500/10 px-4 py-3 text-sm text-red-200">
                 {error}
               </div>
             ) : null}
           </motion.section>
+
+          {finalAnswer && (
+            <div className="fixed bottom-4 left-1/2 z-50 w-[calc(100vw-2rem)] max-w-[1120px] -translate-x-1/2 px-0 md:w-[calc(100vw-4rem)]">
+              <FollowUpInput onSend={continueChat} isLoading={isChatting || isSearching} />
+            </div>
+          )}
         </motion.main>
 
         <SearchResultsPanel

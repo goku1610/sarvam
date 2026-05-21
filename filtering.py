@@ -49,6 +49,32 @@ def get_overlapping_chunks(
     return chunks
 
 
+def build_unreachable_chunk(page: dict[str, Any]) -> dict[str, Any]:
+    """Represent a relevant search result whose page content could not be read."""
+    reason = page.get("fetch_error") or "fetch failed"
+    status = page.get("http_status")
+    status_text = f" HTTP status: {status}." if status else ""
+    snippet = str(page.get("snippet", "")).strip()
+    snippet_text = f"\nSearch snippet: {snippet}" if snippet else ""
+
+    return {
+        "text": (
+            "[Content unreachable] This relevant search result was selected, but the page content "
+            f"could not be read. Reason: {reason}.{status_text}{snippet_text}"
+        ),
+        "url": page.get("url", ""),
+        "domain": page.get("domain", ""),
+        "title": page.get("title", "Unknown Title"),
+        "query": page.get("query", ""),
+        "rank": page.get("rank"),
+        "retrieved_at": page.get("retrieved_at", ""),
+        "chunk_index": 0,
+        "content_unreachable": True,
+        "fetch_error": reason,
+        "http_status": status,
+    }
+
+
 def calculate_jaccard_similarity(text1: str, text2: str) -> float:
     """Calculate simple lexical overlap between two strings."""
     set1 = set(tokenize_text(text1))
@@ -134,7 +160,12 @@ def build_context_from_pages(
 ) -> dict[str, Any]:
     """Build a compact, diverse research context from scraped pages."""
     all_chunks = []
+    unreachable_chunks = []
     for page in pages:
+        if page.get("content_unreachable"):
+            unreachable_chunks.append(build_unreachable_chunk(page))
+            continue
+
         all_chunks.extend(
             get_overlapping_chunks(
                 text=page.get("content", ""),
@@ -155,9 +186,11 @@ def build_context_from_pages(
         top_k=top_k,
         lambda_param=lambda_param,
     )
+    selected_chunks = filtered_chunks + unreachable_chunks[: max(0, top_k - len(filtered_chunks))]
+
     capped_chunks = []
     used_chars = 0
-    for chunk in filtered_chunks:
+    for chunk in selected_chunks:
         next_size = len(chunk.get("text", "")) + len(chunk.get("title", "")) + len(chunk.get("url", "")) + 80
         if capped_chunks and used_chars + next_size > max_context_chars:
             break
@@ -167,8 +200,9 @@ def build_context_from_pages(
     return {
         "chunks": capped_chunks,
         "context": assemble_context_string(capped_chunks),
-        "chunk_count": len(all_chunks),
+        "chunk_count": len(all_chunks) + len(unreachable_chunks),
         "selected_count": len(capped_chunks),
+        "unreachable_count": len(unreachable_chunks),
         "max_context_chars": max_context_chars,
     }
 
