@@ -1,0 +1,1 @@
+Add something for table formatting and sometimes the model says more research required in that case it goes ahead and does more research if reequired. It may also ask the user if he wants that and based on the users answer it decides further what needs  to be done
