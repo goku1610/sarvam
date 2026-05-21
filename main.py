@@ -271,6 +271,7 @@ class AnswerRequest(BaseModel):
     search_queries: list[str] = []
     context: str = ""
     chunks: list[dict[str, Any]] = []
+    deep_research: bool = False
 
 
 class ContinueChatRequest(BaseModel):
@@ -1480,13 +1481,16 @@ async def generate_answer(request: AnswerRequest):
         raw_answer = "".join(final_answer_parts).strip()
         final_answer, citation_validation = validate_answer_citations(raw_answer, request.chunks)
 
-        # --- Post-process: detect answer gaps ---
-        gap_analysis = await asyncio.to_thread(
-            planner.detect_answer_gaps,
-            final_answer,
-            request.query,
-            request.chunks,
-        )
+        # --- Post-process: detect answer gaps (deep research only) ---
+        if request.deep_research:
+            gap_analysis = await asyncio.to_thread(
+                planner.detect_answer_gaps,
+                final_answer,
+                request.query,
+                request.chunks,
+            )
+        else:
+            gap_analysis = {"has_gaps": False, "gaps": [], "suggested_queries": [], "severity": "none"}
 
         if request.session_id:
             session_store.append_message(request.session_id, "assistant", final_answer)

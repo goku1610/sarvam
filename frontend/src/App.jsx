@@ -2129,7 +2129,8 @@ function App() {
         body: JSON.stringify({
           session_id: activeSessionId,
           query: originalQuery,
-          queries: queriesToSearch
+          queries: queriesToSearch,
+          max_hops: deepResearchActive ? 3 : 1
         })
       });
 
@@ -2254,7 +2255,8 @@ function App() {
             plan: planSteps,
             search_queries: searchedQueries,
             context: latestResearchContext.context,
-            chunks: latestResearchContext.chunks
+            chunks: latestResearchContext.chunks,
+            deep_research: deepResearchActive
           })
         });
 
