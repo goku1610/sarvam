@@ -15,7 +15,14 @@ import {
   Pencil,
   Plus,
   Search,
-  Trash2
+  Trash2,
+  BookOpen,
+  ExternalLink,
+  ChevronDown,
+  Copy,
+  Bookmark,
+  Check,
+  RefreshCw
 } from "lucide-react";
 import { AnimatePresence, motion } from "framer-motion";
 
@@ -569,80 +576,425 @@ const DeleteChatDialog = ({ session, onCancel, onConfirm }) => {
   );
 };
 
+const TAG_PALETTE = [
+  { bg: "rgba(29,158,117,0.14)", border: "rgba(29,158,117,0.22)", color: "#5ee6b8" },
+  { bg: "rgba(99,86,220,0.14)", border: "rgba(99,86,220,0.22)", color: "#b0a4f4" },
+  { bg: "rgba(214,195,161,0.14)", border: "rgba(214,195,161,0.22)", color: "#f5e7cf" },
+  { bg: "rgba(66,153,225,0.14)", border: "rgba(66,153,225,0.22)", color: "#90cdf4" },
+  { bg: "rgba(237,100,166,0.14)", border: "rgba(237,100,166,0.22)", color: "#fbb6ce" },
+  { bg: "rgba(236,201,75,0.14)", border: "rgba(236,201,75,0.22)", color: "#faf089" },
+];
+
+const getTagStyle = (index) => TAG_PALETTE[index % TAG_PALETTE.length];
+
+const inferTopicTag = (source) => {
+  const text = `${source.title || ""} ${source.domain || ""} ${source.snippet || ""} ${source.content || ""}`.toLowerCase();
+  if (/stat|score|number|data|table|rank|match|game|record/.test(text)) return "stats";
+  if (/award|trophy|ballon|prize|honor|achievement|hall of fame/.test(text)) return "awards";
+  if (/bio|born|age|career|life|profile|history|early|childhood/.test(text)) return "bio";
+  if (/news|report|update|latest|today|breaking|announce|press/.test(text)) return "news";
+  if (/review|opinion|analysis|editorial|comment|perspective/.test(text)) return "analysis";
+  if (/guide|tutorial|how.to|tips|explained|learn|101/.test(text)) return "guide";
+  if (/wiki|encyclopedia|reference|definition/.test(text)) return "reference";
+  if (/video|watch|stream|youtube|clip/.test(text)) return "media";
+  return "source";
+};
+
+const SourceTag = ({ label, tagIndex }) => {
+  const style = getTagStyle(tagIndex);
+  return (
+    <span
+      className="inline-flex items-center rounded-md px-1.5 py-0.5 text-[10px] font-semibold uppercase tracking-wider"
+      style={{ background: style.bg, border: `1px solid ${style.border}`, color: style.color }}
+    >
+      {label}
+    </span>
+  );
+};
+
+const ContributionBar = ({ pct, label }) => (
+  <div className="mt-2.5">
+    <div className="h-[3px] w-full overflow-hidden rounded-full bg-white/[0.06]">
+      <motion.div
+        initial={{ width: 0 }}
+        animate={{ width: `${pct}%` }}
+        transition={{ duration: 0.6, ease: "easeOut" }}
+        className="h-full rounded-full"
+        style={{ background: "linear-gradient(90deg, rgba(29,158,117,0.7), rgba(29,158,117,0.35))" }}
+      />
+    </div>
+    <p className="m-0 mt-1 text-[11px] text-stone-500">{label}</p>
+  </div>
+);
+
+const SourceExcerpt = ({ text, citations }) => (
+  <motion.div
+    initial={{ height: 0, opacity: 0 }}
+    animate={{ height: "auto", opacity: 1 }}
+    exit={{ height: 0, opacity: 0 }}
+    transition={{ duration: 0.22, ease: "easeOut" }}
+    className="overflow-hidden"
+  >
+    <div className="mt-3 rounded-xl border border-white/[0.06] bg-white/[0.02] p-3">
+      <p className="m-0 border-l-2 border-[#d6c3a1]/25 pl-3 text-xs italic leading-5 text-stone-400">
+        "{text}"
+      </p>
+      {citations.length > 0 && (
+        <div className="mt-2.5 flex flex-wrap gap-1.5">
+          {citations.map((c, i) => (
+            <span
+              key={i}
+              className="inline-flex rounded-md border border-white/[0.08] bg-white/[0.04] px-1.5 py-0.5 text-[10px] font-medium text-stone-400"
+            >
+              {c}
+            </span>
+          ))}
+        </div>
+      )}
+    </div>
+  </motion.div>
+);
+
+const SourceCard = ({ source, tagIndex, contribution }) => {
+  const [pinned, setPinned] = React.useState(false);
+  const [expanded, setExpanded] = React.useState(false);
+  const tag = source._tag || "source";
+  const excerpt = source.snippet || source.content?.slice(0, 300) || "";
+  const contribPct = contribution?.pct || 0;
+  const contribLabel = contribution?.label || "";
+  const citations = contribution?.citations || [];
+
+  return (
+    <motion.div
+      initial={{ opacity: 0, y: 8 }}
+      animate={{ opacity: 1, y: 0 }}
+      transition={{ duration: 0.18, ease: "easeOut" }}
+      className={cn(
+        "group rounded-2xl border px-3.5 py-3 transition-all duration-150",
+        pinned
+          ? "border-[#4299e1]/30 bg-[#4299e1]/[0.06]"
+          : "border-white/[0.06] bg-white/[0.02] hover:border-white/[0.12] hover:bg-white/[0.04]"
+      )}
+    >
+      <div className="flex gap-3">
+        {/* Favicon */}
+        <div className="mt-0.5 flex h-7 w-7 shrink-0 items-center justify-center overflow-hidden rounded-lg border border-white/[0.08] bg-white/[0.04]">
+          <img
+            src={`https://www.google.com/s2/favicons?domain=${source.domain}&sz=32`}
+            alt=""
+            className="h-full w-full object-cover"
+            onError={(e) => {
+              e.target.style.display = "none";
+              e.target.parentNode.textContent = (source.domain || "??").slice(0, 2).toUpperCase();
+              e.target.parentNode.style.fontSize = "10px";
+              e.target.parentNode.style.fontWeight = "600";
+              e.target.parentNode.style.color = "#78716c";
+            }}
+          />
+        </div>
+
+        <div className="min-w-0 flex-1">
+          {/* Top row: domain + actions */}
+          <div className="flex items-start justify-between gap-2">
+            <div className="min-w-0 flex-1">
+              <div className="flex items-center gap-2">
+                <span className="truncate text-[13px] font-semibold text-stone-200">
+                  {source.domain}
+                </span>
+                <SourceTag label={tag} tagIndex={tagIndex} />
+              </div>
+              <p className="m-0 mt-0.5 line-clamp-2 text-xs leading-5 text-stone-400">
+                {source.title || source.url}
+              </p>
+            </div>
+
+            <div className="flex shrink-0 items-center gap-0.5">
+              <button
+                type="button"
+                onClick={(e) => { e.stopPropagation(); setPinned((p) => !p); }}
+                title={pinned ? "Unpin" : "Pin source"}
+                className={cn(
+                  "flex h-7 w-7 items-center justify-center rounded-lg transition-colors",
+                  pinned
+                    ? "bg-[#4299e1]/15 text-[#90cdf4]"
+                    : "text-stone-600 opacity-0 hover:bg-white/[0.06] hover:text-stone-400 group-hover:opacity-100"
+                )}
+              >
+                <Bookmark className={cn("h-3.5 w-3.5", pinned && "fill-current")} />
+              </button>
+              <a
+                href={source.url}
+                target="_blank"
+                rel="noreferrer"
+                title="Open source"
+                className="flex h-7 w-7 items-center justify-center rounded-lg text-stone-600 opacity-0 transition-colors hover:bg-white/[0.06] hover:text-stone-400 group-hover:opacity-100"
+              >
+                <ExternalLink className="h-3.5 w-3.5" />
+              </a>
+            </div>
+          </div>
+
+          {/* Contribution bar */}
+          {contribPct > 0 && (
+            <ContributionBar pct={contribPct} label={contribLabel} />
+          )}
+
+          {/* Excerpt toggle */}
+          {excerpt && (
+            <div className="mt-2">
+              <button
+                type="button"
+                onClick={() => setExpanded((o) => !o)}
+                className="flex items-center gap-1 text-[11px] font-medium text-stone-500 transition-colors hover:text-stone-300"
+              >
+                <ChevronDown
+                  className={cn(
+                    "h-3 w-3 transition-transform duration-200",
+                    expanded && "rotate-180"
+                  )}
+                />
+                {expanded ? "hide" : "excerpt"}
+              </button>
+              <AnimatePresence>
+                {expanded && <SourceExcerpt text={excerpt} citations={citations} />}
+              </AnimatePresence>
+            </div>
+          )}
+        </div>
+      </div>
+    </motion.div>
+  );
+};
+
+const computeContributions = (results, chunks, finalAnswer) => {
+  if (!chunks || chunks.length === 0) return {};
+
+  const urlChunkCount = {};
+  for (const chunk of chunks) {
+    const url = (chunk.url || "").trim();
+    if (!url) continue;
+    urlChunkCount[url] = (urlChunkCount[url] || 0) + 1;
+  }
+
+  const totalChunks = chunks.length;
+  const contributions = {};
+
+  // Count citation references in the final answer
+  const citationPattern = /\[([^\]]+)\]\((https?:\/\/[^)\s]+)\)/g;
+  const answerCitations = {};
+  if (finalAnswer) {
+    let match;
+    while ((match = citationPattern.exec(finalAnswer)) !== null) {
+      const url = match[2].trim();
+      if (!answerCitations[url]) answerCitations[url] = [];
+      answerCitations[url].push(match[1].trim());
+    }
+  }
+
+  for (const result of results) {
+    const url = (result.url || "").trim();
+    const chunkCount = urlChunkCount[url] || 0;
+    const pct = totalChunks > 0 ? Math.round((chunkCount / totalChunks) * 100) : 0;
+    const citations = answerCitations[url] || [];
+
+    let label = "";
+    if (pct > 0 && citations.length > 0) {
+      label = `${pct}% of context · ${citations.length} citation${citations.length !== 1 ? "s" : ""}`;
+    } else if (pct > 0) {
+      label = `${pct}% of context used`;
+    } else if (citations.length > 0) {
+      label = `${citations.length} citation${citations.length !== 1 ? "s" : ""}`;
+    }
+
+    contributions[url] = {
+      pct,
+      label,
+      citations: citations.slice(0, 5).map((c, i) => `[${i + 1}] ${c.length > 30 ? c.slice(0, 30) + "…" : c}`),
+    };
+  }
+
+  return contributions;
+};
+
 const SearchResultsPanel = ({
   isOpen,
   isSearching,
   results,
   error,
   status,
-  onClose
-}) => (
-  <AnimatePresence>
-    {isOpen && (
-      <motion.aside
-        layout
-        initial={{ opacity: 0, x: 28 }}
-        animate={{ opacity: 1, x: 0 }}
-        exit={{ opacity: 0, x: 28 }}
-        transition={{ duration: 0.32, ease: [0.22, 1, 0.36, 1] }}
-        className="fixed bottom-4 right-4 top-4 z-40 flex w-[min(420px,calc(100vw-32px))] flex-col overflow-hidden rounded-[28px] border border-white/10 bg-[#141517]/98 shadow-[0_24px_80px_rgba(0,0,0,0.5)] backdrop-blur lg:sticky lg:top-8 lg:z-10 lg:h-[calc(100vh-4rem)] lg:min-w-[360px] lg:max-w-[420px] lg:shrink-0"
-      >
-        <div className="flex items-center justify-between border-b border-white/8 px-5 py-4">
-          <div>
-            <h2 className="m-0 text-base font-semibold text-stone-100">Sources</h2>
-            <p className="m-0 mt-1 text-xs text-stone-500">{results.length} links collected</p>
-          </div>
-          <button
-            type="button"
-            onClick={onClose}
-            className="flex h-9 w-9 items-center justify-center rounded-full text-stone-400 transition-colors hover:bg-white/[0.06] hover:text-stone-100"
-          >
-            <X className="h-4 w-4" />
-            <span className="sr-only">Close sources</span>
-          </button>
-        </div>
+  onClose,
+  chunks,
+  finalAnswer,
+  onFindMore,
+}) => {
+  const [copiedAll, setCopiedAll] = React.useState(false);
 
-        <div className="flex-1 overflow-y-auto px-4 py-4">
-          {isSearching && (
-            <StepIndicator label={status || "Searching and reading sources"} className="mb-3" />
-          )}
+  const taggedResults = React.useMemo(() => {
+    return results.map((r) => ({ ...r, _tag: inferTopicTag(r) }));
+  }, [results]);
 
-          {error && (
-            <div className="mb-3 rounded-2xl border border-red-400/20 bg-red-500/10 px-4 py-3 text-sm text-red-200">
-              {error}
-            </div>
-          )}
+  const allTags = React.useMemo(() => {
+    const seen = new Set();
+    return taggedResults.map((r) => r._tag).filter((t) => {
+      if (seen.has(t)) return false;
+      seen.add(t);
+      return true;
+    });
+  }, [taggedResults]);
 
-          {results.length === 0 && !isSearching && !error && (
-            <div className="rounded-2xl border border-white/8 bg-white/[0.025] px-4 py-5 text-sm text-stone-400">
-              No sources yet.
-            </div>
-          )}
+  const tagIndexMap = React.useMemo(() => {
+    const map = {};
+    allTags.forEach((t, i) => { map[t] = i; });
+    return map;
+  }, [allTags]);
 
-          <div className="space-y-3">
-            {results.map((result, index) => (
-              <motion.a
-                key={`${result.url}-${index}`}
-                href={result.url}
-                target="_blank"
-                rel="noreferrer"
-                initial={{ opacity: 0, y: 10 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.18, ease: "easeOut" }}
-                className="block rounded-2xl border border-white/8 bg-white/[0.025] px-4 py-3 transition-colors hover:border-[#d6c3a1]/25 hover:bg-[#d6c3a1]/[0.035]"
-              >
-                <div className="line-clamp-2 text-sm font-medium leading-6 text-stone-100">
-                  {result.title || result.domain || result.url}
+  const contributions = React.useMemo(
+    () => computeContributions(results, chunks, finalAnswer),
+    [results, chunks, finalAnswer]
+  );
+
+  const totalCitations = React.useMemo(() => {
+    return Object.values(contributions).reduce((sum, c) => sum + c.citations.length, 0);
+  }, [contributions]);
+
+  const handleCopyAll = React.useCallback(() => {
+    const text = results.map((r) => r.url).filter(Boolean).join("\n");
+    navigator.clipboard.writeText(text).then(() => {
+      setCopiedAll(true);
+      setTimeout(() => setCopiedAll(false), 2000);
+    });
+  }, [results]);
+
+  const verifiedDate = React.useMemo(() => {
+    const now = new Date();
+    return now.toLocaleDateString("en-US", { month: "short", year: "numeric" });
+  }, []);
+
+  return (
+    <AnimatePresence>
+      {isOpen && (
+        <motion.aside
+          layout
+          initial={{ opacity: 0, x: 28 }}
+          animate={{ opacity: 1, x: 0 }}
+          exit={{ opacity: 0, x: 28 }}
+          transition={{ duration: 0.32, ease: [0.22, 1, 0.36, 1] }}
+          className="fixed bottom-4 right-4 top-4 z-40 flex w-[min(420px,calc(100vw-32px))] flex-col overflow-hidden rounded-[28px] border border-white/10 bg-[#141517]/98 shadow-[0_24px_80px_rgba(0,0,0,0.5)] backdrop-blur lg:sticky lg:top-8 lg:z-10 lg:h-[calc(100vh-4rem)] lg:min-w-[360px] lg:max-w-[420px] lg:shrink-0"
+        >
+          {/* ── Header ── */}
+          <div className="border-b border-white/8 px-5 py-4">
+            <div className="flex items-center justify-between">
+              <div className="flex items-center gap-2.5">
+                <div className="flex h-8 w-8 items-center justify-center rounded-xl bg-[#d6c3a1]/10">
+                  <BookOpen className="h-4 w-4 text-[#d6c3a1]" />
                 </div>
-                <div className="mt-1 truncate text-xs text-stone-500">{result.domain}</div>
-              </motion.a>
-            ))}
+                <h2 className="m-0 text-base font-semibold text-stone-100">Sources</h2>
+                <span className="rounded-full bg-white/[0.06] border border-white/[0.08] px-2 py-0.5 text-xs font-medium text-stone-400">
+                  {results.length}
+                </span>
+              </div>
+              <div className="flex items-center gap-1">
+                {onFindMore && !isSearching && results.length > 0 && (
+                  <button
+                    type="button"
+                    onClick={onFindMore}
+                    className="flex items-center gap-1.5 rounded-xl border border-[#d6c3a1]/20 bg-[#d6c3a1]/[0.06] px-3 py-1.5 text-xs font-medium text-[#ecdcc0] transition-colors hover:border-[#d6c3a1]/35 hover:bg-[#d6c3a1]/[0.1]"
+                  >
+                    <RefreshCw className="h-3 w-3" />
+                    Find more
+                  </button>
+                )}
+                {results.length > 0 && (
+                  <button
+                    type="button"
+                    onClick={handleCopyAll}
+                    title="Copy all links"
+                    className="flex h-8 w-8 items-center justify-center rounded-xl text-stone-500 transition-colors hover:bg-white/[0.06] hover:text-stone-300"
+                  >
+                    {copiedAll ? (
+                      <Check className="h-3.5 w-3.5 text-emerald-400" />
+                    ) : (
+                      <Copy className="h-3.5 w-3.5" />
+                    )}
+                  </button>
+                )}
+                <button
+                  type="button"
+                  onClick={onClose}
+                  className="flex h-8 w-8 items-center justify-center rounded-xl text-stone-500 transition-colors hover:bg-white/[0.06] hover:text-stone-300"
+                >
+                  <X className="h-4 w-4" />
+                  <span className="sr-only">Close sources</span>
+                </button>
+              </div>
+            </div>
+
+            {/* Topic tags */}
+            {allTags.length > 0 && !isSearching && (
+              <div className="mt-3 flex flex-wrap items-center gap-1.5">
+                <span className="text-[10px] font-medium uppercase tracking-wider text-stone-600">Coverage:</span>
+                {allTags.map((tag) => (
+                  <SourceTag key={tag} label={tag} tagIndex={tagIndexMap[tag]} />
+                ))}
+              </div>
+            )}
           </div>
-        </div>
-      </motion.aside>
-    )}
-  </AnimatePresence>
-);
+
+          {/* ── Source Cards ── */}
+          <div className="flex-1 overflow-y-auto px-4 py-4">
+            {isSearching && (
+              <StepIndicator label={status || "Searching and reading sources"} className="mb-3" />
+            )}
+
+            {error && (
+              <div className="mb-3 rounded-2xl border border-red-400/20 bg-red-500/10 px-4 py-3 text-sm text-red-200">
+                {error}
+              </div>
+            )}
+
+            {results.length === 0 && !isSearching && !error && (
+              <div className="flex flex-col items-center justify-center py-12 text-center">
+                <div className="mb-3 flex h-12 w-12 items-center justify-center rounded-2xl border border-white/[0.06] bg-white/[0.03]">
+                  <BookOpen className="h-5 w-5 text-stone-600" />
+                </div>
+                <p className="m-0 text-sm font-medium text-stone-400">No sources yet</p>
+                <p className="m-0 mt-1 text-xs text-stone-600">Sources will appear here once research begins</p>
+              </div>
+            )}
+
+            <div className="space-y-2.5">
+              {taggedResults.map((result, index) => (
+                <SourceCard
+                  key={`${result.url}-${index}`}
+                  source={result}
+                  tagIndex={tagIndexMap[result._tag] || 0}
+                  contribution={contributions[result.url]}
+                />
+              ))}
+            </div>
+          </div>
+
+          {/* ── Footer Summary ── */}
+          {results.length > 0 && !isSearching && (
+            <div className="border-t border-white/[0.06] bg-white/[0.02] px-5 py-3">
+              <div className="flex items-center gap-2">
+                <div className="flex h-5 w-5 items-center justify-center rounded-md bg-white/[0.04]">
+                  <BookOpen className="h-3 w-3 text-stone-500" />
+                </div>
+                <p className="m-0 text-xs leading-5 text-stone-500">
+                  {totalCitations > 0
+                    ? `${totalCitations} citation${totalCitations !== 1 ? "s" : ""} across ${results.length} source${results.length !== 1 ? "s" : ""}`
+                    : `${results.length} source${results.length !== 1 ? "s" : ""} collected`}
+                  {` · verified ${verifiedDate}`}
+                </p>
+              </div>
+            </div>
+          )}
+        </motion.aside>
+      )}
+    </AnimatePresence>
+  );
+};
 
 const HistorySidebar = ({
   isOpen,
@@ -791,11 +1143,6 @@ const HistorySidebar = ({
                               <div className="line-clamp-2 text-sm font-medium leading-5 text-stone-100">
                                 {session.title || "Untitled research"}
                               </div>
-                              {session.original_query && session.original_query !== session.title ? (
-                                <div className="mt-1 line-clamp-2 text-xs leading-5 text-stone-500">
-                                  {session.original_query}
-                                </div>
-                              ) : null}
                             </button>
                           )}
                         </div>
@@ -3009,6 +3356,12 @@ function App() {
           results={searchResults}
           error={searchError}
           status={searchStatus}
+          chunks={researchContext?.chunks}
+          finalAnswer={finalAnswer}
+          onFindMore={finalAnswer && !isSearching ? () => {
+            const followUpQuery = `Find additional sources about: ${originalQuery}`;
+            continueChat(followUpQuery);
+          } : undefined}
           onClose={() => {
             setIsSearchPanelOpen(false);
             saveSessionState(
