@@ -22,7 +22,9 @@ import {
   Copy,
   Bookmark,
   Check,
-  RefreshCw
+  RefreshCw,
+  FileText,
+  Download
 } from "lucide-react";
 import { AnimatePresence, motion } from "framer-motion";
 
@@ -177,11 +179,241 @@ const parseTableRows = (lines) => {
   return { header: rows[0], body: rows.slice(1) };
 };
 
+const extractCitations = (text) => {
+  const citationPattern = /\[([^\]]+)\]\((https?:\/\/[^)\s]+)\)/g;
+  const footnotes = [];
+  const seenUrls = new Set();
+  let match;
+
+  // First pass: collect unique citations
+  const tempText = text;
+  while ((match = citationPattern.exec(tempText)) !== null) {
+    const url = match[2].trim();
+    if (!seenUrls.has(url)) {
+      seenUrls.add(url);
+      footnotes.push({ label: match[1].trim(), url });
+    }
+  }
+
+  // Second pass: replace inline links with superscript numbers
+  let processed = text;
+  const urlToIndex = {};
+  footnotes.forEach((f, i) => { urlToIndex[f.url] = i + 1; });
+
+  processed = processed.replace(citationPattern, (_, label, url) => {
+    const idx = urlToIndex[url.trim()];
+    return idx ? `⟦${idx}⟧` : label;
+  });
+
+  return { processed, footnotes };
+};
+
+const renderInlineWithFootnotes = (text) => {
+  // Handle the ⟦N⟧ superscript markers
+  const parts = [];
+  const pattern = /(⟦(\d+)⟧|\*\*([^*]+)\*\*|\*([^*\s][^*]*?)\*)/g;
+  let lastIndex = 0;
+  let match;
+
+  while ((match = pattern.exec(text)) !== null) {
+    if (match.index > lastIndex) {
+      parts.push(text.slice(lastIndex, match.index));
+    }
+
+    if (match[2]) {
+      parts.push(
+        <sup
+          key={`cite-${match.index}`}
+          className="ml-0.5 cursor-pointer text-[10px] font-semibold text-[#d6c3a1] hover:text-[#f5e7cf]"
+          onClick={() => {
+            const el = document.getElementById(`footnote-${match[2]}`);
+            if (el) el.scrollIntoView({ behavior: "smooth", block: "center" });
+          }}
+        >
+          [{match[2]}]
+        </sup>
+      );
+    } else if (match[3]) {
+      parts.push(
+        <strong key={`bold-${match.index}`} className="font-semibold text-stone-50">
+          {match[3]}
+        </strong>
+      );
+    } else if (match[4]) {
+      parts.push(
+        <em key={`italic-${match.index}`} className="italic text-stone-100">
+          {match[4]}
+        </em>
+      );
+    }
+
+    lastIndex = match.index + match[0].length;
+  }
+
+  if (lastIndex < text.length) {
+    parts.push(text.slice(lastIndex));
+  }
+
+  return parts;
+};
+
+const parseNumericValue = (text) => {
+  const cleaned = text.replace(/[,$%]/g, "").trim();
+  const num = parseFloat(cleaned);
+  return isNaN(num) ? null : num;
+};
+
+const detectWinnerColumns = (body, header) => {
+  if (!body.length || header.length < 2) return {};
+  // For comparison tables, find columns that have numeric data and mark the winner per row
+  const winners = {};
+
+  body.forEach((row, ri) => {
+    const numericCols = [];
+    row.forEach((cell, ci) => {
+      if (ci === 0) return; // skip label column
+      const val = parseNumericValue(cell);
+      if (val !== null) numericCols.push({ ci, val });
+    });
+
+    if (numericCols.length >= 2) {
+      // Find the max value
+      const maxVal = Math.max(...numericCols.map((c) => c.val));
+      const maxCols = numericCols.filter((c) => c.val === maxVal);
+      if (maxCols.length === 1) {
+        if (!winners[ri]) winners[ri] = {};
+        winners[ri][maxCols[0].ci] = true;
+      }
+    }
+  });
+
+  return winners;
+};
+
+const FootnotesList = ({ footnotes }) => {
+  if (footnotes.length === 0) return null;
+  return (
+    <div className="mt-6 border-t border-white/[0.06] pt-4">
+      <p className="m-0 mb-2 text-[10px] font-semibold uppercase tracking-wider text-stone-500">
+        Sources
+      </p>
+      <div className="space-y-1">
+        {footnotes.map((f, i) => {
+          const domain = (() => { try { return new URL(f.url).hostname.replace("www.", ""); } catch { return f.url; } })();
+          return (
+            <div key={i} id={`footnote-${i + 1}`} className="flex items-baseline gap-2 text-xs">
+              <span className="shrink-0 font-semibold text-[#d6c3a1]">[{i + 1}]</span>
+              <a
+                href={f.url}
+                target="_blank"
+                rel="noreferrer"
+                className="truncate text-stone-400 underline decoration-stone-600 underline-offset-2 transition-colors hover:text-stone-200"
+              >
+                {f.label || domain}
+              </a>
+              <span className="shrink-0 text-stone-600">({domain})</span>
+            </div>
+          );
+        })}
+      </div>
+    </div>
+  );
+};
+
+const TableOfContents = ({ headings }) => {
+  const [open, setOpen] = React.useState(false);
+  if (headings.length < 2) return null;
+
+  return (
+    <div className="mb-5 rounded-2xl border border-white/[0.06] bg-white/[0.02]">
+      <button
+        type="button"
+        onClick={() => setOpen((o) => !o)}
+        className="flex w-full items-center justify-between px-4 py-3 text-left"
+      >
+        <span className="text-xs font-semibold uppercase tracking-wider text-stone-500">
+          Table of Contents
+        </span>
+        <ChevronDown
+          className={cn(
+            "h-3.5 w-3.5 text-stone-500 transition-transform duration-200",
+            open && "rotate-180"
+          )}
+        />
+      </button>
+      <AnimatePresence>
+        {open && (
+          <motion.div
+            initial={{ height: 0, opacity: 0 }}
+            animate={{ height: "auto", opacity: 1 }}
+            exit={{ height: 0, opacity: 0 }}
+            transition={{ duration: 0.2, ease: "easeOut" }}
+            className="overflow-hidden"
+          >
+            <div className="space-y-0.5 px-4 pb-3">
+              {headings.map((h, i) => (
+                <button
+                  key={i}
+                  type="button"
+                  onClick={() => {
+                    const el = document.getElementById(h.id);
+                    if (el) el.scrollIntoView({ behavior: "smooth", block: "start" });
+                  }}
+                  className={cn(
+                    "block w-full truncate rounded-lg px-2 py-1.5 text-left text-xs transition-colors hover:bg-white/[0.04] hover:text-stone-200",
+                    h.level <= 2 ? "font-medium text-stone-300" : "pl-5 text-stone-500"
+                  )}
+                >
+                  {h.text}
+                </button>
+              ))}
+            </div>
+          </motion.div>
+        )}
+      </AnimatePresence>
+    </div>
+  );
+};
+
+const ReadingProgress = ({ containerRef }) => {
+  const [progress, setProgress] = React.useState(0);
+
+  React.useEffect(() => {
+    const container = containerRef?.current;
+    if (!container) return;
+
+    const update = () => {
+      const { scrollTop, scrollHeight, clientHeight } = container;
+      const maxScroll = scrollHeight - clientHeight;
+      setProgress(maxScroll > 0 ? Math.min((scrollTop / maxScroll) * 100, 100) : 0);
+    };
+
+    container.addEventListener("scroll", update, { passive: true });
+    return () => container.removeEventListener("scroll", update);
+  }, [containerRef]);
+
+  if (progress <= 0) return null;
+
+  return (
+    <div className="absolute left-0 right-0 top-0 z-10 h-[2px] bg-transparent">
+      <div
+        className="h-full rounded-r-full transition-all duration-150"
+        style={{
+          width: `${progress}%`,
+          background: "linear-gradient(90deg, rgba(214,195,161,0.5), rgba(214,195,161,0.8))",
+        }}
+      />
+    </div>
+  );
+};
+
 const MarkdownAnswer = ({ text }) => {
   if (!text) return null;
 
-  const rawLines = text.split(/\n/);
+  const { processed, footnotes } = extractCitations(text);
+  const rawLines = processed.split(/\n/);
   const elements = [];
+  const headings = [];
   let i = 0;
 
   while (i < rawLines.length) {
@@ -197,6 +429,7 @@ const MarkdownAnswer = ({ text }) => {
       }
       const tableData = parseTableRows(tableLines);
       if (tableData) {
+        const winners = detectWinnerColumns(tableData.body, tableData.header);
         elements.push(
           <div key={`table-${i}`} className="my-4 overflow-x-auto rounded-2xl border border-white/10">
             <table className="w-full border-collapse text-sm">
@@ -204,7 +437,7 @@ const MarkdownAnswer = ({ text }) => {
                 <tr className="border-b border-white/10 bg-white/[0.04]">
                   {tableData.header.map((cell, ci) => (
                     <th key={ci} className="px-4 py-3 text-left font-semibold text-stone-200">
-                      {renderInlineMarkdown(cell)}
+                      {renderInlineWithFootnotes(cell)}
                     </th>
                   ))}
                 </tr>
@@ -218,11 +451,25 @@ const MarkdownAnswer = ({ text }) => {
                       ri % 2 === 1 && "bg-white/[0.015]"
                     )}
                   >
-                    {row.map((cell, ci) => (
-                      <td key={ci} className="px-4 py-3 text-stone-300">
-                        {renderInlineMarkdown(cell)}
-                      </td>
-                    ))}
+                    {row.map((cell, ci) => {
+                      const isWinner = winners[ri]?.[ci];
+                      return (
+                        <td
+                          key={ci}
+                          className={cn(
+                            "px-4 py-3",
+                            isWinner
+                              ? "font-semibold text-[#5ee6b8] bg-[#1d9e75]/[0.08]"
+                              : "text-stone-300"
+                          )}
+                        >
+                          {renderInlineWithFootnotes(cell)}
+                          {isWinner && (
+                            <span className="ml-1.5 inline-block text-[10px] text-[#5ee6b8]/60">▲</span>
+                          )}
+                        </td>
+                      );
+                    })}
                   </tr>
                 ))}
               </tbody>
@@ -234,20 +481,39 @@ const MarkdownAnswer = ({ text }) => {
       }
     }
 
-    // --- Non-table lines (existing logic) ---
+    // --- Non-table lines ---
     if (!line) { i++; continue; }
     if (/^[-*_]{3,}$/.test(line)) { i++; continue; }
 
     const headingMatch = line.match(/^(#{1,4})\s+(.+)$/);
     if (headingMatch) {
       const level = headingMatch[1].length;
-      const headingClasses = level <= 2
-        ? "pt-2 text-xl font-semibold text-stone-50"
-        : "pt-1 text-base font-semibold text-stone-50";
+      const headingText = headingMatch[2].replace(/⟦\d+⟧/g, "").trim();
+      const headingId = `heading-${headings.length}`;
+      headings.push({ id: headingId, text: headingText, level });
+
+      const Tag = level <= 2 ? "h2" : "h3";
       elements.push(
-        <h3 key={`${line}-${i}`} className={cn("m-0", headingClasses)}>
-          {renderInlineMarkdown(headingMatch[2])}
-        </h3>
+        <Tag
+          key={`${line}-${i}`}
+          id={headingId}
+          className={cn(
+            "m-0 flex items-center gap-3 scroll-mt-4",
+            level <= 2
+              ? "pt-4 text-lg font-semibold text-stone-50"
+              : "pt-2 text-base font-semibold text-stone-100"
+          )}
+        >
+          <span
+            className="h-5 w-[3px] shrink-0 rounded-full"
+            style={{
+              background: level <= 2
+                ? "linear-gradient(180deg, #d6c3a1, #d6c3a1/50)"
+                : "rgba(214,195,161,0.3)",
+            }}
+          />
+          {renderInlineWithFootnotes(headingMatch[2])}
+        </Tag>
       );
       i++;
       continue;
@@ -258,7 +524,7 @@ const MarkdownAnswer = ({ text }) => {
       elements.push(
         <div key={`${line}-${i}`} className="flex gap-3">
           <span className="min-w-5 text-right text-stone-500">{orderedMatch[1]}.</span>
-          <p className="m-0 flex-1">{renderInlineMarkdown(orderedMatch[2])}</p>
+          <p className="m-0 flex-1">{renderInlineWithFootnotes(orderedMatch[2])}</p>
         </div>
       );
       i++;
@@ -270,29 +536,118 @@ const MarkdownAnswer = ({ text }) => {
       elements.push(
         <div key={`${line}-${i}`} className="flex gap-3">
           <span className="mt-3 h-1.5 w-1.5 shrink-0 rounded-full bg-stone-500" />
-          <p className="m-0 flex-1">{renderInlineMarkdown(bulletMatch[1])}</p>
+          <p className="m-0 flex-1">{renderInlineWithFootnotes(bulletMatch[1])}</p>
         </div>
       );
       i++;
       continue;
     }
 
+    // Skip citation validation notes
+    if (line.startsWith("Citation validation note:")) {
+      i++;
+      continue;
+    }
+
     elements.push(
       <p key={`${line}-${i}`} className="m-0">
-        {renderInlineMarkdown(line)}
+        {renderInlineWithFootnotes(line)}
       </p>
     );
     i++;
   }
 
   return (
-    <div className="space-y-4 text-[15px] leading-8 text-stone-100">
-      {elements}
+    <div>
+      <TableOfContents headings={headings} />
+      <div className="space-y-4 text-[15px] leading-8 text-stone-100">
+        {elements}
+      </div>
+      <FootnotesList footnotes={footnotes} />
     </div>
   );
 };
 
-const FollowUpInput = ({ onSend, isLoading = false }) => {
+const AnswerSection = ({ finalAnswer, answerStatus, originalQuery }) => {
+  const [copiedAnswer, setCopiedAnswer] = React.useState(false);
+  const answerContentRef = React.useRef(null);
+
+  const handleCopyMarkdown = () => {
+    if (!finalAnswer) return;
+    navigator.clipboard.writeText(finalAnswer).then(() => {
+      setCopiedAnswer(true);
+      setTimeout(() => setCopiedAnswer(false), 2000);
+    });
+  };
+
+  const handleDownloadText = () => {
+    if (!finalAnswer) return;
+    const blob = new Blob([finalAnswer], { type: "text/markdown;charset=utf-8" });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement("a");
+    a.href = url;
+    a.download = `research-${(originalQuery || "report").slice(0, 40).replace(/[^a-zA-Z0-9]/g, "-")}.md`;
+    a.click();
+    URL.revokeObjectURL(url);
+  };
+
+  return (
+    <motion.div
+      initial={{ opacity: 0, y: 8 }}
+      animate={{ opacity: 1, y: 0 }}
+      exit={{ opacity: 0, y: 8 }}
+      transition={{ duration: 0.18, ease: "easeOut" }}
+      className="mt-5 overflow-hidden rounded-[28px] border border-white/10 bg-[#17181b] shadow-[0_18px_60px_rgba(0,0,0,0.28)]"
+    >
+      <div className="flex items-center justify-between border-b border-white/8 px-5 py-4">
+        <div>
+          <h2 className="m-0 text-base font-semibold text-stone-100">Answer</h2>
+          {answerStatus ? (
+            <p className="m-0 mt-1 text-xs text-stone-500">{answerStatus}</p>
+          ) : null}
+        </div>
+        {finalAnswer && (
+          <div className="flex items-center gap-1">
+            <button
+              type="button"
+              onClick={handleCopyMarkdown}
+              title="Copy as Markdown"
+              className="flex items-center gap-1.5 rounded-xl px-2.5 py-1.5 text-xs font-medium text-stone-500 transition-colors hover:bg-white/[0.06] hover:text-stone-300"
+            >
+              {copiedAnswer ? (
+                <Check className="h-3.5 w-3.5 text-emerald-400" />
+              ) : (
+                <Copy className="h-3.5 w-3.5" />
+              )}
+              {copiedAnswer ? "Copied" : "Copy"}
+            </button>
+            <button
+              type="button"
+              onClick={handleDownloadText}
+              title="Download as Markdown file"
+              className="flex items-center gap-1.5 rounded-xl px-2.5 py-1.5 text-xs font-medium text-stone-500 transition-colors hover:bg-white/[0.06] hover:text-stone-300"
+            >
+              <Download className="h-3.5 w-3.5" />
+              Export
+            </button>
+          </div>
+        )}
+      </div>
+      <div className="relative">
+        <ReadingProgress containerRef={answerContentRef} />
+        <div ref={answerContentRef} className="max-h-[70vh] overflow-y-auto px-5 py-5">
+          {finalAnswer ? (
+            <MarkdownAnswer text={finalAnswer} />
+          ) : (
+            <StepIndicator label={answerStatus || "Generating answer with citations"} />
+          )}
+        </div>
+      </div>
+    </motion.div>
+  );
+};
+
+const FollowUpInput = ({ onSend, isLoading = false, topic = "" }) => {
   const [value, setValue] = React.useState("");
   const textareaRef = React.useRef(null);
 
@@ -309,6 +664,10 @@ const FollowUpInput = ({ onSend, isLoading = false }) => {
     setValue("");
   };
 
+  const placeholder = topic
+    ? `Ask a follow-up about ${topic.length > 50 ? topic.slice(0, 50) + "…" : topic}`
+    : "Continue this research chat";
+
   return (
     <div className="rounded-[26px] border border-white/10 bg-[#17181b]/98 p-2 shadow-[0_18px_60px_rgba(0,0,0,0.32)] backdrop-blur">
       <div className="flex items-end gap-2">
@@ -323,7 +682,7 @@ const FollowUpInput = ({ onSend, isLoading = false }) => {
             }
           }}
           disabled={isLoading}
-          placeholder="Continue this research chat"
+          placeholder={placeholder}
           className="max-h-[180px] text-[15px] leading-7"
         />
         <Button
@@ -1078,133 +1437,166 @@ const HistorySidebar = ({
             </div>
 
             <div className="flex-1 overflow-y-auto p-3">
-              <div className="mb-2 px-2 text-[11px] font-semibold uppercase tracking-[0.18em] text-stone-500">
-                Previous chats
-              </div>
 
               {sessions.length === 0 ? (
                 <div className="rounded-2xl border border-white/8 bg-white/[0.025] px-4 py-5 text-sm leading-6 text-stone-500">
                   No matching research chats yet.
                 </div>
-              ) : (
-                <div className="space-y-2">
-                  {sessions.map((session) => {
-                    const isActive = activeSessionId === session.session_id;
-                    const isRenaming = renamingId === session.session_id;
-                    return (
+              ) : (() => {
+                const now = new Date();
+                const todayStart = new Date(now.getFullYear(), now.getMonth(), now.getDate());
+                const weekStart = new Date(todayStart);
+                weekStart.setDate(weekStart.getDate() - weekStart.getDay());
+                const monthStart = new Date(now.getFullYear(), now.getMonth(), 1);
+
+                const groups = { today: [], thisWeek: [], thisMonth: [], earlier: [] };
+                sessions.forEach((session) => {
+                  const dateStr = session.sort_at || session.updated_at || session.created_at;
+                  const date = dateStr ? new Date(dateStr) : new Date(0);
+                  if (date >= todayStart) groups.today.push(session);
+                  else if (date >= weekStart) groups.thisWeek.push(session);
+                  else if (date >= monthStart) groups.thisMonth.push(session);
+                  else groups.earlier.push(session);
+                });
+
+                const groupLabels = [
+                  { key: "today", label: "Today", items: groups.today },
+                  { key: "thisWeek", label: "This week", items: groups.thisWeek },
+                  { key: "thisMonth", label: "This month", items: groups.thisMonth },
+                  { key: "earlier", label: "Earlier", items: groups.earlier },
+                ].filter((g) => g.items.length > 0);
+
+                const renderSessionCard = (session) => {
+                  const isActive = activeSessionId === session.session_id;
+                  const isRenaming = renamingId === session.session_id;
+                  return (
+                    <div
+                      key={session.session_id}
+                      className="group relative"
+                    >
                       <div
-                        key={session.session_id}
-                        className="group relative"
+                        className={cn(
+                          "w-full rounded-2xl border px-3 py-3 pr-10 text-left transition-colors",
+                          isActive
+                            ? "border-[#d6c3a1]/30 bg-[#d6c3a1]/[0.08]"
+                            : "border-white/8 bg-white/[0.025] hover:border-white/14 hover:bg-white/[0.05]"
+                        )}
                       >
-                        <div
-                          className={cn(
-                            "w-full rounded-2xl border px-3 py-3 pr-10 text-left transition-colors",
-                            isActive
-                              ? "border-[#d6c3a1]/30 bg-[#d6c3a1]/[0.08]"
-                              : "border-white/8 bg-white/[0.025] hover:border-white/14 hover:bg-white/[0.05]"
-                          )}
-                        >
-                          {isRenaming ? (
-                            <input
-                              autoFocus
-                              type="text"
-                              value={renameValue}
-                              onChange={(event) => setRenameValue(event.target.value)}
-                              onClick={(event) => event.stopPropagation()}
-                              onKeyDown={(event) => {
-                                if (event.key === "Enter") {
-                                  event.preventDefault();
-                                  const nextTitle = renameValue.trim();
-                                  if (nextTitle) onRenameSession(session, nextTitle);
-                                  setRenamingId("");
-                                  setRenameValue("");
-                                }
-                                if (event.key === "Escape") {
-                                  setRenamingId("");
-                                  setRenameValue("");
-                                }
-                              }}
-                              onBlur={() => {
+                        {isRenaming ? (
+                          <input
+                            autoFocus
+                            type="text"
+                            value={renameValue}
+                            onChange={(event) => setRenameValue(event.target.value)}
+                            onClick={(event) => event.stopPropagation()}
+                            onKeyDown={(event) => {
+                              if (event.key === "Enter") {
+                                event.preventDefault();
                                 const nextTitle = renameValue.trim();
-                                if (nextTitle && nextTitle !== session.title) {
-                                  onRenameSession(session, nextTitle);
-                                }
+                                if (nextTitle) onRenameSession(session, nextTitle);
                                 setRenamingId("");
                                 setRenameValue("");
-                              }}
-                              className="h-8 w-full rounded-xl border border-[#d6c3a1]/30 bg-[#111214] px-3 text-sm font-medium text-stone-100 focus:outline-none"
-                            />
-                          ) : (
-                            <button
-                              type="button"
-                              onClick={() => onSelectSession(session.session_id)}
-                              className="block w-full text-left"
-                            >
-                              <div className="line-clamp-2 text-sm font-medium leading-5 text-stone-100">
-                                {session.title || "Untitled research"}
-                              </div>
-                            </button>
-                          )}
-                        </div>
-
-                        {!isRenaming && (
+                              }
+                              if (event.key === "Escape") {
+                                setRenamingId("");
+                                setRenameValue("");
+                              }
+                            }}
+                            onBlur={() => {
+                              const nextTitle = renameValue.trim();
+                              if (nextTitle && nextTitle !== session.title) {
+                                onRenameSession(session, nextTitle);
+                              }
+                              setRenamingId("");
+                              setRenameValue("");
+                            }}
+                            className="h-8 w-full rounded-xl border border-[#d6c3a1]/30 bg-[#111214] px-3 text-sm font-medium text-stone-100 focus:outline-none"
+                          />
+                        ) : (
                           <button
                             type="button"
-                            onClick={(event) => {
-                              event.stopPropagation();
-                              setOpenMenuId((current) => current === session.session_id ? "" : session.session_id);
-                            }}
-                            className={cn(
-                              "absolute right-2 top-2 flex h-8 w-8 items-center justify-center rounded-full text-stone-400 opacity-0 transition hover:bg-white/[0.08] hover:text-stone-100 group-hover:opacity-100",
-                              openMenuId === session.session_id && "opacity-100"
-                            )}
+                            onClick={() => onSelectSession(session.session_id)}
+                            className="block w-full text-left"
                           >
-                            <MoreHorizontal className="h-4 w-4" />
-                            <span className="sr-only">Chat options</span>
+                            <div className="line-clamp-2 text-sm font-medium leading-5 text-stone-100">
+                              {session.title || "Untitled research"}
+                            </div>
                           </button>
                         )}
-
-                        <AnimatePresence>
-                          {openMenuId === session.session_id && (
-                            <motion.div
-                              initial={{ opacity: 0, y: -4, scale: 0.98 }}
-                              animate={{ opacity: 1, y: 0, scale: 1 }}
-                              exit={{ opacity: 0, y: -4, scale: 0.98 }}
-                              transition={{ duration: 0.14, ease: "easeOut" }}
-                              onClick={(event) => event.stopPropagation()}
-                              className="absolute right-2 top-10 z-20 w-36 overflow-hidden rounded-2xl border border-white/10 bg-[#191a1d] p-1 shadow-[0_18px_50px_rgba(0,0,0,0.45)]"
-                            >
-                              <button
-                                type="button"
-                                onClick={() => {
-                                  setOpenMenuId("");
-                                  setRenamingId(session.session_id);
-                                  setRenameValue(session.title || "Untitled research");
-                                }}
-                                className="flex h-9 w-full items-center gap-2 rounded-xl px-3 text-left text-sm text-stone-200 transition hover:bg-white/[0.06]"
-                              >
-                                <Pencil className="h-4 w-4" />
-                                Rename
-                              </button>
-                              <button
-                                type="button"
-                                onClick={() => {
-                                  setOpenMenuId("");
-                                  onDeleteSession(session);
-                                }}
-                                className="flex h-9 w-full items-center gap-2 rounded-xl px-3 text-left text-sm text-red-200 transition hover:bg-red-500/10"
-                              >
-                                <Trash2 className="h-4 w-4" />
-                                Delete
-                              </button>
-                            </motion.div>
-                          )}
-                        </AnimatePresence>
                       </div>
-                    );
-                  })}
-                </div>
-              )}
+
+                      {!isRenaming && (
+                        <button
+                          type="button"
+                          onClick={(event) => {
+                            event.stopPropagation();
+                            setOpenMenuId((current) => current === session.session_id ? "" : session.session_id);
+                          }}
+                          className={cn(
+                            "absolute right-2 top-2 flex h-8 w-8 items-center justify-center rounded-full text-stone-400 opacity-0 transition hover:bg-white/[0.08] hover:text-stone-100 group-hover:opacity-100",
+                            openMenuId === session.session_id && "opacity-100"
+                          )}
+                        >
+                          <MoreHorizontal className="h-4 w-4" />
+                          <span className="sr-only">Chat options</span>
+                        </button>
+                      )}
+
+                      <AnimatePresence>
+                        {openMenuId === session.session_id && (
+                          <motion.div
+                            initial={{ opacity: 0, y: -4, scale: 0.98 }}
+                            animate={{ opacity: 1, y: 0, scale: 1 }}
+                            exit={{ opacity: 0, y: -4, scale: 0.98 }}
+                            transition={{ duration: 0.14, ease: "easeOut" }}
+                            onClick={(event) => event.stopPropagation()}
+                            className="absolute right-2 top-10 z-20 w-36 overflow-hidden rounded-2xl border border-white/10 bg-[#191a1d] p-1 shadow-[0_18px_50px_rgba(0,0,0,0.45)]"
+                          >
+                            <button
+                              type="button"
+                              onClick={() => {
+                                setOpenMenuId("");
+                                setRenamingId(session.session_id);
+                                setRenameValue(session.title || "Untitled research");
+                              }}
+                              className="flex h-9 w-full items-center gap-2 rounded-xl px-3 text-left text-sm text-stone-200 transition hover:bg-white/[0.06]"
+                            >
+                              <Pencil className="h-4 w-4" />
+                              Rename
+                            </button>
+                            <button
+                              type="button"
+                              onClick={() => {
+                                setOpenMenuId("");
+                                onDeleteSession(session);
+                              }}
+                              className="flex h-9 w-full items-center gap-2 rounded-xl px-3 text-left text-sm text-red-200 transition hover:bg-red-500/10"
+                            >
+                              <Trash2 className="h-4 w-4" />
+                              Delete
+                            </button>
+                          </motion.div>
+                        )}
+                      </AnimatePresence>
+                    </div>
+                  );
+                };
+
+                return (
+                  <div className="space-y-4">
+                    {groupLabels.map((group) => (
+                      <div key={group.key}>
+                        <div className="mb-2 px-2 text-[11px] font-semibold uppercase tracking-[0.18em] text-stone-500">
+                          {group.label}
+                        </div>
+                        <div className="space-y-2">
+                          {group.items.map(renderSessionCard)}
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                );
+              })()}
             </div>
           </motion.div>
         )}
@@ -3206,27 +3598,11 @@ function App() {
 
             <AnimatePresence>
               {(answerStatus || finalAnswer) && (
-                <motion.div
-                  initial={{ opacity: 0, y: 8 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  exit={{ opacity: 0, y: 8 }}
-                  transition={{ duration: 0.18, ease: "easeOut" }}
-                  className="mt-5 overflow-hidden rounded-[28px] border border-white/10 bg-[#17181b] shadow-[0_18px_60px_rgba(0,0,0,0.28)]"
-                >
-                  <div className="border-b border-white/8 px-5 py-4">
-                    <h2 className="m-0 text-base font-semibold text-stone-100">Answer</h2>
-                    {answerStatus ? (
-                      <p className="m-0 mt-1 text-xs text-stone-500">{answerStatus}</p>
-                    ) : null}
-                  </div>
-                  <div className="px-5 py-5">
-                    {finalAnswer ? (
-                      <MarkdownAnswer text={finalAnswer} />
-                    ) : (
-                      <StepIndicator label={answerStatus || "Generating answer with citations"} />
-                    )}
-                  </div>
-                </motion.div>
+                <AnswerSection
+                  finalAnswer={finalAnswer}
+                  answerStatus={answerStatus}
+                  originalQuery={originalQuery}
+                />
               )}
             </AnimatePresence>
 
@@ -3345,7 +3721,7 @@ function App() {
 
           {finalAnswer && (
             <div className="fixed bottom-4 left-1/2 z-50 w-[calc(100vw-2rem)] max-w-[1120px] -translate-x-1/2 px-0 md:w-[calc(100vw-4rem)]">
-              <FollowUpInput onSend={continueChat} isLoading={isChatting || isSearching} />
+              <FollowUpInput onSend={continueChat} isLoading={isChatting || isSearching} topic={originalQuery} />
             </div>
           )}
         </motion.main>
