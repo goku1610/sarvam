@@ -3,4 +3,5 @@ beautifulsoup4
 fastapi
 google-genai
 openai
+rank_bm25
 uvicorn

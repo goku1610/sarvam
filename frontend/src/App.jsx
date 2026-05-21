@@ -329,6 +329,103 @@ const SearchResultsPanel = ({
   </AnimatePresence>
 );
 
+const HistorySidebar = ({
+  isOpen,
+  sessions,
+  activeSessionId,
+  searchValue,
+  onSearchChange,
+  onClose,
+  onNewChat,
+  onSelectSession
+}) => (
+  <AnimatePresence>
+    {isOpen && (
+      <motion.aside
+        layout
+        initial={{ opacity: 0, x: -28 }}
+        animate={{ opacity: 1, x: 0 }}
+        exit={{ opacity: 0, x: -28 }}
+        transition={{ duration: 0.32, ease: [0.22, 1, 0.36, 1] }}
+        className="fixed bottom-4 left-4 top-4 z-40 flex w-[min(300px,calc(100vw-32px))] shrink-0 flex-col overflow-hidden rounded-[30px] border border-white/10 bg-[#111214]/98 shadow-[0_24px_70px_rgba(0,0,0,0.42)] backdrop-blur lg:sticky lg:top-8 lg:z-10 lg:h-[calc(100vh-4rem)] lg:w-[280px]"
+      >
+        <div className="border-b border-white/8 p-4">
+          <div className="mb-3 flex items-center justify-between">
+            <div>
+              <h2 className="m-0 text-base font-semibold text-stone-100">Research history</h2>
+              <p className="m-0 mt-1 text-xs text-stone-500">{sessions.length} saved chats</p>
+            </div>
+            <button
+              type="button"
+              onClick={onClose}
+              className="flex h-9 w-9 items-center justify-center rounded-full text-stone-400 transition-colors hover:bg-white/[0.06] hover:text-stone-100"
+            >
+              <X className="h-4 w-4" />
+              <span className="sr-only">Close history</span>
+            </button>
+          </div>
+
+          <button
+            type="button"
+            onClick={onNewChat}
+            className="mb-3 flex h-11 w-full items-center justify-center rounded-full border border-[#d6c3a1]/20 bg-[#d6c3a1]/[0.06] px-4 text-sm font-medium text-[#ecdcc0] transition-colors hover:border-[#d6c3a1]/35 hover:bg-[#d6c3a1]/[0.1]"
+          >
+            New research
+          </button>
+
+          <input
+            type="search"
+            value={searchValue}
+            onChange={(event) => onSearchChange(event.target.value)}
+            placeholder="Search previous chats"
+            className="h-11 w-full rounded-full border border-white/10 bg-[#17181b] px-4 text-sm text-stone-100 placeholder:text-stone-500 focus:outline-none"
+          />
+        </div>
+
+        <div className="flex-1 overflow-y-auto p-3">
+          <div className="mb-2 px-2 text-[11px] font-semibold uppercase tracking-[0.18em] text-stone-500">
+            Previous chats
+          </div>
+
+          {sessions.length === 0 ? (
+            <div className="rounded-2xl border border-white/8 bg-white/[0.025] px-4 py-5 text-sm leading-6 text-stone-500">
+              No matching research chats yet.
+            </div>
+          ) : (
+            <div className="space-y-2">
+              {sessions.map((session) => {
+                const isActive = activeSessionId === session.session_id;
+                return (
+                  <button
+                    key={session.session_id}
+                    type="button"
+                    onClick={() => onSelectSession(session.session_id)}
+                    className={cn(
+                      "w-full rounded-2xl border px-3 py-3 text-left transition-colors",
+                      isActive
+                        ? "border-[#d6c3a1]/30 bg-[#d6c3a1]/[0.08]"
+                        : "border-white/8 bg-white/[0.025] hover:border-white/14 hover:bg-white/[0.05]"
+                    )}
+                  >
+                    <div className="line-clamp-2 text-sm font-medium leading-5 text-stone-100">
+                      {session.title || "Untitled research"}
+                    </div>
+                    {session.original_query && session.original_query !== session.title ? (
+                      <div className="mt-1 line-clamp-2 text-xs leading-5 text-stone-500">
+                        {session.original_query}
+                      </div>
+                    ) : null}
+                  </button>
+                );
+              })}
+            </div>
+          )}
+        </div>
+      </motion.aside>
+    )}
+  </AnimatePresence>
+);
+
 const PromptInputContext = React.createContext({
   isLoading: false,
   value: "",
@@ -936,6 +1033,11 @@ function splitPlanIntoSteps(planText) {
 const MAX_DEEP_RESEARCH_ITERATIONS = 3;
 
 function App() {
+  const [sessionId, setSessionId] = React.useState("");
+  const [sessionHistory, setSessionHistory] = React.useState([]);
+  const [isHistoryOpen, setIsHistoryOpen] = React.useState(true);
+  const [historySearch, setHistorySearch] = React.useState("");
+  const [chatTitle, setChatTitle] = React.useState("");
   const [isLoading, setIsLoading] = React.useState(false);
   const [planSteps, setPlanSteps] = React.useState([]);
   const [queries, setQueries] = React.useState([]);
@@ -956,7 +1058,135 @@ function App() {
   const [isSearching, setIsSearching] = React.useState(false);
   const [searchStatus, setSearchStatus] = React.useState("");
   const [searchResults, setSearchResults] = React.useState([]);
+  const [researchContext, setResearchContext] = React.useState(null);
   const [searchError, setSearchError] = React.useState("");
+  const sessionIdRef = React.useRef("");
+
+  const resetWorkspaceState = () => {
+    setChatTitle("");
+    setIsLoading(false);
+    setPlanSteps([]);
+    setQueries([]);
+    setCustomQuery("");
+    setError("");
+    setOriginalQuery("");
+    setDeepResearchActive(false);
+    setClarifyingQuestions([]);
+    setActiveClarifyingIndex(0);
+    setClarifyingAnswers([]);
+    setSelectedClarifyingAnswer("");
+    setCustomClarifyingAnswer("");
+    setIsClarifyingLoading(false);
+    setIsRefiningQueries(false);
+    setClarifyingComplete(false);
+    setSelectedQueries([]);
+    setIsSearchPanelOpen(false);
+    setIsSearching(false);
+    setSearchStatus("");
+    setSearchResults([]);
+    setResearchContext(null);
+    setSearchError("");
+  };
+
+  const hydrateFromSession = (session) => {
+    resetWorkspaceState();
+    const savedState = session?.state || {};
+    setChatTitle(savedState.chat_title || "");
+    if (savedState.original_query) setOriginalQuery(savedState.original_query);
+    if (typeof savedState.deep_research_active === "boolean") {
+      setDeepResearchActive(savedState.deep_research_active);
+    }
+    if (Array.isArray(savedState.plan_steps)) setPlanSteps(savedState.plan_steps);
+    if (Array.isArray(savedState.queries)) setQueries(savedState.queries);
+    if (Array.isArray(savedState.selected_queries)) setSelectedQueries(savedState.selected_queries);
+    if (Array.isArray(savedState.clarifying_questions)) {
+      setClarifyingQuestions(savedState.clarifying_questions);
+    }
+    if (Number.isInteger(savedState.active_clarifying_index)) {
+      setActiveClarifyingIndex(savedState.active_clarifying_index);
+    }
+    if (Array.isArray(savedState.clarifying_answers)) {
+      setClarifyingAnswers(savedState.clarifying_answers);
+    }
+    if (typeof savedState.clarifying_complete === "boolean") {
+      setClarifyingComplete(savedState.clarifying_complete);
+    }
+    if (Array.isArray(savedState.search_results)) setSearchResults(savedState.search_results);
+    if (savedState.research_context) setResearchContext(savedState.research_context);
+    if (typeof savedState.search_error === "string") setSearchError(savedState.search_error);
+    if (typeof savedState.is_search_panel_open === "boolean") {
+      setIsSearchPanelOpen(savedState.is_search_panel_open);
+    }
+  };
+
+  const ensureSession = async () => {
+    if (sessionIdRef.current) return sessionIdRef.current;
+
+    const response = await fetch("/api/sessions", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({})
+    });
+
+    if (!response.ok) {
+      throw new Error("Could not initialize local session.");
+    }
+
+    const session = await response.json();
+    sessionIdRef.current = session.session_id;
+    setSessionId(session.session_id);
+    return session.session_id;
+  };
+
+  const fetchSessionHistory = async () => {
+    try {
+      const response = await fetch("/api/sessions");
+      if (!response.ok) throw new Error("Could not load history.");
+      const data = await response.json();
+      setSessionHistory(Array.isArray(data.sessions) ? data.sessions : []);
+    } catch (historyError) {
+      console.warn("Could not load session history.", historyError);
+    }
+  };
+
+  const startNewChat = () => {
+    sessionIdRef.current = "";
+    setSessionId("");
+    resetWorkspaceState();
+  };
+
+  const loadSession = async (nextSessionId) => {
+    try {
+      const response = await fetch(`/api/sessions/${nextSessionId}`);
+      if (!response.ok) throw new Error("Could not load saved research chat.");
+      const session = await response.json();
+      sessionIdRef.current = session.session_id;
+      setSessionId(session.session_id);
+      hydrateFromSession(session);
+    } catch (sessionError) {
+      setError(sessionError.message || "Could not load saved research chat.");
+    }
+  };
+
+  const saveSessionState = async (state, event) => {
+    try {
+      const activeSessionId = await ensureSession();
+      const response = await fetch(`/api/sessions/${activeSessionId}`, {
+        method: "PATCH",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ state, event })
+      });
+      if (response.ok) {
+        fetchSessionHistory();
+      }
+    } catch (sessionError) {
+      console.warn("Could not save local session.", sessionError);
+    }
+  };
+
+  React.useEffect(() => {
+    fetchSessionHistory();
+  }, []);
 
   const resetClarificationState = () => {
     setClarifyingQuestions([]);
@@ -972,10 +1202,12 @@ function App() {
   const fetchClarifyingQuestions = async (query, plan, searchQueries) => {
     setIsClarifyingLoading(true);
     try {
+      const activeSessionId = await ensureSession();
       const response = await fetch("/api/clarifying-questions", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
+          session_id: activeSessionId,
           query,
           plan,
           search_queries: searchQueries
@@ -990,6 +1222,13 @@ function App() {
       const questions = Array.isArray(data.questions) ? data.questions : [];
       setClarifyingQuestions(questions);
       setClarifyingComplete(questions.length === 0);
+      saveSessionState(
+        {
+          clarifying_questions: questions,
+          clarifying_complete: questions.length === 0
+        },
+        { type: "clarifying_questions_hydrated", count: questions.length }
+      );
     } catch (requestError) {
       setError(requestError.message || "Could not generate narrowing questions.");
       setClarifyingComplete(true);
@@ -1006,10 +1245,12 @@ function App() {
 
     setIsRefiningQueries(true);
     try {
+      const activeSessionId = await ensureSession();
       const response = await fetch("/api/refine-queries", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
+          session_id: activeSessionId,
           query: originalQuery,
           plan: planSteps,
           search_queries: queries,
@@ -1025,6 +1266,14 @@ function App() {
       if (Array.isArray(data.search_queries) && data.search_queries.length > 0) {
         setQueries(data.search_queries);
         setSelectedQueries(data.search_queries);
+        saveSessionState(
+          {
+            queries: data.search_queries,
+            selected_queries: data.search_queries,
+            clarifying_complete: true
+          },
+          { type: "queries_refined_in_ui", count: data.search_queries.length }
+        );
       }
       setClarifyingComplete(true);
     } catch (requestError) {
@@ -1035,7 +1284,7 @@ function App() {
     }
   };
 
-  const completeClarifyingStep = (shouldSaveAnswer) => {
+  const completeClarifyingStep = async (shouldSaveAnswer) => {
     const currentQuestion = clarifyingQuestions[activeClarifyingIndex];
     if (!currentQuestion) return;
 
@@ -1048,6 +1297,13 @@ function App() {
     setClarifyingAnswers(nextAnswers);
     setSelectedClarifyingAnswer("");
     setCustomClarifyingAnswer("");
+    await saveSessionState(
+      {
+        clarifying_answers: nextAnswers,
+        active_clarifying_index: isLastQuestion ? activeClarifyingIndex : activeClarifyingIndex + 1
+      },
+      { type: shouldSaveAnswer ? "clarifying_answer_saved" : "clarifying_question_skipped" }
+    );
 
     if (isLastQuestion) {
       refineQueries(nextAnswers);
@@ -1060,6 +1316,7 @@ function App() {
     const query = message.trim();
     if (!query) return;
     const deepResearch = Boolean(options.deepResearch);
+    const activeSessionId = await ensureSession();
 
     setIsLoading(true);
     setError("");
@@ -1070,10 +1327,30 @@ function App() {
     setSelectedQueries([]);
     setCustomQuery("");
     setSearchResults([]);
+    setResearchContext(null);
     setSearchError("");
     setSearchStatus("");
     setIsSearchPanelOpen(false);
     resetClarificationState();
+    await saveSessionState(
+      {
+        chat_title: "",
+        original_query: query,
+        deep_research_active: deepResearch,
+        plan_steps: ["Preparing plan..."],
+        queries: [],
+        selected_queries: [],
+        clarifying_questions: [],
+        clarifying_answers: [],
+        clarifying_complete: false,
+        search_results: [],
+        research_context: null,
+        search_error: "",
+        is_search_panel_open: false
+      },
+      { type: "new_query_started", query, deep_research: deepResearch }
+    );
+    let latestChatTitle = query.slice(0, 48);
     let latestPlanSteps = ["Preparing plan..."];
     let latestQueries = [];
 
@@ -1082,6 +1359,7 @@ function App() {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
+          session_id: activeSessionId,
           query,
           deep_research: deepResearch
         })
@@ -1100,6 +1378,15 @@ function App() {
         if (done) break;
 
         rawData += decoder.decode(value, { stream: true });
+
+        if (rawData.includes("<TITLE_END>")) {
+          const match = rawData.match(/<TITLE_START>([\s\S]*?)<TITLE_END>/);
+          const titleContent = match?.[1]?.trim();
+          if (titleContent) {
+            latestChatTitle = titleContent;
+            setChatTitle(latestChatTitle);
+          }
+        }
 
         if (rawData.includes("<PLAN_START>")) {
           const parts = rawData.split("<PLAN_START>");
@@ -1130,6 +1417,18 @@ function App() {
       setIsLoading(false);
     }
 
+    await saveSessionState(
+      {
+        chat_title: latestChatTitle,
+        original_query: query,
+        deep_research_active: deepResearch,
+        plan_steps: latestPlanSteps,
+        queries: latestQueries,
+        selected_queries: latestQueries
+      },
+      { type: "plan_completed", query_count: latestQueries.length }
+    );
+
     if (deepResearch && latestQueries.length > 0) {
       fetchClarifyingQuestions(query, latestPlanSteps, latestQueries);
     } else {
@@ -1137,33 +1436,49 @@ function App() {
     }
   };
 
-  const addCustomQuery = () => {
+  const addCustomQuery = async () => {
     const nextQuery = customQuery.trim();
     if (!nextQuery) return;
     setQueries((current) => (current.includes(nextQuery) ? current : [...current, nextQuery]));
     setSelectedQueries((current) => (current.includes(nextQuery) ? current : [...current, nextQuery]));
+    await saveSessionState(
+      {
+        queries: queries.includes(nextQuery) ? queries : [...queries, nextQuery],
+        selected_queries: selectedQueries.includes(nextQuery) ? selectedQueries : [...selectedQueries, nextQuery]
+      },
+      { type: "custom_query_added", query: nextQuery }
+    );
     setCustomQuery("");
   };
 
   const toggleQuerySelection = (query) => {
-    setSelectedQueries((current) => (
-      current.includes(query)
+    setSelectedQueries((current) => {
+      const nextSelectedQueries = current.includes(query)
         ? current.filter((selectedQuery) => selectedQuery !== query)
-        : [...current, query]
-    ));
+        : [...current, query];
+      saveSessionState(
+        { selected_queries: nextSelectedQueries },
+        { type: "query_selection_changed", count: nextSelectedQueries.length }
+      );
+      return nextSelectedQueries;
+    });
   };
 
   const startResearch = async () => {
     if (selectedQueries.length === 0) return;
+    const activeSessionId = await ensureSession();
 
     setIsSearchPanelOpen(true);
     setIsSearching(true);
     setSearchResults([]);
+    setResearchContext(null);
     setSearchError("");
     setSearchStatus("Searching and reading sources");
 
     const seenUrls = new Set();
     const collectedSources = [];
+    const contextChunks = [];
+    let latestResearchContext = null;
     let searchedQueries = [...selectedQueries];
 
     const handleSearchEvent = (event) => {
@@ -1176,6 +1491,21 @@ function App() {
       if (event.type === "error") {
         setSearchError(event.message || "Search failed.");
       }
+      if (event.type === "context_ready") {
+        const nextContext = {
+          chunks: Array.isArray(event.chunks) ? event.chunks : [],
+          context: event.context || "",
+          chunkCount: event.chunk_count || 0,
+          selectedCount: event.selected_count || 0
+        };
+        contextChunks.push(...nextContext.chunks);
+        latestResearchContext = {
+          ...nextContext,
+          chunks: [...contextChunks],
+          selectedCount: contextChunks.length
+        };
+        setResearchContext(latestResearchContext);
+      }
     };
 
     const runSearchBatch = async (queriesToSearch, iterationLabel) => {
@@ -1184,7 +1514,11 @@ function App() {
       const response = await fetch("/api/search", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ queries: queriesToSearch })
+        body: JSON.stringify({
+          session_id: activeSessionId,
+          query: originalQuery,
+          queries: queriesToSearch
+        })
       });
 
       if (!response.ok || !response.body) {
@@ -1218,6 +1552,16 @@ function App() {
 
     try {
       await runSearchBatch(selectedQueries, "Searching and reading sources");
+      await saveSessionState(
+        {
+          selected_queries: selectedQueries,
+          search_results: collectedSources,
+          research_context: latestResearchContext,
+          search_error: "",
+          is_search_panel_open: true
+        },
+        { type: "initial_search_completed", result_count: collectedSources.length }
+      );
 
       if (deepResearchActive) {
         for (let iteration = 1; iteration <= MAX_DEEP_RESEARCH_ITERATIONS; iteration += 1) {
@@ -1227,10 +1571,18 @@ function App() {
             method: "POST",
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify({
+              session_id: activeSessionId,
               query: originalQuery,
               plan: planSteps,
               searched_queries: searchedQueries,
-              sources: collectedSources,
+              sources: contextChunks.length > 0
+                ? contextChunks.map((chunk) => ({
+                    title: chunk.title,
+                    url: chunk.url,
+                    domain: chunk.domain,
+                    content: chunk.text
+                  }))
+                : collectedSources,
               iteration
             })
           });
@@ -1255,7 +1607,12 @@ function App() {
           setQueries((current) => {
             const currentQuerySet = new Set(current.map((query) => query.toLowerCase()));
             const newQueries = followUpQueries.filter((query) => !currentQuerySet.has(query.toLowerCase()));
-            return [...current, ...newQueries];
+            const nextQueries = [...current, ...newQueries];
+            saveSessionState(
+              { queries: nextQueries, selected_queries: [...searchedQueries] },
+              { type: "follow_up_queries_added", iteration, count: followUpQueries.length }
+            );
+            return nextQueries;
           });
           setSelectedQueries((current) => {
             const currentQuerySet = new Set(current.map((query) => query.toLowerCase()));
@@ -1267,25 +1624,57 @@ function App() {
             followUpQueries,
             `Deep research follow-up ${iteration}: searching ${followUpQueries.length} new ${followUpQueries.length === 1 ? "query" : "queries"}`
           );
+          await saveSessionState(
+            { search_results: collectedSources, research_context: latestResearchContext, is_search_panel_open: true },
+            { type: "follow_up_search_completed", iteration, result_count: collectedSources.length }
+          );
         }
       }
     } catch (requestError) {
       setSearchError(requestError.message || "Search failed.");
+      await saveSessionState(
+        {
+          search_error: requestError.message || "Search failed.",
+          search_results: collectedSources,
+          research_context: latestResearchContext
+        },
+        { type: "search_failed" }
+      );
     } finally {
       setIsSearching(false);
       setSearchStatus("");
+      await saveSessionState(
+        { search_results: collectedSources, research_context: latestResearchContext, is_search_panel_open: true },
+        { type: "search_finished", result_count: collectedSources.length }
+      );
     }
   };
 
   const canReopenSearchPanel = !isSearchPanelOpen && (searchResults.length > 0 || isSearching || Boolean(searchError));
+  const visibleSessionHistory = sessionHistory.filter((session) => {
+    const searchTerm = historySearch.trim().toLowerCase();
+    if (!searchTerm) return true;
+    return `${session.title || ""} ${session.original_query || ""}`.toLowerCase().includes(searchTerm);
+  });
 
   return (
     <div className="min-h-screen px-4 py-6 md:px-8 md:py-10">
       <motion.div
         layout
         transition={{ duration: 0.36, ease: [0.22, 1, 0.36, 1] }}
-        className="mx-auto flex w-full max-w-[1360px] items-start gap-5"
+        className="mx-auto flex w-full max-w-[1640px] items-start gap-5"
       >
+        <HistorySidebar
+          isOpen={isHistoryOpen}
+          sessions={visibleSessionHistory}
+          activeSessionId={sessionId}
+          searchValue={historySearch}
+          onSearchChange={setHistorySearch}
+          onClose={() => setIsHistoryOpen(false)}
+          onNewChat={startNewChat}
+          onSelectSession={loadSession}
+        />
+
         <motion.section
           layout
           transition={{ duration: 0.36, ease: [0.22, 1, 0.36, 1] }}
@@ -1295,18 +1684,51 @@ function App() {
             <div className="flex flex-col gap-4 md:flex-row md:items-start md:justify-between">
               <div>
                 <h1 className="m-0 text-[2rem] font-semibold text-stone-100 md:text-[2.6rem]">
-                  Research planner
+                  {chatTitle || "Research planner"}
                 </h1>
                 <p className="mt-2 max-w-2xl text-sm leading-7 text-stone-400 md:text-[15px]">
-                  Create a focused research plan, review the generated queries, and add custom ones before execution.
+                  {originalQuery
+                    ? originalQuery
+                    : "Create a focused research plan, review the generated queries, and add custom ones before execution."}
                 </p>
               </div>
 
+              <button
+                type="button"
+                onClick={startNewChat}
+                className="inline-flex h-10 shrink-0 items-center justify-center rounded-full border border-white/10 bg-white/[0.03] px-4 text-sm font-medium text-stone-300 transition-colors hover:bg-white/[0.06] hover:text-stone-100 lg:hidden"
+              >
+                New research
+              </button>
+
               <AnimatePresence>
+                {!isHistoryOpen && (
+                  <motion.button
+                    type="button"
+                    onClick={() => setIsHistoryOpen(true)}
+                    initial={{ opacity: 0, y: -8, scale: 0.96 }}
+                    animate={{ opacity: 1, y: 0, scale: 1 }}
+                    exit={{ opacity: 0, y: -8, scale: 0.96 }}
+                    transition={{ duration: 0.22, ease: "easeOut" }}
+                    className="inline-flex h-10 shrink-0 items-center justify-center gap-2 rounded-full border border-white/10 bg-white/[0.03] px-4 text-sm font-medium text-stone-300 shadow-[0_12px_30px_rgba(0,0,0,0.16)] transition-colors hover:bg-white/[0.06] hover:text-stone-100"
+                  >
+                    History
+                    <span className="rounded-full bg-white/[0.06] px-2 py-0.5 text-xs text-stone-400">
+                      {sessionHistory.length}
+                    </span>
+                  </motion.button>
+                )}
+
                 {canReopenSearchPanel && (
                   <motion.button
                     type="button"
-                    onClick={() => setIsSearchPanelOpen(true)}
+                    onClick={async () => {
+                      setIsSearchPanelOpen(true);
+                      await saveSessionState(
+                        { is_search_panel_open: true },
+                        { type: "sources_panel_reopened" }
+                      );
+                    }}
                     initial={{ opacity: 0, y: -8, scale: 0.96 }}
                     animate={{ opacity: 1, y: 0, scale: 1 }}
                     exit={{ opacity: 0, y: -8, scale: 0.96 }}
@@ -1363,7 +1785,13 @@ function App() {
           results={searchResults}
           error={searchError}
           status={searchStatus}
-          onClose={() => setIsSearchPanelOpen(false)}
+          onClose={() => {
+            setIsSearchPanelOpen(false);
+            saveSessionState(
+              { is_search_panel_open: false },
+              { type: "sources_panel_closed" }
+            );
+          }}
         />
       </motion.div>
     </div>

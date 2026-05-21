@@ -3,7 +3,8 @@ import asyncio
 import aiohttp
 from bs4 import BeautifulSoup
 from urllib.parse import urlparse
-from typing import AsyncIterator, List, Dict, Any, Optional
+from typing import List, Dict, Any, Optional
+
 
 class WebSearchScraper:
     BLOCKED_SOURCE_DOMAINS = {
@@ -120,35 +121,6 @@ class WebSearchScraper:
                     break
 
         return selected_results
-
-    async def stream_concurrent_research(
-        self,
-        queries: List[str],
-        max_results: int = 5,
-        top_per_query: int = 1,
-    ) -> AsyncIterator[Dict[str, Any]]:
-        """Searches each query, then yields the top unique cleaned page for each one."""
-        async with aiohttp.ClientSession() as session:
-            search_tasks = [self.search_tavily(session, query, max_results=max_results) for query in queries]
-            search_results_groups = await asyncio.gather(*search_tasks)
-
-            selected_results = self.select_top_unique_results(
-                queries,
-                search_results_groups,
-                top_per_query=top_per_query,
-            )
-
-            fetch_tasks = [
-                self.fetch_and_clean_page(session, result["url"], result["title"])
-                for result in selected_results
-            ]
-
-            for result, fetch_task in zip(selected_results, fetch_tasks):
-                page = await fetch_task
-                if page is not None and len(page["content"]) > 50:
-                    page["query"] = result["query"]
-                    page["rank"] = result["rank"]
-                    yield page
 
     async def execute_concurrent_research(
         self,

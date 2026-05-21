@@ -44,3 +44,4 @@ Thumbs.db
 # Runtime output
 *.log
 *.pid
+data/sessions.json
