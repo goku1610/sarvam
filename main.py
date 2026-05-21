@@ -85,6 +85,16 @@ class JsonSessionStore:
         with self.lock:
             return self._read().get("sessions", {}).get(session_id)
 
+    def delete(self, session_id: str) -> bool:
+        with self.lock:
+            data = self._read()
+            sessions = data.setdefault("sessions", {})
+            if session_id not in sessions:
+                return False
+            del sessions[session_id]
+            self._write(data)
+            return True
+
     def list_summaries(self) -> list[dict[str, Any]]:
         with self.lock:
             sessions = self._read().get("sessions", {})
@@ -95,6 +105,7 @@ class JsonSessionStore:
             title = state.get("chat_title") or state.get("original_query") or "Untitled research"
             if not state.get("original_query") and not state.get("chat_title"):
                 continue
+            sort_at = state.get("history_sort_at") or session.get("updated_at") or session.get("created_at")
 
             summaries.append({
                 "session_id": session.get("session_id"),
@@ -102,11 +113,12 @@ class JsonSessionStore:
                 "original_query": state.get("original_query", ""),
                 "updated_at": session.get("updated_at"),
                 "created_at": session.get("created_at"),
+                "sort_at": sort_at,
             })
 
         return sorted(
             summaries,
-            key=lambda item: item.get("updated_at") or item.get("created_at") or "",
+            key=lambda item: item.get("sort_at") or "",
             reverse=True,
         )
 
@@ -131,9 +143,55 @@ class JsonSessionStore:
                 },
             )
             session["state"] = {**session.get("state", {}), **state}
+            if event and event.get("type") != "chat_renamed":
+                session["state"]["history_sort_at"] = now
             session["updated_at"] = now
             if event:
                 session.setdefault("history", []).append({"timestamp": now, **event})
+            self._write(data)
+            return session
+
+    def append_message(self, session_id: str, role: str, content: str) -> dict:
+        now = datetime.now().isoformat()
+        with self.lock:
+            data = self._read()
+            sessions = data.setdefault("sessions", {})
+            session = sessions.setdefault(
+                session_id,
+                {
+                    "session_id": session_id,
+                    "created_at": now,
+                    "updated_at": now,
+                    "history": [],
+                    "state": {},
+                },
+            )
+            session.setdefault("messages", []).append({
+                "role": role,
+                "content": content,
+                "timestamp": now,
+            })
+            session["updated_at"] = now
+            self._write(data)
+            return session
+
+    def record_turn(self, session_id: str, turn: dict[str, Any]) -> dict:
+        now = datetime.now().isoformat()
+        with self.lock:
+            data = self._read()
+            sessions = data.setdefault("sessions", {})
+            session = sessions.setdefault(
+                session_id,
+                {
+                    "session_id": session_id,
+                    "created_at": now,
+                    "updated_at": now,
+                    "history": [],
+                    "state": {},
+                },
+            )
+            session.setdefault("turns", []).append({"timestamp": now, **turn})
+            session["updated_at"] = now
             self._write(data)
             return session
 
@@ -168,6 +226,15 @@ class QueryRefinementRequest(BaseModel):
     answers: list[ClarifyingAnswer] = []
 
 
+class PlanRevisionRequest(BaseModel):
+    session_id: str | None = None
+    query: str
+    plan: list[str] = []
+    search_queries: list[str] = []
+    revision_request: str
+    deep_research: bool = False
+
+
 class SearchRequest(BaseModel):
     session_id: str | None = None
     query: str = ""
@@ -190,6 +257,15 @@ class FollowUpQueryRequest(BaseModel):
     iteration: int = 1
 
 
+class AnswerRequest(BaseModel):
+    session_id: str | None = None
+    query: str
+    plan: list[str] = []
+    search_queries: list[str] = []
+    context: str = ""
+    chunks: list[dict[str, Any]] = []
+
+
 class SessionRequest(BaseModel):
     session_id: str | None = None
 
@@ -205,6 +281,35 @@ def parse_json_object(raw_output: str) -> dict:
         cleaned_output = cleaned_output.strip("`")
         cleaned_output = cleaned_output.removeprefix("json").strip()
     return json.loads(cleaned_output)
+
+
+def trim_text(text: str, max_chars: int) -> str:
+    if len(text) <= max_chars:
+        return text
+    return text[:max_chars].rsplit(" ", 1)[0] + "\n[Trimmed for context budget.]"
+
+
+def build_history_context(session: dict | None, max_chars: int = 5000) -> str:
+    if not session:
+        return ""
+
+    messages = session.get("messages", [])
+    turns = session.get("turns", [])
+    parts = []
+
+    for message in messages[-6:]:
+        role = message.get("role", "unknown")
+        content = trim_text(str(message.get("content", "")), 900)
+        if content:
+            parts.append(f"{role}: {content}")
+
+    for turn in turns[-3:]:
+        query = turn.get("query", "")
+        final_answer = trim_text(str(turn.get("final_answer", "")), 900)
+        if query and final_answer:
+            parts.append(f"Prior turn query: {query}\nPrior answer summary: {final_answer}")
+
+    return trim_text("\n\n".join(parts), max_chars)
 
 
 class ResearchPlanner:
@@ -362,6 +467,64 @@ class ResearchPlanner:
         except Exception:
             return search_queries
 
+    def revise_plan(
+        self,
+        user_query: str,
+        plan: list[str],
+        search_queries: list[str],
+        revision_request: str,
+        deep_research: bool = False,
+    ) -> dict[str, Any]:
+        current_date = datetime.now().strftime("%B %d, %Y")
+        query_count_instruction = (
+            "Return 5 to 7 search queries because deep research mode is active."
+            if deep_research
+            else "Return 2 to 4 search queries."
+        )
+        prompt = (
+            "You are revising a web research plan before retrieval starts.\n"
+            f"Today's date is {current_date}.\n"
+            "Keep the original user question as the research goal, but adapt the plan and search queries to the "
+            "user's revision request. The plan should be concise and operational, not a final answer. "
+            f"{query_count_instruction}\n\n"
+            "Respond only with valid JSON in this exact shape:\n"
+            "{\"plan_steps\":[\"step 1\",\"step 2\"],\"search_queries\":[\"query 1\",\"query 2\"]}\n\n"
+            f"Original user question: {user_query}\n"
+            f"Current plan: {json.dumps(plan)}\n"
+            f"Current search queries: {json.dumps(search_queries)}\n"
+            f"Revision request: {revision_request}"
+        )
+
+        try:
+            response = self.client.models.generate_content(
+                model=self.model_name,
+                contents=prompt,
+                config=types.GenerateContentConfig(
+                    thinking_config=types.ThinkingConfig(thinking_level="MINIMAL"),
+                    temperature=0.2,
+                ),
+            )
+            parsed_response = parse_json_object(response.text or "{}")
+            revised_plan = [
+                str(step).strip()
+                for step in parsed_response.get("plan_steps", [])
+                if str(step).strip()
+            ][:5]
+            revised_queries = [
+                str(search_query).strip()
+                for search_query in parsed_response.get("search_queries", [])
+                if str(search_query).strip()
+            ][:7]
+            return {
+                "plan_steps": revised_plan or plan,
+                "search_queries": revised_queries or search_queries,
+            }
+        except Exception:
+            return {
+                "plan_steps": plan,
+                "search_queries": search_queries,
+            }
+
     def generate_follow_up_queries(
         self,
         user_query: str,
@@ -423,6 +586,68 @@ class ResearchPlanner:
         except Exception:
             return []
 
+    def generate_answer_stream(
+        self,
+        user_query: str,
+        plan: list[str],
+        search_queries: list[str],
+        web_context: str,
+        chunks: list[dict[str, Any]],
+        history_context: str = "",
+    ):
+        source_catalog = [
+            {
+                "source_id": chunk.get("source_id", index + 1),
+                "title": chunk.get("title", "Unknown Title"),
+                "domain": chunk.get("domain", ""),
+                "url": chunk.get("url", ""),
+            }
+            for index, chunk in enumerate(chunks)
+        ]
+        current_date = datetime.now().strftime("%B %d, %Y")
+        prompt = (
+            "You are a deep research answer writer. Answer only from the supplied web context and relevant "
+            "conversation context. Do not invent sources. For every claim-heavy sentence or paragraph, cite the "
+            "supporting source using this exact shape: [Title — domain](URL). If sources disagree, explicitly "
+            "state the disagreement and cite both sides. If evidence is weak or missing, say so and propose the "
+            "next research step. Keep the response clear, useful, and grounded.\n\n"
+            f"Today's date: {current_date}\n"
+            f"User query: {user_query}\n"
+            f"Research plan: {json.dumps(plan)}\n"
+            f"Search queries issued: {json.dumps(search_queries)}\n"
+            f"Relevant prior conversation/turns:\n{history_context or 'None'}\n\n"
+            f"Source catalog:\n{json.dumps(source_catalog, indent=2)}\n\n"
+            f"Selected web context:\n{web_context}\n\n"
+            "Now produce the final answer with citations."
+        )
+
+        contents = [
+            types.Content(
+                role="user",
+                parts=[types.Part.from_text(text=prompt)],
+            ),
+        ]
+        config = types.GenerateContentConfig(
+            thinking_config=types.ThinkingConfig(thinking_level="MINIMAL"),
+            temperature=0.2,
+        )
+
+        try:
+            response_stream = self.client.models.generate_content_stream(
+                model=self.model_name,
+                contents=contents,
+                config=config,
+            )
+            for chunk in response_stream:
+                if chunk.text:
+                    yield chunk.text
+        except Exception as error:
+            yield (
+                "I could not generate the final synthesis because the LLM call failed. "
+                f"Available evidence was collected from {len(source_catalog)} selected source snippets. "
+                f"Error: {error}"
+            )
+
 @app.post("/api/sessions")
 async def get_or_create_session(request: SessionRequest):
     return session_store.get_or_create(request.session_id)
@@ -446,10 +671,17 @@ async def update_session_state(session_id: str, request: SessionStateUpdate):
     return session_store.update_state(session_id, request.state, request.event)
 
 
+@app.delete("/api/sessions/{session_id}")
+async def delete_session(session_id: str):
+    deleted = session_store.delete(session_id)
+    return {"deleted": deleted}
+
+
 @app.post("/api/plan")
 async def generate_plan(request: QueryRequest):
     planner = ResearchPlanner()
     if request.session_id:
+        session_store.append_message(request.session_id, "user", request.query)
         session_store.update_state(
             request.session_id,
             {
@@ -503,6 +735,36 @@ async def refine_queries(request: QueryRefinementRequest):
     return {"search_queries": search_queries}
 
 
+@app.post("/api/revise-plan")
+async def revise_plan(request: PlanRevisionRequest):
+    planner = ResearchPlanner()
+    revision = planner.revise_plan(
+        request.query,
+        request.plan,
+        request.search_queries,
+        request.revision_request,
+        request.deep_research,
+    )
+    if request.session_id:
+        session_store.update_state(
+            request.session_id,
+            {
+                "plan_steps": revision["plan_steps"],
+                "queries": revision["search_queries"],
+                "selected_queries": revision["search_queries"],
+                "clarifying_questions": [],
+                "clarifying_answers": [],
+                "clarifying_complete": not request.deep_research,
+            },
+            {
+                "type": "plan_revised",
+                "revision_request": request.revision_request,
+                "query_count": len(revision["search_queries"]),
+            },
+        )
+    return revision
+
+
 @app.post("/api/search")
 async def execute_search(request: SearchRequest):
     scraper = WebSearchScraper()
@@ -520,7 +782,9 @@ async def execute_search(request: SearchRequest):
             return
 
         try:
+            yield json.dumps({"type": "progress", "message": "Searching the web"}) + "\n"
             valid_pages = await scraper.execute_concurrent_research(queries)
+            yield json.dumps({"type": "progress", "message": "Fetching and cleaning sources"}) + "\n"
 
             for page in valid_pages:
                 yield json.dumps({
@@ -529,15 +793,32 @@ async def execute_search(request: SearchRequest):
                     "url": page["url"],
                     "domain": page["domain"],
                     "content": page["content"][:300],
+                    "snippet": page.get("snippet", ""),
+                    "score": page.get("score"),
+                    "retrieved_at": page.get("retrieved_at", ""),
                     "query": page.get("query", ""),
                     "rank": page.get("rank"),
                 }) + "\n"
                 await asyncio.sleep(0)
 
+            yield json.dumps({"type": "progress", "message": "Selecting relevant context"}) + "\n"
             research_context = build_context_from_pages(
                 request.query or " ".join(queries),
                 valid_pages,
             )
+            if request.session_id:
+                session_store.update_state(
+                    request.session_id,
+                    {
+                        "opened_urls": [page["url"] for page in valid_pages],
+                        "research_context": research_context,
+                    },
+                    {
+                        "type": "context_selected",
+                        "opened_url_count": len(valid_pages),
+                        "selected_count": research_context["selected_count"],
+                    },
+                )
             yield json.dumps({
                 "type": "context_ready",
                 "chunks": research_context["chunks"],
@@ -548,6 +829,63 @@ async def execute_search(request: SearchRequest):
             yield json.dumps({"type": "done"}) + "\n"
         except Exception as error:
             yield json.dumps({"type": "error", "message": str(error)}) + "\n"
+
+    return StreamingResponse(event_generator(), media_type="application/x-ndjson")
+
+
+@app.post("/api/answer")
+async def generate_answer(request: AnswerRequest):
+    planner = ResearchPlanner()
+    session = session_store.get(request.session_id) if request.session_id else None
+    history_context = build_history_context(session)
+    context = trim_text(request.context, 28000)
+
+    async def event_generator():
+        if not context.strip():
+            yield json.dumps({
+                "type": "error",
+                "message": "No selected web context is available for answer generation.",
+            }) + "\n"
+            return
+
+        yield json.dumps({"type": "progress", "message": "Generating answer with citations"}) + "\n"
+        final_answer_parts = []
+        for token in planner.generate_answer_stream(
+            user_query=request.query,
+            plan=request.plan,
+            search_queries=request.search_queries,
+            web_context=context,
+            chunks=request.chunks,
+            history_context=history_context,
+        ):
+            final_answer_parts.append(token)
+            yield json.dumps({"type": "token", "text": token}) + "\n"
+            await asyncio.sleep(0)
+
+        final_answer = "".join(final_answer_parts).strip()
+        if request.session_id:
+            session_store.append_message(request.session_id, "assistant", final_answer)
+            session_store.record_turn(
+                request.session_id,
+                {
+                    "query": request.query,
+                    "search_queries_issued": request.search_queries,
+                    "urls_opened": sorted({
+                        chunk.get("url", "")
+                        for chunk in request.chunks
+                        if chunk.get("url")
+                    }),
+                    "context_snippets_selected": request.chunks,
+                    "final_answer": final_answer,
+                },
+            )
+            session_store.update_state(
+                request.session_id,
+                {"final_answer": final_answer},
+                {"type": "answer_generated", "citation_source_count": len(request.chunks)},
+            )
+
+        yield json.dumps({"type": "done", "answer": final_answer}) + "\n"
 
     return StreamingResponse(event_generator(), media_type="application/x-ndjson")
 

@@ -16,6 +16,7 @@ def get_overlapping_chunks(
     title: str,
     query: str = "",
     rank: int | None = None,
+    retrieved_at: str = "",
     chunk_size: int = 250,
     overlap: int = 50,
 ) -> list[dict[str, Any]]:
@@ -38,6 +39,7 @@ def get_overlapping_chunks(
             "title": title,
             "query": query,
             "rank": rank,
+            "retrieved_at": retrieved_at,
             "chunk_index": len(chunks),
         })
 
@@ -128,6 +130,7 @@ def build_context_from_pages(
     chunk_size: int = 250,
     overlap: int = 50,
     lambda_param: float = 0.6,
+    max_context_chars: int = 24000,
 ) -> dict[str, Any]:
     """Build a compact, diverse research context from scraped pages."""
     all_chunks = []
@@ -140,6 +143,7 @@ def build_context_from_pages(
                 title=page.get("title", "Unknown Title"),
                 query=page.get("query", ""),
                 rank=page.get("rank"),
+                retrieved_at=page.get("retrieved_at", ""),
                 chunk_size=chunk_size,
                 overlap=overlap,
             )
@@ -151,12 +155,21 @@ def build_context_from_pages(
         top_k=top_k,
         lambda_param=lambda_param,
     )
+    capped_chunks = []
+    used_chars = 0
+    for chunk in filtered_chunks:
+        next_size = len(chunk.get("text", "")) + len(chunk.get("title", "")) + len(chunk.get("url", "")) + 80
+        if capped_chunks and used_chars + next_size > max_context_chars:
+            break
+        capped_chunks.append(chunk)
+        used_chars += next_size
 
     return {
-        "chunks": filtered_chunks,
-        "context": assemble_context_string(filtered_chunks),
+        "chunks": capped_chunks,
+        "context": assemble_context_string(capped_chunks),
         "chunk_count": len(all_chunks),
-        "selected_count": len(filtered_chunks),
+        "selected_count": len(capped_chunks),
+        "max_context_chars": max_context_chars,
     }
 
 
@@ -166,7 +179,7 @@ def assemble_context_string(selected_chunks: list[dict[str, Any]]) -> str:
 
     for index, chunk in enumerate(selected_chunks, start=1):
         formatted_chunk = (
-            f"[Source ID: {index} | Title: {chunk['title']} | Domain: {chunk['domain']}]\n"
+            f"[Source ID: {index} | Title: {chunk['title']} | Domain: {chunk['domain']} | Retrieved: {chunk.get('retrieved_at', '')}]\n"
             f"{chunk['text']}\n"
             f"URL: {chunk['url']}"
         )

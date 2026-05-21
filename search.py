@@ -1,6 +1,7 @@
 import os
 import asyncio
 import aiohttp
+from datetime import datetime
 from bs4 import BeautifulSoup
 from urllib.parse import urlparse
 from typing import List, Dict, Any, Optional
@@ -84,7 +85,8 @@ class WebSearchScraper:
                         "url": url,
                         "title": title,
                         "content": text[:8000],
-                        "domain": url.split("//")[-1].split("/")[0] # Extract domain for citations
+                        "domain": url.split("//")[-1].split("/")[0], # Extract domain for citations
+                        "retrieved_at": datetime.now().isoformat()
                     }
         except Exception:
             # Silently fail on timeouts to ensure the agent keeps moving
@@ -112,6 +114,8 @@ class WebSearchScraper:
                 selected_results.append({
                     "url": url,
                     "title": item.get("title", "Unknown Title"),
+                    "snippet": item.get("content") or item.get("snippet") or "",
+                    "score": item.get("score"),
                     "query": query,
                     "rank": rank,
                 })
@@ -154,6 +158,8 @@ class WebSearchScraper:
                 if page is not None and len(page['content']) > 50:
                     page["query"] = result["query"]
                     page["rank"] = result["rank"]
+                    page["snippet"] = result.get("snippet", "")
+                    page["score"] = result.get("score")
                     valid_pages.append(page)
             
             return valid_pages
