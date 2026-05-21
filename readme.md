@@ -1,1 +1,4 @@
 Add something for table formatting and sometimes the model says more research required in that case it goes ahead and does more research if reequired. It may also ask the user if he wants that and based on the users answer it decides further what needs  to be done
+
+
+Also configure multihop. IF the agent feels in that the context it got is not sufficeint after reading all teh chunnks or maybe some chunks redirect to other things then another searches should be allowed. This should have a check that at max N number of hops are allowed. Rather than now streaming the answer we need to post process it each time and see if we need to get more results or not.
