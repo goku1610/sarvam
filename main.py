@@ -8,6 +8,7 @@ from fastapi.staticfiles import StaticFiles
 from pydantic import BaseModel
 from google import genai
 from google.genai import types
+from search import WebSearchScraper
 
 
 def load_local_env(env_path: str = ".env") -> None:
@@ -60,6 +61,25 @@ class QueryRefinementRequest(BaseModel):
     plan: list[str] = []
     search_queries: list[str] = []
     answers: list[ClarifyingAnswer] = []
+
+
+class SearchRequest(BaseModel):
+    queries: list[str]
+
+
+class SearchResultSummary(BaseModel):
+    title: str = ""
+    url: str = ""
+    domain: str = ""
+    content: str = ""
+
+
+class FollowUpQueryRequest(BaseModel):
+    query: str
+    plan: list[str] = []
+    searched_queries: list[str] = []
+    sources: list[SearchResultSummary] = []
+    iteration: int = 1
 
 
 def parse_json_object(raw_output: str) -> dict:
@@ -223,6 +243,67 @@ class ResearchPlanner:
         except Exception:
             return search_queries
 
+    def generate_follow_up_queries(
+        self,
+        user_query: str,
+        plan: list[str],
+        searched_queries: list[str],
+        sources: list[SearchResultSummary],
+        iteration: int,
+    ) -> list[str]:
+        if not sources:
+            return []
+
+        source_summaries = [
+            {
+                "title": source.title,
+                "url": source.url,
+                "domain": source.domain,
+                "snippet": source.content[:1200],
+            }
+            for source in sources[-12:]
+        ]
+
+        prompt = (
+            "You are the iteration controller for a deep research agent.\n"
+            "Review the user's research goal, plan, queries already searched, and source snippets already read. "
+            "Decide whether another web-search pass is needed to fill important gaps, verify uncertain claims, "
+            "or capture newer/primary sources. If the existing sources are enough, return an empty array. "
+            "If another pass is useful, return 1 to 4 non-duplicative search queries. Do not repeat any already "
+            "searched query. Do not include explanations.\n\n"
+            "Respond only with valid JSON in this exact shape:\n"
+            "{\"search_queries\":[\"query 1\"]}\n\n"
+            f"Deep research iteration: {iteration}\n"
+            f"Original topic: {user_query}\n"
+            f"Plan: {json.dumps(plan)}\n"
+            f"Already searched queries: {json.dumps(searched_queries)}\n"
+            f"Sources read: {json.dumps(source_summaries)}"
+        )
+
+        try:
+            response = self.client.models.generate_content(
+                model=self.model_name,
+                contents=prompt,
+                config=types.GenerateContentConfig(
+                    thinking_config=types.ThinkingConfig(thinking_level="MINIMAL"),
+                    temperature=0.2,
+                ),
+            )
+            parsed_response = parse_json_object(response.text or "{}")
+            already_searched = {
+                searched_query.strip().lower()
+                for searched_query in searched_queries
+                if searched_query.strip()
+            }
+            follow_up_queries = []
+            for search_query in parsed_response.get("search_queries", []):
+                cleaned_query = str(search_query).strip()
+                if cleaned_query and cleaned_query.lower() not in already_searched:
+                    follow_up_queries.append(cleaned_query)
+            return follow_up_queries[:4]
+        except Exception:
+            return []
+
 @app.post("/api/plan")
 async def generate_plan(request: QueryRequest):
     planner = ResearchPlanner()
@@ -255,6 +336,48 @@ async def refine_queries(request: QueryRefinementRequest):
         request.plan,
         request.search_queries,
         request.answers,
+    )
+    return {"search_queries": search_queries}
+
+
+@app.post("/api/search")
+async def execute_search(request: SearchRequest):
+    scraper = WebSearchScraper()
+    queries = [query.strip() for query in request.queries if query.strip()]
+
+    async def event_generator():
+        if not queries:
+            yield json.dumps({"type": "error", "message": "No search queries selected."}) + "\n"
+            return
+
+        try:
+            async for page in scraper.stream_concurrent_research(queries):
+                yield json.dumps({
+                    "type": "result",
+                    "title": page["title"],
+                    "url": page["url"],
+                    "domain": page["domain"],
+                    "content": page["content"],
+                    "query": page.get("query", ""),
+                    "rank": page.get("rank"),
+                }) + "\n"
+                await asyncio.sleep(0)
+            yield json.dumps({"type": "done"}) + "\n"
+        except Exception as error:
+            yield json.dumps({"type": "error", "message": str(error)}) + "\n"
+
+    return StreamingResponse(event_generator(), media_type="application/x-ndjson")
+
+
+@app.post("/api/follow-up-queries")
+async def generate_follow_up_queries(request: FollowUpQueryRequest):
+    planner = ResearchPlanner()
+    search_queries = planner.generate_follow_up_queries(
+        request.query,
+        request.plan,
+        request.searched_queries,
+        request.sources,
+        request.iteration,
     )
     return {"search_queries": search_queries}
 

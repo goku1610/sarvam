@@ -254,6 +254,81 @@ const ImageViewDialog = ({ imageUrl, onClose }) => {
   );
 };
 
+const SearchResultsPanel = ({
+  isOpen,
+  isSearching,
+  results,
+  error,
+  status,
+  onClose
+}) => (
+  <AnimatePresence>
+    {isOpen && (
+      <motion.aside
+        layout
+        initial={{ opacity: 0, x: 28 }}
+        animate={{ opacity: 1, x: 0 }}
+        exit={{ opacity: 0, x: 28 }}
+        transition={{ duration: 0.32, ease: [0.22, 1, 0.36, 1] }}
+        className="fixed bottom-4 right-4 top-4 z-40 flex w-[min(420px,calc(100vw-32px))] flex-col overflow-hidden rounded-[28px] border border-white/10 bg-[#141517]/98 shadow-[0_24px_80px_rgba(0,0,0,0.5)] backdrop-blur lg:sticky lg:top-8 lg:z-10 lg:h-[calc(100vh-4rem)] lg:min-w-[360px] lg:max-w-[420px] lg:shrink-0"
+      >
+        <div className="flex items-center justify-between border-b border-white/8 px-5 py-4">
+          <div>
+            <h2 className="m-0 text-base font-semibold text-stone-100">Sources</h2>
+            <p className="m-0 mt-1 text-xs text-stone-500">{results.length} links collected</p>
+          </div>
+          <button
+            type="button"
+            onClick={onClose}
+            className="flex h-9 w-9 items-center justify-center rounded-full text-stone-400 transition-colors hover:bg-white/[0.06] hover:text-stone-100"
+          >
+            <X className="h-4 w-4" />
+            <span className="sr-only">Close sources</span>
+          </button>
+        </div>
+
+        <div className="flex-1 overflow-y-auto px-4 py-4">
+          {isSearching && (
+            <StepIndicator label={status || "Searching and reading sources"} className="mb-3" />
+          )}
+
+          {error && (
+            <div className="mb-3 rounded-2xl border border-red-400/20 bg-red-500/10 px-4 py-3 text-sm text-red-200">
+              {error}
+            </div>
+          )}
+
+          {results.length === 0 && !isSearching && !error && (
+            <div className="rounded-2xl border border-white/8 bg-white/[0.025] px-4 py-5 text-sm text-stone-400">
+              No sources yet.
+            </div>
+          )}
+
+          <div className="space-y-3">
+            {results.map((result, index) => (
+              <motion.a
+                key={`${result.url}-${index}`}
+                href={result.url}
+                target="_blank"
+                rel="noreferrer"
+                initial={{ opacity: 0, y: 10 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.18, ease: "easeOut" }}
+                className="block rounded-2xl border border-white/8 bg-white/[0.025] px-4 py-3 transition-colors hover:border-[#d6c3a1]/25 hover:bg-[#d6c3a1]/[0.035]"
+              >
+                <div className="line-clamp-2 text-sm font-medium leading-6 text-stone-100">
+                  {result.title || result.domain || result.url}
+                </div>
+                <div className="mt-1 truncate text-xs text-stone-500">{result.domain}</div>
+              </motion.a>
+            ))}
+          </div>
+        </div>
+      </motion.aside>
+    )}
+  </AnimatePresence>
+);
+
 const PromptInputContext = React.createContext({
   isLoading: false,
   value: "",
@@ -409,7 +484,11 @@ const PromptInputBox = React.forwardRef(
     isClarifyingLoading = false,
     isRefiningQueries = false,
     canEditQueries = true,
-    canStartResearch = false
+    canStartResearch = false,
+    selectedQueries = [],
+    onToggleQuery = () => {},
+    onStartResearch = () => {},
+    isSearching = false
   }, ref) => {
     const [input, setInput] = React.useState("");
     const [files, setFiles] = React.useState([]);
@@ -595,7 +674,8 @@ const PromptInputBox = React.forwardRef(
                         >
                           <input
                             type="checkbox"
-                            defaultChecked
+                            checked={selectedQueries.includes(query)}
+                            onChange={() => onToggleQuery(query)}
                             className="mt-1 h-5 w-5 rounded-full border border-white/20 bg-transparent accent-stone-100"
                           />
                           <span className="text-[14px] leading-6 text-stone-200">{query}</span>
@@ -785,10 +865,10 @@ const PromptInputBox = React.forwardRef(
                   type="button"
                   variant="default"
                   className="h-9 px-4 text-sm"
-                  onClick={() => {}}
-                  disabled={isLoading}
+                  onClick={onStartResearch}
+                  disabled={isLoading || isSearching || selectedQueries.length === 0}
                 >
-                  Start research
+                  {isSearching ? "Searching" : "Start research"}
                 </Button>
               )}
 
@@ -853,6 +933,8 @@ function splitPlanIntoSteps(planText) {
     .filter(Boolean);
 }
 
+const MAX_DEEP_RESEARCH_ITERATIONS = 3;
+
 function App() {
   const [isLoading, setIsLoading] = React.useState(false);
   const [planSteps, setPlanSteps] = React.useState([]);
@@ -869,6 +951,12 @@ function App() {
   const [isClarifyingLoading, setIsClarifyingLoading] = React.useState(false);
   const [isRefiningQueries, setIsRefiningQueries] = React.useState(false);
   const [clarifyingComplete, setClarifyingComplete] = React.useState(false);
+  const [selectedQueries, setSelectedQueries] = React.useState([]);
+  const [isSearchPanelOpen, setIsSearchPanelOpen] = React.useState(false);
+  const [isSearching, setIsSearching] = React.useState(false);
+  const [searchStatus, setSearchStatus] = React.useState("");
+  const [searchResults, setSearchResults] = React.useState([]);
+  const [searchError, setSearchError] = React.useState("");
 
   const resetClarificationState = () => {
     setClarifyingQuestions([]);
@@ -936,6 +1024,7 @@ function App() {
       const data = await response.json();
       if (Array.isArray(data.search_queries) && data.search_queries.length > 0) {
         setQueries(data.search_queries);
+        setSelectedQueries(data.search_queries);
       }
       setClarifyingComplete(true);
     } catch (requestError) {
@@ -978,7 +1067,12 @@ function App() {
     setDeepResearchActive(deepResearch);
     setPlanSteps(["Preparing plan..."]);
     setQueries([]);
+    setSelectedQueries([]);
     setCustomQuery("");
+    setSearchResults([]);
+    setSearchError("");
+    setSearchStatus("");
+    setIsSearchPanelOpen(false);
     resetClarificationState();
     let latestPlanSteps = ["Preparing plan..."];
     let latestQueries = [];
@@ -1023,6 +1117,7 @@ function App() {
               const parsedQueries = JSON.parse(match[1].trim());
               latestQueries = parsedQueries;
               setQueries(latestQueries);
+              setSelectedQueries(latestQueries);
             } catch (parseError) {
               console.error("Failed to parse queries.", parseError);
             }
@@ -1046,20 +1141,186 @@ function App() {
     const nextQuery = customQuery.trim();
     if (!nextQuery) return;
     setQueries((current) => (current.includes(nextQuery) ? current : [...current, nextQuery]));
+    setSelectedQueries((current) => (current.includes(nextQuery) ? current : [...current, nextQuery]));
     setCustomQuery("");
   };
 
+  const toggleQuerySelection = (query) => {
+    setSelectedQueries((current) => (
+      current.includes(query)
+        ? current.filter((selectedQuery) => selectedQuery !== query)
+        : [...current, query]
+    ));
+  };
+
+  const startResearch = async () => {
+    if (selectedQueries.length === 0) return;
+
+    setIsSearchPanelOpen(true);
+    setIsSearching(true);
+    setSearchResults([]);
+    setSearchError("");
+    setSearchStatus("Searching and reading sources");
+
+    const seenUrls = new Set();
+    const collectedSources = [];
+    let searchedQueries = [...selectedQueries];
+
+    const handleSearchEvent = (event) => {
+      if (event.type === "result") {
+        if (event.url && seenUrls.has(event.url)) return;
+        if (event.url) seenUrls.add(event.url);
+        collectedSources.push(event);
+        setSearchResults((current) => [...current, event]);
+      }
+      if (event.type === "error") {
+        setSearchError(event.message || "Search failed.");
+      }
+    };
+
+    const runSearchBatch = async (queriesToSearch, iterationLabel) => {
+      setSearchStatus(iterationLabel || "Searching and reading sources");
+
+      const response = await fetch("/api/search", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ queries: queriesToSearch })
+      });
+
+      if (!response.ok || !response.body) {
+        throw new Error("Search request failed.");
+      }
+
+      const reader = response.body.getReader();
+      const decoder = new TextDecoder("utf-8");
+      let buffer = "";
+
+      while (true) {
+        const { done, value } = await reader.read();
+        if (done) break;
+
+        buffer += decoder.decode(value, { stream: true });
+        const lines = buffer.split("\n");
+        buffer = lines.pop() || "";
+
+        lines.forEach((line) => {
+          if (!line.trim()) return;
+          const event = JSON.parse(line);
+          handleSearchEvent(event);
+        });
+      }
+
+      if (buffer.trim()) {
+        const event = JSON.parse(buffer);
+        handleSearchEvent(event);
+      }
+    };
+
+    try {
+      await runSearchBatch(selectedQueries, "Searching and reading sources");
+
+      if (deepResearchActive) {
+        for (let iteration = 1; iteration <= MAX_DEEP_RESEARCH_ITERATIONS; iteration += 1) {
+          setSearchStatus("Checking whether more searches are needed");
+
+          const response = await fetch("/api/follow-up-queries", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({
+              query: originalQuery,
+              plan: planSteps,
+              searched_queries: searchedQueries,
+              sources: collectedSources,
+              iteration
+            })
+          });
+
+          if (!response.ok) {
+            throw new Error("Could not check for follow-up searches.");
+          }
+
+          const data = await response.json();
+          const previousQueries = new Set(
+            searchedQueries.map((searchedQuery) => searchedQuery.trim().toLowerCase())
+          );
+          const followUpQueries = Array.isArray(data.search_queries)
+            ? data.search_queries
+                .map((query) => String(query).trim())
+                .filter((query) => query && !previousQueries.has(query.toLowerCase()))
+            : [];
+
+          if (followUpQueries.length === 0) break;
+
+          searchedQueries = [...searchedQueries, ...followUpQueries];
+          setQueries((current) => {
+            const currentQuerySet = new Set(current.map((query) => query.toLowerCase()));
+            const newQueries = followUpQueries.filter((query) => !currentQuerySet.has(query.toLowerCase()));
+            return [...current, ...newQueries];
+          });
+          setSelectedQueries((current) => {
+            const currentQuerySet = new Set(current.map((query) => query.toLowerCase()));
+            const newQueries = followUpQueries.filter((query) => !currentQuerySet.has(query.toLowerCase()));
+            return [...current, ...newQueries];
+          });
+
+          await runSearchBatch(
+            followUpQueries,
+            `Deep research follow-up ${iteration}: searching ${followUpQueries.length} new ${followUpQueries.length === 1 ? "query" : "queries"}`
+          );
+        }
+      }
+    } catch (requestError) {
+      setSearchError(requestError.message || "Search failed.");
+    } finally {
+      setIsSearching(false);
+      setSearchStatus("");
+    }
+  };
+
+  const canReopenSearchPanel = !isSearchPanelOpen && (searchResults.length > 0 || isSearching || Boolean(searchError));
+
   return (
     <div className="min-h-screen px-4 py-6 md:px-8 md:py-10">
-      <div className="mx-auto flex w-full max-w-5xl flex-col gap-6">
-        <section className="rounded-[34px] border border-white/10 bg-[#141517]/95 p-5 shadow-[0_30px_90px_rgba(0,0,0,0.45)] backdrop-blur md:p-7">
+      <motion.div
+        layout
+        transition={{ duration: 0.36, ease: [0.22, 1, 0.36, 1] }}
+        className="mx-auto flex w-full max-w-[1360px] items-start gap-5"
+      >
+        <motion.section
+          layout
+          transition={{ duration: 0.36, ease: [0.22, 1, 0.36, 1] }}
+          className="min-w-0 flex-1 rounded-[34px] border border-white/10 bg-[#141517]/95 p-5 shadow-[0_30px_90px_rgba(0,0,0,0.45)] backdrop-blur md:p-7"
+        >
           <div className="mb-5">
-            <h1 className="m-0 text-[2rem] font-semibold text-stone-100 md:text-[2.6rem]">
-              Research planner
-            </h1>
-            <p className="mt-2 max-w-2xl text-sm leading-7 text-stone-400 md:text-[15px]">
-              Create a focused research plan, review the generated queries, and add custom ones before execution.
-            </p>
+            <div className="flex flex-col gap-4 md:flex-row md:items-start md:justify-between">
+              <div>
+                <h1 className="m-0 text-[2rem] font-semibold text-stone-100 md:text-[2.6rem]">
+                  Research planner
+                </h1>
+                <p className="mt-2 max-w-2xl text-sm leading-7 text-stone-400 md:text-[15px]">
+                  Create a focused research plan, review the generated queries, and add custom ones before execution.
+                </p>
+              </div>
+
+              <AnimatePresence>
+                {canReopenSearchPanel && (
+                  <motion.button
+                    type="button"
+                    onClick={() => setIsSearchPanelOpen(true)}
+                    initial={{ opacity: 0, y: -8, scale: 0.96 }}
+                    animate={{ opacity: 1, y: 0, scale: 1 }}
+                    exit={{ opacity: 0, y: -8, scale: 0.96 }}
+                    transition={{ duration: 0.22, ease: "easeOut" }}
+                    className="inline-flex h-10 shrink-0 items-center justify-center gap-2 rounded-full border border-[#d6c3a1]/20 bg-[#d6c3a1]/[0.06] px-4 text-sm font-medium text-[#ecdcc0] shadow-[0_12px_30px_rgba(0,0,0,0.18)] transition-colors hover:border-[#d6c3a1]/35 hover:bg-[#d6c3a1]/[0.1]"
+                  >
+                    Sources
+                    <span className="rounded-full bg-[#d6c3a1]/15 px-2 py-0.5 text-xs text-[#f5e7cf]">
+                      {searchResults.length}
+                    </span>
+                  </motion.button>
+                )}
+              </AnimatePresence>
+            </div>
           </div>
 
           <PromptInputBox
@@ -1083,6 +1344,10 @@ function App() {
             isRefiningQueries={isRefiningQueries}
             canEditQueries={!deepResearchActive || clarifyingComplete}
             canStartResearch={queries.length > 0 && (!deepResearchActive || clarifyingComplete) && !isClarifyingLoading && !isRefiningQueries}
+            selectedQueries={selectedQueries}
+            onToggleQuery={toggleQuerySelection}
+            onStartResearch={startResearch}
+            isSearching={isSearching}
           />
 
           {error ? (
@@ -1090,9 +1355,17 @@ function App() {
               {error}
             </div>
           ) : null}
-        </section>
+        </motion.section>
 
-      </div>
+        <SearchResultsPanel
+          isOpen={isSearchPanelOpen}
+          isSearching={isSearching}
+          results={searchResults}
+          error={searchError}
+          status={searchStatus}
+          onClose={() => setIsSearchPanelOpen(false)}
+        />
+      </motion.div>
     </div>
   );
 }
