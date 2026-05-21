@@ -133,55 +133,134 @@ const renderInlineMarkdown = (text) => {
   return parts;
 };
 
+const parseTableRows = (lines) => {
+  const rows = [];
+  let separatorIndex = -1;
+  for (let i = 0; i < lines.length; i++) {
+    const trimmed = lines[i].trim();
+    if (!trimmed.startsWith("|")) return null;
+    const cells = trimmed.replace(/^\|/, "").replace(/\|$/, "").split("|").map((c) => c.trim());
+    if (i > 0 && separatorIndex === -1 && cells.every((c) => /^[:\-]+$/.test(c))) {
+      separatorIndex = i;
+      continue;
+    }
+    rows.push(cells);
+  }
+  if (separatorIndex === -1 || rows.length < 2) return null;
+  return { header: rows[0], body: rows.slice(1) };
+};
+
 const MarkdownAnswer = ({ text }) => {
   if (!text) return null;
 
+  const rawLines = text.split(/\n/);
+  const elements = [];
+  let i = 0;
+
+  while (i < rawLines.length) {
+    const line = rawLines[i].trim();
+
+    // --- Try to detect a Markdown table block ---
+    if (line.startsWith("|")) {
+      const tableLines = [];
+      let j = i;
+      while (j < rawLines.length && rawLines[j].trim().startsWith("|")) {
+        tableLines.push(rawLines[j]);
+        j++;
+      }
+      const tableData = parseTableRows(tableLines);
+      if (tableData) {
+        elements.push(
+          <div key={`table-${i}`} className="my-4 overflow-x-auto rounded-2xl border border-white/10">
+            <table className="w-full border-collapse text-sm">
+              <thead>
+                <tr className="border-b border-white/10 bg-white/[0.04]">
+                  {tableData.header.map((cell, ci) => (
+                    <th key={ci} className="px-4 py-3 text-left font-semibold text-stone-200">
+                      {renderInlineMarkdown(cell)}
+                    </th>
+                  ))}
+                </tr>
+              </thead>
+              <tbody>
+                {tableData.body.map((row, ri) => (
+                  <tr
+                    key={ri}
+                    className={cn(
+                      "border-b border-white/5 transition-colors hover:bg-white/[0.03]",
+                      ri % 2 === 1 && "bg-white/[0.015]"
+                    )}
+                  >
+                    {row.map((cell, ci) => (
+                      <td key={ci} className="px-4 py-3 text-stone-300">
+                        {renderInlineMarkdown(cell)}
+                      </td>
+                    ))}
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+        );
+        i = j;
+        continue;
+      }
+    }
+
+    // --- Non-table lines (existing logic) ---
+    if (!line) { i++; continue; }
+    if (/^[-*_]{3,}$/.test(line)) { i++; continue; }
+
+    const headingMatch = line.match(/^(#{1,4})\s+(.+)$/);
+    if (headingMatch) {
+      const level = headingMatch[1].length;
+      const headingClasses = level <= 2
+        ? "pt-2 text-xl font-semibold text-stone-50"
+        : "pt-1 text-base font-semibold text-stone-50";
+      elements.push(
+        <h3 key={`${line}-${i}`} className={cn("m-0", headingClasses)}>
+          {renderInlineMarkdown(headingMatch[2])}
+        </h3>
+      );
+      i++;
+      continue;
+    }
+
+    const orderedMatch = line.match(/^(\d+)\.\s+(.+)$/);
+    if (orderedMatch) {
+      elements.push(
+        <div key={`${line}-${i}`} className="flex gap-3">
+          <span className="min-w-5 text-right text-stone-500">{orderedMatch[1]}.</span>
+          <p className="m-0 flex-1">{renderInlineMarkdown(orderedMatch[2])}</p>
+        </div>
+      );
+      i++;
+      continue;
+    }
+
+    const bulletMatch = line.match(/^[-*]\s+(.+)$/);
+    if (bulletMatch) {
+      elements.push(
+        <div key={`${line}-${i}`} className="flex gap-3">
+          <span className="mt-3 h-1.5 w-1.5 shrink-0 rounded-full bg-stone-500" />
+          <p className="m-0 flex-1">{renderInlineMarkdown(bulletMatch[1])}</p>
+        </div>
+      );
+      i++;
+      continue;
+    }
+
+    elements.push(
+      <p key={`${line}-${i}`} className="m-0">
+        {renderInlineMarkdown(line)}
+      </p>
+    );
+    i++;
+  }
+
   return (
     <div className="space-y-4 text-[15px] leading-8 text-stone-100">
-      {text.split(/\n+/).map((rawLine, index) => {
-        const line = rawLine.trim();
-        if (!line) return null;
-        if (/^[-*_]{3,}$/.test(line)) return null;
-
-        const headingMatch = line.match(/^(#{1,4})\s+(.+)$/);
-        if (headingMatch) {
-          const level = headingMatch[1].length;
-          const headingClasses = level <= 2
-            ? "pt-2 text-xl font-semibold text-stone-50"
-            : "pt-1 text-base font-semibold text-stone-50";
-          return (
-            <h3 key={`${line}-${index}`} className={cn("m-0", headingClasses)}>
-              {renderInlineMarkdown(headingMatch[2])}
-            </h3>
-          );
-        }
-
-        const orderedMatch = line.match(/^(\d+)\.\s+(.+)$/);
-        if (orderedMatch) {
-          return (
-            <div key={`${line}-${index}`} className="flex gap-3">
-              <span className="min-w-5 text-right text-stone-500">{orderedMatch[1]}.</span>
-              <p className="m-0 flex-1">{renderInlineMarkdown(orderedMatch[2])}</p>
-            </div>
-          );
-        }
-
-        const bulletMatch = line.match(/^[-*]\s+(.+)$/);
-        if (bulletMatch) {
-          return (
-            <div key={`${line}-${index}`} className="flex gap-3">
-              <span className="mt-3 h-1.5 w-1.5 shrink-0 rounded-full bg-stone-500" />
-              <p className="m-0 flex-1">{renderInlineMarkdown(bulletMatch[1])}</p>
-            </div>
-          );
-        }
-
-        return (
-          <p key={`${line}-${index}`} className="m-0">
-            {renderInlineMarkdown(line)}
-          </p>
-        );
-      })}
+      {elements}
     </div>
   );
 };
@@ -1427,6 +1506,9 @@ function App() {
   const [chatStatus, setChatStatus] = React.useState("");
   const [searchError, setSearchError] = React.useState("");
   const [sessionPendingDelete, setSessionPendingDelete] = React.useState(null);
+  const [hopProgress, setHopProgress] = React.useState(null);
+  const [moreResearchPrompt, setMoreResearchPrompt] = React.useState(null);
+  const [isResearchingGaps, setIsResearchingGaps] = React.useState(false);
   const sessionIdRef = React.useRef("");
 
   const resetWorkspaceState = () => {
@@ -1459,6 +1541,9 @@ function App() {
     setIsChatting(false);
     setChatStatus("");
     setSearchError("");
+    setHopProgress(null);
+    setMoreResearchPrompt(null);
+    setIsResearchingGaps(false);
   };
 
   const hydrateFromSession = (session) => {
@@ -1983,6 +2068,31 @@ function App() {
       if (event.type === "progress") {
         setSearchStatus(event.message || "Searching and reading sources");
       }
+      if (event.type === "hop_start") {
+        setHopProgress({
+          hop: event.hop,
+          maxHops: event.max_hops,
+          queries: event.queries || [],
+          message: event.message || `Hop ${event.hop}`,
+          evaluation: null,
+        });
+        setSearchStatus(event.message || `Hop ${event.hop} of ${event.max_hops}`);
+      }
+      if (event.type === "hop_evaluation") {
+        setHopProgress((current) => current ? {
+          ...current,
+          evaluation: {
+            sufficient: event.sufficient,
+            intermediateAnswer: event.intermediate_answer || "",
+            missingInfo: event.missing_info || "",
+            reasoning: event.reasoning || "",
+            nextQueries: event.next_queries || [],
+          },
+        } : current);
+        if (!event.sufficient && event.next_queries?.length) {
+          setSearchStatus(`Needs more info: ${event.missing_info || "searching deeper"}`);
+        }
+      }
       if (event.type === "context_ready") {
         if (Array.isArray(event.attempted_queries) && event.attempted_queries.length > 0) {
           searchedQueries = event.attempted_queries;
@@ -1999,6 +2109,7 @@ function App() {
           chunkCount: event.chunk_count || 0,
           selectedCount: event.selected_count || 0
         };
+        contextChunks.length = 0;
         contextChunks.push(...nextContext.chunks);
         latestResearchContext = {
           ...nextContext,
@@ -2182,6 +2293,13 @@ function App() {
               nextAnswer += event.text || "";
               flushFinalAnswer();
             }
+            if (event.type === "needs_more_research") {
+              setMoreResearchPrompt({
+                gaps: event.gaps || [],
+                suggestedQueries: event.suggested_queries || [],
+                severity: event.severity || "minor",
+              });
+            }
             if (event.type === "done") {
               nextAnswer = event.answer || nextAnswer;
               if (finalAnswerFrame) {
@@ -2231,6 +2349,144 @@ function App() {
         { search_results: collectedSources, research_context: latestResearchContext, is_search_panel_open: true },
         { type: "search_finished", result_count: collectedSources.length }
       );
+    }
+  };
+
+  const handleMoreResearch = async (approved) => {
+    if (!approved || !moreResearchPrompt) {
+      setMoreResearchPrompt(null);
+      return;
+    }
+
+    const gapQueries = moreResearchPrompt.suggestedQueries || [];
+    setMoreResearchPrompt(null);
+    if (gapQueries.length === 0) return;
+
+    const activeSessionId = await ensureSession();
+    setIsResearchingGaps(true);
+    setIsSearching(true);
+    setSearchStatus("Researching identified gaps");
+
+    const seenUrls = new Set(searchResults.map((r) => r.url).filter(Boolean));
+    const collectedSources = [...searchResults];
+    const contextChunks = researchContext?.chunks ? [...researchContext.chunks] : [];
+    let latestResearchContext = researchContext;
+
+    try {
+      const response = await fetch("/api/search", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          session_id: activeSessionId,
+          query: originalQuery,
+          queries: gapQueries,
+          max_hops: 1,
+        }),
+      });
+
+      if (!response.ok || !response.body) throw new Error("Gap research failed.");
+
+      const reader = response.body.getReader();
+      const decoder = new TextDecoder("utf-8");
+      let buffer = "";
+
+      while (true) {
+        const { done, value } = await reader.read();
+        if (done) break;
+        buffer += decoder.decode(value, { stream: true });
+        const lines = buffer.split("\n");
+        buffer = lines.pop() || "";
+        lines.forEach((line) => {
+          if (!line.trim()) return;
+          const event = JSON.parse(line);
+          if (event.type === "result") {
+            if (event.url && !seenUrls.has(event.url)) {
+              seenUrls.add(event.url);
+              collectedSources.push(event);
+              setSearchResults((current) => [...current, event]);
+            }
+          }
+          if (event.type === "progress") {
+            setSearchStatus(event.message || "Researching gaps");
+          }
+          if (event.type === "context_ready") {
+            const newChunks = Array.isArray(event.chunks) ? event.chunks : [];
+            contextChunks.push(...newChunks);
+            latestResearchContext = {
+              chunks: [...contextChunks],
+              context: (latestResearchContext?.context || "") + "\n\n" + (event.context || ""),
+              chunkCount: contextChunks.length,
+              selectedCount: contextChunks.length,
+            };
+            setResearchContext(latestResearchContext);
+          }
+        });
+      }
+
+      // Re-generate the answer with the enriched context
+      if (latestResearchContext?.context) {
+        setAnswerStatus("Re-generating answer with additional research");
+        setFinalAnswer("");
+
+        const answerResponse = await fetch("/api/answer", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            session_id: activeSessionId,
+            query: originalQuery,
+            plan: planSteps,
+            search_queries: [...selectedQueries, ...gapQueries],
+            context: latestResearchContext.context,
+            chunks: latestResearchContext.chunks,
+          }),
+        });
+
+        if (!answerResponse.ok || !answerResponse.body) throw new Error("Answer regeneration failed.");
+
+        const answerReader = answerResponse.body.getReader();
+        const answerDecoder = new TextDecoder("utf-8");
+        let answerBuffer = "";
+        let nextAnswer = "";
+        let frame = null;
+
+        while (true) {
+          const { done, value } = await answerReader.read();
+          if (done) break;
+          answerBuffer += answerDecoder.decode(value, { stream: true });
+          const lines = answerBuffer.split("\n");
+          answerBuffer = lines.pop() || "";
+          lines.forEach((line) => {
+            if (!line.trim()) return;
+            const event = JSON.parse(line);
+            if (event.type === "token") {
+              nextAnswer += event.text || "";
+              if (!frame) {
+                frame = window.requestAnimationFrame(() => {
+                  frame = null;
+                  setFinalAnswer(nextAnswer);
+                });
+              }
+            }
+            if (event.type === "done") {
+              nextAnswer = event.answer || nextAnswer;
+              if (frame) { window.cancelAnimationFrame(frame); frame = null; }
+              setFinalAnswer(nextAnswer);
+            }
+          });
+        }
+
+        await saveSessionState(
+          { final_answer: nextAnswer, search_results: collectedSources, research_context: latestResearchContext },
+          { type: "gap_research_answer_rendered", answer_length: nextAnswer.length }
+        );
+      }
+    } catch (err) {
+      setSearchError(err.message || "Gap research failed.");
+    } finally {
+      setIsSearching(false);
+      setIsResearchingGaps(false);
+      setSearchStatus("");
+      setAnswerStatus("");
     }
   };
 
@@ -2523,6 +2779,63 @@ function App() {
             />
 
             <AnimatePresence>
+              {hopProgress && isSearching && (
+                <motion.div
+                  initial={{ opacity: 0, y: 8 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  exit={{ opacity: 0, y: 8 }}
+                  transition={{ duration: 0.18, ease: "easeOut" }}
+                  className="mt-5 overflow-hidden rounded-[28px] border border-white/10 bg-[#17181b] shadow-[0_18px_60px_rgba(0,0,0,0.28)]"
+                >
+                  <div className="border-b border-white/8 px-5 py-4">
+                    <div className="flex items-center gap-3">
+                      <h2 className="m-0 text-base font-semibold text-stone-100">Multi-hop reasoning</h2>
+                      <span className="rounded-full bg-[#d6c3a1]/15 px-2.5 py-0.5 text-xs font-medium text-[#f5e7cf]">
+                        Hop {hopProgress.hop} / {hopProgress.maxHops}
+                      </span>
+                    </div>
+                    <p className="m-0 mt-1 text-xs text-stone-500">{hopProgress.message}</p>
+                  </div>
+                  <div className="px-5 py-4 space-y-3">
+                    <div className="flex items-center gap-2">
+                      {Array.from({ length: hopProgress.maxHops }, (_, idx) => (
+                        <div key={idx} className="flex-1 flex items-center gap-1">
+                          <div
+                            className={cn(
+                              "h-1.5 flex-1 rounded-full transition-all duration-500",
+                              idx + 1 < hopProgress.hop
+                                ? "bg-[#d6c3a1]/60"
+                                : idx + 1 === hopProgress.hop
+                                  ? "bg-[#d6c3a1] animate-pulse"
+                                  : "bg-white/8"
+                            )}
+                          />
+                        </div>
+                      ))}
+                    </div>
+
+                    {hopProgress.evaluation && (
+                      <div className="space-y-2">
+                        {hopProgress.evaluation.intermediateAnswer && (
+                          <div className="rounded-2xl border border-[#d6c3a1]/15 bg-[#d6c3a1]/[0.035] px-4 py-3">
+                            <p className="m-0 text-xs font-semibold uppercase tracking-wider text-[#d6c3a1]/70 mb-1">Found so far</p>
+                            <p className="m-0 text-sm leading-6 text-stone-200">{hopProgress.evaluation.intermediateAnswer}</p>
+                          </div>
+                        )}
+                        {hopProgress.evaluation.missingInfo && !hopProgress.evaluation.sufficient && (
+                          <div className="rounded-2xl border border-amber-400/15 bg-amber-500/[0.04] px-4 py-3">
+                            <p className="m-0 text-xs font-semibold uppercase tracking-wider text-amber-400/70 mb-1">Still needed</p>
+                            <p className="m-0 text-sm leading-6 text-stone-300">{hopProgress.evaluation.missingInfo}</p>
+                          </div>
+                        )}
+                      </div>
+                    )}
+                  </div>
+                </motion.div>
+              )}
+            </AnimatePresence>
+
+            <AnimatePresence>
               {(answerStatus || finalAnswer) && (
                 <motion.div
                   initial={{ opacity: 0, y: 8 }}
@@ -2543,6 +2856,68 @@ function App() {
                     ) : (
                       <StepIndicator label={answerStatus || "Generating answer with citations"} />
                     )}
+                  </div>
+                </motion.div>
+              )}
+            </AnimatePresence>
+
+            <AnimatePresence>
+              {moreResearchPrompt && !isResearchingGaps && (
+                <motion.div
+                  initial={{ opacity: 0, y: 8, scale: 0.98 }}
+                  animate={{ opacity: 1, y: 0, scale: 1 }}
+                  exit={{ opacity: 0, y: 8, scale: 0.98 }}
+                  transition={{ duration: 0.22, ease: "easeOut" }}
+                  className="mt-4 overflow-hidden rounded-[24px] border border-amber-400/20 bg-amber-500/[0.04] shadow-[0_12px_40px_rgba(0,0,0,0.2)]"
+                >
+                  <div className="px-5 py-4">
+                    <div className="flex items-center gap-2 mb-3">
+                      <div className={cn(
+                        "h-2 w-2 rounded-full",
+                        moreResearchPrompt.severity === "major" ? "bg-amber-400 animate-pulse" : "bg-amber-400/60"
+                      )} />
+                      <h3 className="m-0 text-sm font-semibold text-stone-100">
+                        {moreResearchPrompt.severity === "major" ? "Significant gaps detected" : "Some gaps detected"}
+                      </h3>
+                    </div>
+
+                    {moreResearchPrompt.gaps.length > 0 && (
+                      <div className="mb-3 space-y-1.5">
+                        {moreResearchPrompt.gaps.map((gap, idx) => (
+                          <div key={idx} className="flex gap-2 text-sm leading-6 text-stone-300">
+                            <span className="mt-2 h-1 w-1 shrink-0 rounded-full bg-amber-400/50" />
+                            <span>{gap}</span>
+                          </div>
+                        ))}
+                      </div>
+                    )}
+
+                    {moreResearchPrompt.suggestedQueries.length > 0 && (
+                      <p className="m-0 mb-3 text-xs text-stone-500">
+                        Suggested searches: {moreResearchPrompt.suggestedQueries.join(", ")}
+                      </p>
+                    )}
+
+                    <div className="flex items-center gap-2">
+                      <Button
+                        type="button"
+                        variant="default"
+                        size="sm"
+                        className="h-9 bg-[#d6c3a1]/90 px-4 text-sm text-stone-950 hover:bg-[#d6c3a1]"
+                        onClick={() => handleMoreResearch(true)}
+                      >
+                        Research further
+                      </Button>
+                      <Button
+                        type="button"
+                        variant="ghost"
+                        size="sm"
+                        className="h-9 px-4 text-sm"
+                        onClick={() => handleMoreResearch(false)}
+                      >
+                        Skip
+                      </Button>
+                    </div>
                   </div>
                 </motion.div>
               )}
