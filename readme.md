@@ -11,7 +11,7 @@ Multi-hop question: "Who is the wife of the director of the movie Oppenheimer?"
 (The agent must first search for the director of Oppenheimer -> finds Christopher Nolan. Then it must take that new information and do a second search for Christopher Nolan's wife -> finds Emma Thomas).
 
 
-
+All this new things should not be for the fast-research that is not selecting the deep research option.
 
 How is the evaluation being done ???
 
