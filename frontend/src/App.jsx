@@ -76,10 +76,22 @@ const renderInlineMarkdown = (text) => {
   const tokenPattern = /(\[([^\]]+)\]\((https?:\/\/[^)\s]+)\)|\*\*([^*]+)\*\*|\*([^*\s][^*]*?)\*|(https?:\/\/[^\s)]+))/g;
   let lastIndex = 0;
   let match;
+  let lastPartWasLink = false;
 
   while ((match = tokenPattern.exec(text)) !== null) {
-    if (match.index > lastIndex) {
-      parts.push(text.slice(lastIndex, match.index));
+    const textBetween = text.slice(lastIndex, match.index);
+    const isLink = Boolean((match[2] && match[3]) || match[6]);
+
+    if (textBetween) {
+      // If the gap between two consecutive links is only whitespace, replace it with a comma
+      if (lastPartWasLink && isLink && !textBetween.trim()) {
+        parts.push(", ");
+      } else {
+        parts.push(textBetween);
+      }
+    } else if (lastPartWasLink && isLink) {
+      // No gap at all between two links — insert a comma
+      parts.push(", ");
     }
 
     if (match[2] && match[3]) {
@@ -94,18 +106,21 @@ const renderInlineMarkdown = (text) => {
           {match[2]}
         </a>
       );
+      lastPartWasLink = true;
     } else if (match[4]) {
       parts.push(
         <strong key={`bold-${match.index}`} className="font-semibold text-stone-50">
           {match[4]}
         </strong>
       );
+      lastPartWasLink = false;
     } else if (match[5]) {
       parts.push(
         <em key={`italic-${match.index}`} className="italic text-stone-100">
           {match[5]}
         </em>
       );
+      lastPartWasLink = false;
     } else if (match[6]) {
       const trailingPunctuation = match[6].match(/[.,;:!?]+$/)?.[0] || "";
       const url = trailingPunctuation ? match[6].slice(0, -trailingPunctuation.length) : match[6];
@@ -120,7 +135,12 @@ const renderInlineMarkdown = (text) => {
           {url}
         </a>
       );
-      if (trailingPunctuation) parts.push(trailingPunctuation);
+      if (trailingPunctuation) {
+        parts.push(trailingPunctuation);
+        lastPartWasLink = false;
+      } else {
+        lastPartWasLink = true;
+      }
     }
 
     lastIndex = match.index + match[0].length;
@@ -2781,7 +2801,7 @@ function App() {
             />
 
             <AnimatePresence>
-              {hopProgress && isSearching && (
+              {hopProgress && hopProgress.maxHops > 1 && isSearching && (
                 <motion.div
                   initial={{ opacity: 0, y: 8 }}
                   animate={{ opacity: 1, y: 0 }}

@@ -1280,13 +1280,15 @@ async def execute_search(request: SearchRequest):
             for hop in range(1, max_hops + 1):
                 active_queries = all_attempted_queries if hop == 1 else hop_queries
 
-                yield json.dumps({
-                    "type": "hop_start",
-                    "hop": hop,
-                    "max_hops": max_hops,
-                    "queries": active_queries,
-                    "message": f"Hop {hop} of {max_hops}: searching {len(active_queries)} {'query' if len(active_queries) == 1 else 'queries'}",
-                }) + "\n"
+                # Only emit hop_start events for multi-hop (deep research) mode
+                if max_hops > 1:
+                    yield json.dumps({
+                        "type": "hop_start",
+                        "hop": hop,
+                        "max_hops": max_hops,
+                        "queries": active_queries,
+                        "message": f"Hop {hop} of {max_hops}: searching {len(active_queries)} {'query' if len(active_queries) == 1 else 'queries'}",
+                    }) + "\n"
 
                 # --- Search with zero-result retry ---
                 attempted_queries = active_queries[:]
@@ -1366,8 +1368,9 @@ async def execute_search(request: SearchRequest):
                 }) + "\n"
 
                 # --- Multi-hop evaluation: should we do another hop? ---
-                if hop >= max_hops:
-                    # Reached max hops, stop
+                # Skip multi-hop evaluation entirely for fast search (max_hops == 1)
+                if max_hops <= 1 or hop >= max_hops:
+                    # Single-hop fast search or reached max hops, stop
                     break
 
                 if not all_accumulated_chunks:
