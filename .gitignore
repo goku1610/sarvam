@@ -6,6 +6,8 @@
 # Python
 venv/
 .venv/
+env/
+ENV/
 __pycache__/
 *.py[cod]
 *$py.class
@@ -14,8 +16,15 @@ __pycache__/
 .ruff_cache/
 .coverage
 htmlcov/
+build/
+dist/
+*.egg-info/
 
 # Frontend
+node_modules/
+dist/
+build/
+.vite/
 frontend/node_modules/
 frontend/dist/
 frontend/.vite/
