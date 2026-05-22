@@ -1,0 +1,180 @@
+{
+  "version": 1,
+  "evaluation_mode": "deep_research_only",
+  "notes": "All cases are evaluated with deep research enabled (multi-hop search, comprehensive plan, gap refinement).",
+  "cases": [
+    {
+      "id": "factual_capital_australia",
+      "category": "factual",
+      "query": "What is the capital city of Australia?",
+      "deep_research": true,
+      "expectations": {
+        "min_citations": 1,
+        "min_unique_domains": 1,
+        "requires_uncertainty_language": false,
+        "requires_conflict_language": false
+      },
+      "notes": "Single verifiable fact; answer should cite authoritative sources."
+    },
+    {
+      "id": "factual_speed_of_light",
+      "category": "factual",
+      "query": "What is the speed of light in a vacuum, and how is it defined?",
+      "deep_research": true,
+      "tags": ["numeric"],
+      "expectations": {
+        "min_citations": 1,
+        "min_unique_domains": 1,
+        "requires_uncertainty_language": false,
+        "requires_conflict_language": false
+      },
+      "notes": "Factual question with a well-established numeric answer."
+    },
+    {
+      "id": "multi_hop_oppenheimer_spouse",
+      "category": "multi_hop",
+      "query": "Who is the spouse of the director of the film Oppenheimer (2023)?",
+      "deep_research": true,
+      "expectations": {
+        "min_citations": 1,
+        "min_unique_domains": 2,
+        "min_sources_retrieved": 2,
+        "requires_uncertainty_language": false,
+        "requires_conflict_language": false
+      },
+      "notes": "Requires chaining director identity then spouse information."
+    },
+    {
+      "id": "multi_hop_nobel_birthplace",
+      "category": "multi_hop",
+      "query": "In which city was the 2023 Nobel Prize in Physics winner born?",
+      "deep_research": true,
+      "expectations": {
+        "min_citations": 1,
+        "min_unique_domains": 2,
+        "min_sources_retrieved": 2,
+        "requires_uncertainty_language": false,
+        "requires_conflict_language": false
+      },
+      "notes": "Identify laureate(s) then birthplace."
+    },
+    {
+      "id": "comparison_react_vue",
+      "category": "comparison",
+      "query": "Compare React and Vue for building enterprise dashboards in 2024: ecosystem, learning curve, and performance.",
+      "deep_research": true,
+      "expectations": {
+        "min_citations": 2,
+        "min_unique_domains": 2,
+        "requires_comparison_structure": true,
+        "requires_uncertainty_language": false,
+        "requires_conflict_language": false
+      },
+      "notes": "Should present side-by-side comparison with multiple sources."
+    },
+    {
+      "id": "comparison_ev_hybrid",
+      "category": "comparison",
+      "query": "Compare battery electric vehicles versus hybrid vehicles for urban commuting in terms of cost and emissions.",
+      "deep_research": true,
+      "expectations": {
+        "min_citations": 2,
+        "min_unique_domains": 2,
+        "requires_comparison_structure": true,
+        "requires_uncertainty_language": false,
+        "requires_conflict_language": false
+      },
+      "notes": "Comparison across two technology categories."
+    },
+    {
+      "id": "insufficient_future_apple_project",
+      "category": "insufficient_evidence",
+      "query": "What was Apple's exact internal R&D budget for Project Titan in fiscal year 2035?",
+      "deep_research": true,
+      "expectations": {
+        "min_citations": 0,
+        "requires_uncertainty_language": true,
+        "requires_conflict_language": false
+      },
+      "notes": "Future/internal data unlikely to exist publicly; expect hedging."
+    },
+    {
+      "id": "insufficient_obscure_local",
+      "category": "insufficient_evidence",
+      "query": "How many visitors attended the opening day of the municipal library in Vostok Station, Antarctica in 2019?",
+      "deep_research": true,
+      "expectations": {
+        "min_citations": 0,
+        "requires_uncertainty_language": true,
+        "requires_conflict_language": false
+      },
+      "notes": "Likely no reliable public data; agent should state limits."
+    },
+    {
+      "id": "conflicting_coffee_health",
+      "category": "conflicting_sources",
+      "query": "Is regular coffee consumption good or bad for cardiovascular health? Summarize what evidence says.",
+      "deep_research": true,
+      "expectations": {
+        "min_citations": 2,
+        "min_unique_domains": 2,
+        "requires_uncertainty_language": false,
+        "requires_conflict_language": true
+      },
+      "notes": "Medical literature is mixed; expect explicit disagreement handling."
+    },
+    {
+      "id": "conflicting_intermittent_fasting",
+      "category": "conflicting_sources",
+      "query": "Does intermittent fasting provide meaningful long-term weight loss benefits compared to standard calorie restriction?",
+      "deep_research": true,
+      "expectations": {
+        "min_citations": 2,
+        "min_unique_domains": 2,
+        "requires_uncertainty_language": false,
+        "requires_conflict_language": true
+      },
+      "notes": "Studies and reviews often disagree; cite both sides."
+    },
+    {
+      "id": "multi_turn_summarize_sources",
+      "category": "multi_turn",
+      "query": "What are the main causes of climate change according to recent scientific consensus?",
+      "deep_research": true,
+      "turns": [
+        {
+          "query": "What are the main causes of climate change according to recent scientific consensus?"
+        },
+        {
+          "follow_up": "Summarize the key points from your previous answer in three bullet points and cite the same sources where possible."
+        }
+      ],
+      "expectations": {
+        "min_citations": 1,
+        "requires_follow_up_answer": true,
+        "requires_history_context": true
+      },
+      "notes": "Second turn should use session history without unnecessary new search."
+    },
+    {
+      "id": "multi_turn_compare_followup",
+      "category": "multi_turn",
+      "query": "What are the pros and cons of solar versus wind power for grid-scale electricity?",
+      "deep_research": true,
+      "turns": [
+        {
+          "query": "What are the pros and cons of solar versus wind power for grid-scale electricity?"
+        },
+        {
+          "follow_up": "Which of the two has lower levelized cost of energy according to your sources?"
+        }
+      ],
+      "expectations": {
+        "min_citations": 1,
+        "requires_follow_up_answer": true,
+        "requires_history_context": true
+      },
+      "notes": "Follow-up drills into a comparison dimension from prior research."
+    }
+  ]
+}

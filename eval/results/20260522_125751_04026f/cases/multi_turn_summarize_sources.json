@@ -1,0 +1,305 @@
+{
+  "id": "multi_turn_summarize_sources",
+  "category": "multi_turn",
+  "query": "What are the main causes of climate change according to recent scientific consensus?",
+  "mode": "deep_research",
+  "deep_research": true,
+  "max_hops": 3,
+  "session_id": "40e71367-93a2-4211-bd6c-08889971e27c",
+  "elapsed_seconds": 38.16,
+  "plan": {
+    "title": "Scientific Consensus on Climate Drivers",
+    "plan_steps": [
+      "I will synthesize current reports from major climate research bodies to identify the primary anthropogenic and natural drivers of global warming.",
+      "This research will prioritize peer-reviewed data and consensus statements published through May 2026 to ensure the most accurate scientific perspective."
+    ],
+    "search_queries": [
+      "IPCC Sixth Assessment Report summary of climate change drivers 2026",
+      "scientific consensus on anthropogenic vs natural climate change factors",
+      "recent evidence on greenhouse gas emissions and global temperature rise 2026",
+      "role of land use change and deforestation in current climate models",
+      "NASA and NOAA climate change consensus report 2026",
+      "attribution of extreme weather events to human-induced climate change"
+    ]
+  },
+  "search": {
+    "search_queries": [
+      "IPCC Sixth Assessment Report summary of climate change drivers 2026",
+      "scientific consensus on anthropogenic vs natural climate change factors",
+      "recent evidence on greenhouse gas emissions and global temperature rise 2026",
+      "role of land use change and deforestation in current climate models",
+      "NASA and NOAA climate change consensus report 2026",
+      "attribution of extreme weather events to human-induced climate change",
+      "primary anthropogenic causes of global warming IPCC consensus",
+      "scientific consensus on drivers of climate change NASA NOAA"
+    ],
+    "pages_count": 7,
+    "chunks_count": 15,
+    "hop_count": 2,
+    "selected_count": 15,
+    "unreachable_count": 5,
+    "urls_opened": [
+      "https://en.wikipedia.org/wiki/IPCC_Sixth_Assessment_Report",
+      "https://en.wikipedia.org/wiki/Scientific_consensus_on_climate_change",
+      "https://theclimateconsensus.org/tcc-statement",
+      "https://unu.edu/ehs/article/5-things-watch-climate-and-environment-2026",
+      "https://www.science.org/doi/10.1126/science.1103618",
+      "https://www.ucs.org/resources/global-warming-happening-and-humans-are-primary-cause",
+      "https://www.wri.org/insights/land-use-climate-change-feedback-loop"
+    ],
+    "intermediate_answers": [
+      {
+        "hop": 1,
+        "answer": "The evidence establishes that human-caused greenhouse gas (GHG) emissions, particularly from land-use changes like deforestation and agricultural practices, are a significant driver of climate change. There is also a recognized feedback loop where climate change exacerbates these conditions. However, a comprehensive summary of the broader scientific consensus regarding all primary anthropogenic drivers (such as fossil fuel combustion) is currently lacking due to failed page loads for key authoritative sources."
+      },
+      {
+        "hop": 2,
+        "answer": "There is an overwhelming scientific consensus that global warming is occurring and is primarily driven by human activities. The main anthropogenic cause is the emission of heat-trapping greenhouse gases (GHGs), particularly carbon dioxide (CO2), resulting from activities such as land-use changes (deforestation, agriculture) and industrial processes. These emissions create a warming effect that is further exacerbated by feedback loops, such as the loss of forests and wetlands which reduces the planet's capacity to sequester carbon."
+      }
+    ]
+  },
+  "answer": {
+    "raw_answer": "## Summary\nThere is an overwhelming scientific consensus that the Earth is warming at an unprecedented rate and that human activities are the primary driver of this change. The fundamental cause is the emission of heat-trapping greenhouse gases (GHGs)\u2014particularly carbon dioxide (CO2)\u2014resulting from fossil fuel combustion, industrial processes, and land-use changes such as deforestation and agriculture.\n\n## The Scientific Consensus on Human Causation\nThe scientific community is in near-unanimous agreement that recent global warming is driven by human activity. Multiple studies and assessments from leading scientific bodies confirm that the warming trend observed since the Industrial Revolution is unprecedented and directly linked to anthropogenic emissions.\n\n<details>\n<summary>Evidence of scientific consensus</summary>\n\n*   **Robust Agreement:** Peer-reviewed research consistently shows that over 97% of climate scientists agree that global warming is real and primarily caused by humans [Global Warming is Happening and Humans are the Primary Cause \u2014 www.ucs.org](https://www.ucs.org/resources/global-warming-happening-and-humans-are-primary-cause). More recent studies have indicated that this consensus has grown, with some findings suggesting agreement levels exceeding 99% or even 100% in the scientific literature [Scientific consensus on climate change - Wikipedia \u2014 en.wikipedia.org](https://en.wikipedia.org/wiki/Scientific_consensus_on_climate_change).\n*   **Institutional Statements:** Major scientific organizations, including the American Association for the Advancement of Science (AAAS) and the American Chemical Society, have issued formal statements affirming that greenhouse gases emitted by human activities are the primary driver of climate change [Global Warming is Happening and Humans are the Primary Cause \u2014 www.ucs.org](https://www.ucs.org/resources/global-warming-happening-and-humans-are-primary-cause).\n*   **IPCC Findings:** The Intergovernmental Panel on Climate Change (IPCC) has stated unambiguously that human influence on the climate system is clear, noting that recent anthropogenic emissions of greenhouse gases are the highest in history [Global Warming is Happening and Humans are the Primary Cause \u2014 www.ucs.org](https://www.ucs.org/resources/global-warming-happening-and-humans-are-primary-cause).\n</details>\n\n## Primary Drivers of Climate Change\nThe warming of the climate system is primarily attributed to the accumulation of greenhouse gases in the atmosphere. While natural factors exist, the rapid increase in global temperatures is driven by human-induced emissions.\n\n### Anthropogenic Drivers\nThe following table summarizes the primary human activities contributing to climate change:\n\n| Driver | Mechanism | Impact |\n| :--- | :--- | :--- |\n| **Fossil Fuel Combustion** | Release of CO2 and other GHGs from energy, transport, and industry. | Primary source of atmospheric warming. |\n| **Deforestation** | Removal of trees reduces carbon sequestration capacity. | Increases atmospheric CO2; contributes to feedback loops. |\n| **Agriculture** | Land-use changes, plowing grasslands, and draining wetlands. | Releases stored carbon; accounts for significant GHG emissions. |\n\n<details>\n<summary>Detailed analysis of anthropogenic drivers</summary>\n\n*   **Greenhouse Gas Emissions:** The burning of fossil fuels is a central driver of climate change, releasing heat-trapping emissions that alter the Earth's energy balance [Global Warming is Happening and Humans are the Primary Cause \u2014 www.ucs.org](https://www.ucs.org/resources/global-warming-happening-and-humans-are-primary-cause).\n*   **Land-Use Change:** Deforestation and agricultural practices are significant contributors, accounting for nearly 25% of human-caused greenhouse gas emissions [Land Use Changed the Climate. Now Climate's Changing the Land \u2014 www.wri.org](https://www.wri.org/insights/land-use-climate-change-feedback-loop).\n*   **Feedback Loops:** A critical aspect of current climate science is the recognition of a two-way relationship between land use and climate. While land-use changes drive warming, the resulting climate change (e.g., hotter, drier conditions) leads to further loss of forests and wetlands, which in turn reduces the planet's capacity to sequester carbon [Land Use Changed the Climate. Now Climate's Changing the Land \u2014 www.wri.org](https://www.wri.org/insights/land-use-climate-change-feedback-loop).\n</details>\n\n## Climate Feedback Loops\nThe relationship between human activity and climate change is increasingly characterized by feedback loops. As the climate warms, it alters natural systems in ways that accelerate further warming.\n\n<details>\n<summary>Evidence of feedback mechanisms</summary>\n\n*   **Wildfires:** A warming climate creates hotter, drier conditions that escalate fire risk. Emissions from forest fires have increased by 60% since 2001, creating a cycle where climate change drives forest loss, which releases more carbon into the atmosphere [Land Use Changed the Climate. Now Climate's Changing the Land \u2014 www.wri.org](https://www.wri.org/insights/land-use-climate-change-feedback-loop).\n*   **Hydrological Impacts:** Climate-induced droughts and extreme weather events, such as stronger storms, are degrading ecosystems like river basins and wetlands. This degradation limits the environment's ability to act as a carbon sink, further exacerbating the warming trend [Land Use Changed the Climate. Now Climate's Changing the Land \u2014 www.wri.org](https://www.wri.org/insights/land-use-climate-change-feedback-loop).\n</details>\n\n## Key Takeaways\n*   **Human Causation:** There is overwhelming scientific consensus that human activities, specifically the emission of greenhouse gases, are the primary cause of modern global warming.\n*   **Primary Sources:** The main drivers are fossil fuel combustion and land-use changes, including deforestation and industrial agriculture.\n*   **Feedback Loops:** Climate change is not just a result of human activity; it is also a driver of environmental degradation (e.g., increased wildfires and drought), which creates a self-reinforcing cycle of warming.",
+    "final_answer": "The following points summarize the scientific consensus regarding the causes of climate change:\n\n*   **Overwhelming Scientific Consensus:** There is near-unanimous agreement among the global scientific community that the Earth is warming at an unprecedented rate and that human activity is the primary driver of this trend [Global Warming is Happening and Humans are the Primary Cause \u2014 www.ucs.org](https://www.ucs.org/resources/global-warming-happening-and-humans-are-primary-cause). Peer-reviewed research consistently indicates that over 97% of climate scientists and scientific articles confirm this human-caused warming [Global Warming is Happening and Humans are the Primary Cause \u2014 www.ucs.org](https://www.ucs.org/resources/global-warming-happening-and-humans-are-primary-cause).\n*   **Primary Drivers of Warming:** The fundamental cause of recent climate change is the emission of heat-trapping greenhouse gases (GHGs), such as carbon dioxide, resulting from fossil fuel combustion and industrial processes [Global Warming is Happening and Humans are the Primary Cause \u2014 www.ucs.org](https://www.ucs.org/resources/global-warming-happening-and-humans-are-primary-cause). Additionally, land-use changes\u2014specifically deforestation and agriculture\u2014account for nearly 25% of human-caused GHG emissions [Land Use Changed the Climate. Now Climate's Changing the Land \u2014 www.wri.org](https://www.wri.org/insights/land-use-climate-change-feedback-loop).\n*   **Dangerous Feedback Loops:** The relationship between land use and climate change is a two-way street; while human land-use practices contribute to warming, climate change itself is increasingly degrading natural ecosystems (such as forests and wetlands) through intensified wildfires, droughts, and storms, which in turn exacerbates the release of greenhouse gases [Land Use Changed the Climate. Now Climate's Changing the Land \u2014 www.wri.org](https://www.wri.org/insights/land-use-climate-change-feedback-loop).",
+    "citation_validation": {
+      "allowed_url_count": 7,
+      "corrected_citation_count": 0,
+      "removed_citation_count": 0
+    },
+    "gap_analysis": {
+      "has_gaps": true,
+      "gaps": [
+        "The answer is incomplete as it cuts off mid-sentence in the 'Feedback Loops' section, failing to explain the mechanism or significance of these loops in the context of climate change."
+      ],
+      "suggested_queries": [
+        "what are climate change feedback loops and how do they accelerate warming",
+        "examples of positive and negative climate feedback loops"
+      ],
+      "severity": "minor"
+    }
+  },
+  "follow_up": {
+    "final_answer": "The following points summarize the scientific consensus regarding the causes of climate change:\n\n*   **Overwhelming Scientific Consensus:** There is near-unanimous agreement among the global scientific community that the Earth is warming at an unprecedented rate and that human activity is the primary driver of this trend [Global Warming is Happening and Humans are the Primary Cause \u2014 www.ucs.org](https://www.ucs.org/resources/global-warming-happening-and-humans-are-primary-cause). Peer-reviewed research consistently indicates that over 97% of climate scientists and scientific articles confirm this human-caused warming [Global Warming is Happening and Humans are the Primary Cause \u2014 www.ucs.org](https://www.ucs.org/resources/global-warming-happening-and-humans-are-primary-cause).\n*   **Primary Drivers of Warming:** The fundamental cause of recent climate change is the emission of heat-trapping greenhouse gases (GHGs), such as carbon dioxide, resulting from fossil fuel combustion and industrial processes [Global Warming is Happening and Humans are the Primary Cause \u2014 www.ucs.org](https://www.ucs.org/resources/global-warming-happening-and-humans-are-primary-cause). Additionally, land-use changes\u2014specifically deforestation and agriculture\u2014account for nearly 25% of human-caused GHG emissions [Land Use Changed the Climate. Now Climate's Changing the Land \u2014 www.wri.org](https://www.wri.org/insights/land-use-climate-change-feedback-loop).\n*   **Dangerous Feedback Loops:** The relationship between land use and climate change is a two-way street; while human land-use practices contribute to warming, climate change itself is increasingly degrading natural ecosystems (such as forests and wetlands) through intensified wildfires, droughts, and storms, which in turn exacerbates the release of greenhouse gases [Land Use Changed the Climate. Now Climate's Changing the Land \u2014 www.wri.org](https://www.wri.org/insights/land-use-climate-change-feedback-loop).",
+    "citation_validation": {
+      "allowed_url_count": 7,
+      "corrected_citation_count": 0,
+      "removed_citation_count": 0
+    },
+    "search_queries": [],
+    "urls_opened": [],
+    "chunks": [
+      {
+        "text": "misrepresent and aggrandize \u201c scientific uncertainty \u201d to undermine climate science consensus. When it comes to scientific consensus on global warming, it is important to clarify what type of uncertainty exists, and what type does not: there is strong certainty on the types of impacts that global warming is causing (or would be likely to cause under a given scenario for emissions), but less certainty on the exact timing and intensity of these impacts. Report When Rising Seas Hit Home There comes a threshold of chronic flooding that makes normal routines impossible and forces communities to make difficult, often costly choices. For instance, on the issue of sea level rise, we know with certainty that it will happen \u2013 it is already happening \u2013 and projections under different scenarios give us a range of possible rise. We don\u2019t know an exact value, however, for future sea level rise, because in large part it is dependent on the rate of future emissions, which is unknown. If emissions continue in a \u201cbusiness as usual\u201d fashion, the sea level rise will be closer to the higher range of projections. But if we significantly reduce emissions, the rise will be closer to the lower levels of projections. The same is true for how much warming will actually happen, or how much land-based ice and glaciers will melt. All these things are already happening, but future rates are not known because they, too, depend on the rate of future emissions. What scientists can calculate quite",
+        "url": "https://www.ucs.org/resources/global-warming-happening-and-humans-are-primary-cause",
+        "domain": "www.ucs.org",
+        "title": "Global Warming is Happening and Humans are the Primary Cause",
+        "query": "primary anthropogenic causes of global warming IPCC consensus",
+        "rank": 1,
+        "retrieved_at": "2026-05-22T13:04:05.992133",
+        "chunk_index": 3,
+        "bm25_score": 1.0,
+        "source_id": 1
+      },
+      {
+        "text": "of human-caused greenhouse gas (GHG) emissions . One might think this effect is uni-directional: Cutting down trees, plowing up grasslands and draining wetlands release GHGs that fuel climate change. But satellite monitoring shows that this relationship is a two-way street. Climate change itself is increasingly leading to the loss and degradation of forests, grasslands, wetlands, rivers and even farms, creating a dangerous feedback loop. Hotter, Drier Conditions Accelerate Forest Fires Let\u2019s look at wildfires. As the graphic below shows, large-scale fires burned more than twice as much forest over the past decade (2015-2024) than they did in the previous one (2001-2010). A warming climate is creating hotter, drier conditions for longer periods of time, escalating fire risk . Data available on Global Forest Watch. Fire accounted for one-third of land cover change globally in 2023. Boreal and humid tropical regions \u2014 home to the world\u2019s last great tracts of natural forest \u2014 have experienced especially dramatic increases in forest loss due to fire. This trend is driven by a warming climate. Emissions from forest fires have increased 60% since 2001, largely due to more fires in boreal forests. Correlation between boreal forest loss due to fire and global temperature ( r 2=0.67) and humid tropical forest loss due to fire and global temperature ( r 2=0.85), where each point is a three-year moving average of both area and temperature. Droughts Kill Trees, Deplete Rivers Meanwhile, climate change-induced droughts are destroying crops, killing trees and depleting river basins to record lows.",
+        "url": "https://www.wri.org/insights/land-use-climate-change-feedback-loop",
+        "domain": "www.wri.org",
+        "title": "Land Use Changed the Climate. Now Climate's Changing the Land",
+        "query": "role of land use change and deforestation in current climate models",
+        "rank": 1,
+        "retrieved_at": "2026-05-22T13:03:50.718214",
+        "chunk_index": 1,
+        "bm25_score": 0.944094723665581,
+        "source_id": 2
+      },
+      {
+        "text": "Global Warming is Happening and Humans are the Primary Cause | Union of Concerned Scientists Skip to main content Close \u00d7 Reports & Multimedia / Explainer Scientists Agree: Global Warming is Happening and Humans are the Primary Cause Published Aug 3, 2017 Updated Jan 9, 2018 As the sea level rises, the low-lying Keys are increasingly at risk. Photo: Key West Citizen Table of Contents The evidence is overwhelming. Record-breaking temperatures, humidity, and sea level rise, along with many other indicators, show that the Earth is warming fast, and that all the heat-trapping emissions we release into the atmosphere from burning fossil fuels is changing our climate. Report The Climate Accountability Scorecard An in-depth analysis of eight leading fossil fuel companies assesses their climate actions and ranks them on their climate planning, policies, disclosure, and disinformation. The time to act is now. But action isn't easy: many powerful industry interests have hindered climate solutions and spread dangerous myths about climate change. One of the preferred tactics these groups use to sow confusion is to promote studies that either ignore or misrepresent the evidence of thousands of articles published in well-established and well-respected scientific journals, which show that global warming is happening and that it is caused by humans. No matter how much contrarians try to cloak reality, the evidence is not going away. Scientific consensus Widespread scientific consensus Scientists worldwide agree that global warming is happening, and that human activity causes it. The IPCC Fifth Assessment Report ( AR5 ),",
+        "url": "https://www.ucs.org/resources/global-warming-happening-and-humans-are-primary-cause",
+        "domain": "www.ucs.org",
+        "title": "Global Warming is Happening and Humans are the Primary Cause",
+        "query": "primary anthropogenic causes of global warming IPCC consensus",
+        "rank": 1,
+        "retrieved_at": "2026-05-22T13:04:05.992133",
+        "chunk_index": 0,
+        "bm25_score": 0.7986979587104995,
+        "source_id": 3
+      },
+      {
+        "text": "r 2=0.67) and humid tropical forest loss due to fire and global temperature ( r 2=0.85), where each point is a three-year moving average of both area and temperature. Droughts Kill Trees, Deplete Rivers Meanwhile, climate change-induced droughts are destroying crops, killing trees and depleting river basins to record lows. Satellite images allow us to see the detailed impacts of drier conditions on the planet\u2019s surface. For example, southeastern Australia reached its driest month in at least 110 years in September 2023. \u201c Flash droughts\u201d like the one shown below, where unusually rapid drying occurs due to lack of precipitation and unusually high heat, are increasing. That\u2019s a problem not only for water use, but for trees, crops and other vegetation. Drought impacts in southeastern Australia in September 2023 captured as interannual vegetation loss by the OPERA DIST-ALERT product (Pickens et al., 2025). Red areas indicate areas where plants and crops dried out or died due to extreme heat and lack of rainfall. The Amazon River also reached record-low levels in October 2023. The port city of Manaus experienced its lowest water levels in 121 years of measurement, limiting navigation and threatening wildlife. Fears of the Amazon crossing a tipping point \u2014 where climate change increases the intensity and length of dry periods so much that rainforests turn into savannas \u2014 may now be playing out, with fires and droughts driving the conversion. The image below shows the drop in water levels for the Rio Negro, located just above Manaus",
+        "url": "https://www.wri.org/insights/land-use-climate-change-feedback-loop",
+        "domain": "www.wri.org",
+        "title": "Land Use Changed the Climate. Now Climate's Changing the Land",
+        "query": "role of land use change and deforestation in current climate models",
+        "rank": 1,
+        "retrieved_at": "2026-05-22T13:03:50.718214",
+        "chunk_index": 2,
+        "bm25_score": 0.8257778147083287,
+        "source_id": 4
+      },
+      {
+        "text": "happening and that it is caused by humans. No matter how much contrarians try to cloak reality, the evidence is not going away. Scientific consensus Widespread scientific consensus Scientists worldwide agree that global warming is happening, and that human activity causes it. The IPCC Fifth Assessment Report ( AR5 ), written by a panel of hundreds of climate experts and scientists from member countries of the World Meteorological Organization the United Nations Environmental Programme , plus a team of external reviewers, states unambiguously: Human influence on the climate system is clear, and recent anthropogenic emissions of green-house gases are the highest in history. [\u2026] Warming of the climate system is unequivocal, and since the 1950s, many of the observed changes are unprecedented over decades to millennia. Building on two previous studies, a landmark 2013 peer-reviewed study evaluated 10,306 scientists to confirm that over 97 percent climate scientists agree, and over 97 percent of scientific articles find that global warming is real and largely caused by humans. A 2016 peer-reviewed paper examined existing studies on consensus in climate research, and concluded that the 97 percent estimate is robust. This level of consensus is equivalent to the level of agreement among scientists that smoking causes cancer \u2013 a statement that very few people, if any, contest today. The US public also increasingly agrees that global warming is happening. A 2016 poll from Yale found that 70 percent of US residents believe global warming is happening, while record low numbers of people (12",
+        "url": "https://www.ucs.org/resources/global-warming-happening-and-humans-are-primary-cause",
+        "domain": "www.ucs.org",
+        "title": "Global Warming is Happening and Humans are the Primary Cause",
+        "query": "primary anthropogenic causes of global warming IPCC consensus",
+        "rank": 1,
+        "retrieved_at": "2026-05-22T13:04:05.992133",
+        "chunk_index": 1,
+        "bm25_score": 0.6997728745297009,
+        "source_id": 5
+      },
+      {
+        "text": "5 Graphics Explain the Land-Climate Connection | World Resources Institute Skip to main content Accessibility Donate Click to see more Ways to Give Join us Contact an Expert Explore WRI Perspectives Back Filter Your Site Experience by Topic Applying the filters below will filter all articles, data, insights and projects by the topic area you select. All Topics Remove filter Climate filter site by Climate Cities filter site by Cities Energy filter site by Energy Food filter site by Food Forests filter site by Forests Freshwater filter site by Freshwater Ocean filter site by Ocean Business filter site by Business Economics filter site by Economics Finance filter site by Finance Equity & Governance filter site by Equity & Governance Search WRI.org Not sure where to find something? Search all of the site's content. Ways to Give Join us Contact an Expert Explore WRI Perspectives INSIGHTS Charted Land Use Changed the Climate. Now Climate\u2019s Changing the Land By: Matt Hansen and Craig Hanson January 13, 2026 Explore More: land use climate change agriculture deforestation Climate Forests COP30 Image by BGSmith/Shutterstock Land-use change has long been recognized as a major contributor to global warming. Deforestation and agriculture alone account for nearly 25% of human-caused greenhouse gas (GHG) emissions . One might think this effect is uni-directional: Cutting down trees, plowing up grasslands and draining wetlands release GHGs that fuel climate change. But satellite monitoring shows that this relationship is a two-way street. Climate change itself is increasingly leading to the loss and",
+        "url": "https://www.wri.org/insights/land-use-climate-change-feedback-loop",
+        "domain": "www.wri.org",
+        "title": "Land Use Changed the Climate. Now Climate's Changing the Land",
+        "query": "role of land use change and deforestation in current climate models",
+        "rank": 1,
+        "retrieved_at": "2026-05-22T13:03:50.718214",
+        "chunk_index": 0,
+        "bm25_score": 0.7172011079999975,
+        "source_id": 6
+      },
+      {
+        "text": "levels of projections. The same is true for how much warming will actually happen, or how much land-based ice and glaciers will melt. All these things are already happening, but future rates are not known because they, too, depend on the rate of future emissions. What scientists can calculate quite confidently is a narrow range of outcomes within a given scenario\u2014meaning the likely highest and lowest values if we continue on a certain path of emissions. This information is critical to making smart collective choices and for planning for the future. Uncertainties are not a reason to delay action on climate change. Quite the contrary: those uncertainties are really a consequence of our collective choices, and a risk we must prepare for. You can think about it like car insurance: everyone hopes they won\u2019t be in a car accident but have accident insurance anyway, even though the likelihood is very low. Climate adaptation and climate risk reduction are \u201cinsurance\u201d against the effects of climate change, which in contrast are NOT low-probability events, but highly likely and predicted with high levels of certainty under specific conditions. Being prepared for these scenarios is simply smart planning. Nobody wants to be caught unaware and unprepared. Consensus worldwide Report Killer Heat in the United States Extreme heat is poised to rise steeply in frequency and severity over the coming decades, bringing unprecedented health risks for people across the US. Consensus worldwide Many scientific societies and academies have released statements and studies that highlight the",
+        "url": "https://www.ucs.org/resources/global-warming-happening-and-humans-are-primary-cause",
+        "domain": "www.ucs.org",
+        "title": "Global Warming is Happening and Humans are the Primary Cause",
+        "query": "primary anthropogenic causes of global warming IPCC consensus",
+        "rank": 1,
+        "retrieved_at": "2026-05-22T13:04:05.992133",
+        "chunk_index": 4,
+        "bm25_score": 0.7216997428934249,
+        "source_id": 7
+      },
+      {
+        "text": "nearly 200,000 hectares of farmland in Malawi. The country has historically experienced one cyclone every seven years; five have hit Malawi in the past seven years alone. Landslides on the eastern face of the Mulanje Massif in southern Malawi caused by Cyclone Freddy in 2023. Maroon areas identify where vegetation was stripped away by landslides, flooding, and flowing debris, as detected by UMD\u2019s OPERA DIST-ALERT (Pickens et al., 2025). Acting on Climate and Nature Together Actions to curtail GHG emissions and conserve nature are more urgently needed \u2014 and more interconnected \u2014 than ever. The world needs to double-down on advancing the energy transition to address the largest source of GHG emissions. This means adding more clean energy, electric vehicles, energy efficiency and smart city designs. The world also needs to stop ecosystem conversion and halt the dangerous nature-climate feedback loop. This means producing the food we need with less land and resources, reducing demand for land-intensive products like beef , protecting the nature that remains, and restoring what\u2019s been lost . The causality between climate change and land-use change goes both ways \u2014 so, too, do the solutions. This piece was originally published on November 11, 2025. It was updated in January 2026. Contributors: The authors thank Nancy Harris, Fred Stolle, Sarah Parsons, Paige Johnson and Oscar Senar for helpful suggestions that improved this article. Featured WRI Experts: Craig Hanson - Managing Director, Programs Relevant Work Forests 5 Graphics Explain the Climate-Fire Feedback Loop Insights August 1, 2025 Forests",
+        "url": "https://www.wri.org/insights/land-use-climate-change-feedback-loop",
+        "domain": "www.wri.org",
+        "title": "Land Use Changed the Climate. Now Climate's Changing the Land",
+        "query": "role of land use change and deforestation in current climate models",
+        "rank": 1,
+        "retrieved_at": "2026-05-22T13:03:50.718214",
+        "chunk_index": 4,
+        "bm25_score": 0.5670656042392545,
+        "source_id": 8
+      },
+      {
+        "text": "point \u2014 where climate change increases the intensity and length of dry periods so much that rainforests turn into savannas \u2014 may now be playing out, with fires and droughts driving the conversion. The image below shows the drop in water levels for the Rio Negro, located just above Manaus where it joins the main stem of the Amazon River. Left image is PlanetScope monthly true color composite for October 2022, center image is PlanetScope monthly true color composite for 2023 (Planet Labs PBC), and right image is Landsat-derived monthly surface water extent, where red is October surface water loss for 2023 compared to 2022 from Land & Carbon Lab data (Pickens et al., 2020). Stronger Storms Are a Growing Threat to Nature and People Finally, let\u2019s look at storms. A warmer climate creates more energy, fueling storms that are stronger and longer-lived . These storms impact natural ecosystems as well as cities and farms through landslides, erosion, floods and \u201cwindthrow,\u201d where strong winds knock down trees. The satellite image below shows the impact of landslides caused by cyclone Freddy, the longest-lived cyclone on record. The 2023 storm caused more than 1,000 deaths, displaced more than 600,000 people, and destroyed nearly 200,000 hectares of farmland in Malawi. The country has historically experienced one cyclone every seven years; five have hit Malawi in the past seven years alone. Landslides on the eastern face of the Mulanje Massif in southern Malawi caused by Cyclone Freddy in 2023. Maroon areas identify where vegetation",
+        "url": "https://www.wri.org/insights/land-use-climate-change-feedback-loop",
+        "domain": "www.wri.org",
+        "title": "Land Use Changed the Climate. Now Climate's Changing the Land",
+        "query": "role of land use change and deforestation in current climate models",
+        "rank": 1,
+        "retrieved_at": "2026-05-22T13:03:50.718214",
+        "chunk_index": 3,
+        "bm25_score": 0.6072176213847036,
+        "source_id": 9
+      },
+      {
+        "text": "and unprepared. Consensus worldwide Report Killer Heat in the United States Extreme heat is poised to rise steeply in frequency and severity over the coming decades, bringing unprecedented health risks for people across the US. Consensus worldwide Many scientific societies and academies have released statements and studies that highlight the overwhelming consensus on climate change science. American Association for the Advancement of Science: AAAS Reaffirms the Reality of Human-Caused Climate Change \u201cObservations throughout the world make it clear that climate change is occurring, and rigorous scientific research concludes that the greenhouse gases emitted by human activities are the primary driver. This conclusion is based on multiple independent lines of evidence and the vast body of peer-reviewed science.\u201d (June 2016) American Chemical Society : Statement on Global Climate Change \u201cThe Earth\u2019s climate is changing in response to increasing concentrations of greenhouse gases (GHGs) and particulate matter in the atmosphere, largely as the result of human activities. \u2026 Unmitigated climate change will lead to increases in extreme weather events and will cause significant sea level rise, causing property damage and population displacement. It also will continue to degrade ecosystems and natural resources, affecting food and water availability and human health, further burdening economies and societies. Continued uncontrolled GHG emissions will accelerate and compound the effects and risks of climate change well into the future.\u201d (2016) American Geophysical Union : Human-induced Climate Change Requires Urgent Action. \"Extensive, independent observations confirm the reality of global w",
+        "url": "https://www.ucs.org/resources/global-warming-happening-and-humans-are-primary-cause",
+        "domain": "www.ucs.org",
+        "title": "Global Warming is Happening and Humans are the Primary Cause",
+        "query": "primary anthropogenic causes of global warming IPCC consensus",
+        "rank": 1,
+        "retrieved_at": "2026-05-22T13:04:05.992133",
+        "chunk_index": 5,
+        "bm25_score": 0.5296431537726066,
+        "source_id": 10
+      },
+      {
+        "text": "[Content unreachable] This relevant search result was selected, but the page content could not be read. Reason: non-200 response. HTTP status: 403.\nSearch snippet: According to the report, the main source of the increase in global warming is due to the increase in CO 2 emissions, stating that it is likely or very likely to",
+        "url": "https://en.wikipedia.org/wiki/IPCC_Sixth_Assessment_Report",
+        "domain": "en.wikipedia.org",
+        "title": "IPCC Sixth Assessment Report - Wikipedia",
+        "query": "IPCC Sixth Assessment Report summary of climate change drivers 2026",
+        "rank": 1,
+        "retrieved_at": "2026-05-22T13:03:50.542460",
+        "chunk_index": 0,
+        "content_unreachable": true,
+        "fetch_error": "non-200 response",
+        "http_status": 403
+      },
+      {
+        "text": "[Content unreachable] This relevant search result was selected, but the page content could not be read. Reason: non-200 response. HTTP status: 403.\nSearch snippet: Such statements suggest that there might be substantive disagreement in the scientific community about the reality of anthropogenic climate",
+        "url": "https://www.science.org/doi/10.1126/science.1103618",
+        "domain": "www.science.org",
+        "title": "The Scientific Consensus on Climate Change - Science",
+        "query": "scientific consensus on anthropogenic vs natural climate change factors",
+        "rank": 1,
+        "retrieved_at": "2026-05-22T13:03:50.409069",
+        "chunk_index": 0,
+        "content_unreachable": true,
+        "fetch_error": "non-200 response",
+        "http_status": 403
+      },
+      {
+        "text": "[Content unreachable] This relevant search result was selected, but the page content could not be read. Reason: non-200 response. HTTP status: 403.\nSearch snippet: As Earth's temperatures rise from human-induced greenhouse gas emissions, the 1.5\u00b0C overshoot is likely. The latest WMO Global Annual to Decadal",
+        "url": "https://unu.edu/ehs/article/5-things-watch-climate-and-environment-2026",
+        "domain": "unu.edu",
+        "title": "5 Things to Watch in Climate and Environment in 2026",
+        "query": "recent evidence on greenhouse gas emissions and global temperature rise 2026",
+        "rank": 1,
+        "retrieved_at": "2026-05-22T13:03:50.333933",
+        "chunk_index": 0,
+        "content_unreachable": true,
+        "fetch_error": "non-200 response",
+        "http_status": 403
+      },
+      {
+        "text": "[Content unreachable] This relevant search result was selected, but the page content could not be read. Reason: non-200 response. HTTP status: 403.\nSearch snippet: **A Statement from The Climate Consensus on the Urgent Need to Preserve Federal Climate Science and the Agencies that Serve the Public**. This includes the National Oceanic and Atmospheric Administration (NOAA) and its line offices such as the National Weather Service (NWS), the National Aeronautics and Space Administration (NASA), the National Science Foundation (NSF), the Environmental Protection Agency (EPA), the Department of Energy (DOE), and potentially even the elimination of the U.S. Global Change Research Program (Colman 2025). These agencies provide vital climate data, satellite observations, research, public warnings, and resources that are essential for protecting life and property, supporting local economies, and informing national security, agriculture, energy planning, and disaster response. In parallel, other agencies are also under threat: climate-related grants from the National Parks Service face elimination, and funding for the U.S. Geological Survey, Department of Energy, and Department of Defense is facing sharp cuts (USA Today, 2025, The New York Times 2025). In short: it would decimate U.S. climate research at a time when we can least afford it.",
+        "url": "https://theclimateconsensus.org/tcc-statement",
+        "domain": "theclimateconsensus.org",
+        "title": "TCC Statement \u2014 The Climate Consensus",
+        "query": "NASA and NOAA climate change consensus report 2026",
+        "rank": 1,
+        "retrieved_at": "2026-05-22T13:03:50.852197",
+        "chunk_index": 0,
+        "content_unreachable": true,
+        "fetch_error": "non-200 response",
+        "http_status": 403
+      },
+      {
+        "text": "[Content unreachable] This relevant search result was selected, but the page content could not be read. Reason: non-200 response. HTTP status: 403.\nSearch snippet: # Scientific consensus on climate change. There is scientific consensus that the Earth has been consistently warming since the start of the Industrial Revolution, that the rate of recent warming is largely unprecedented,:\u200a8:\u200a11 and that this warming is mainly the result of a rapid increase in atmospheric carbon dioxide (CO2) caused by human activities. A 2019 review of scientific papers found the consensus on the cause of climate change to be at 100%, and a 2021 study concluded that over 99% of scientific papers agree on the human cause of climate change. In the scientific literature, there is a very strong consensus that global surface temperatures have increased in recent decades and that the trend is caused by human-induced emissions of greenhouse gases. A 2016 reanalysis confirmed that \"the finding of 97% consensus [that humans are causing recent global warming] in published climate research is robust and consistent with other surveys of climate scientists and peer-reviewed studies.\" A 2019 study found scientific consensus to be at 100%, and a 2021 study found that consensus exceeded 99%.",
+        "url": "https://en.wikipedia.org/wiki/Scientific_consensus_on_climate_change",
+        "domain": "en.wikipedia.org",
+        "title": "Scientific consensus on climate change - Wikipedia",
+        "query": "scientific consensus on drivers of climate change NASA NOAA",
+        "rank": 2,
+        "retrieved_at": "2026-05-22T13:04:04.154589",
+        "chunk_index": 0,
+        "content_unreachable": true,
+        "fetch_error": "non-200 response",
+        "http_status": 403
+      }
+    ],
+    "answered_from_existing_context": true,
+    "follow_up_search_reason": "The user is asking for a summary of information already provided in the previous turn, which is fully supported by the saved context.",
+    "history_context_nonempty": true
+  },
+  "metrics": {
+    "citation_count": 5,
+    "grounded_citation_rate": 1.0,
+    "format_compliance_rate": 1.0,
+    "unique_domains_cited": 2,
+    "cited_domains": [
+      "ucs.org",
+      "wri.org"
+    ],
+    "sources_retrieved": 7,
+    "context_chunks_selected": 15,
+    "hop_count": 2,
+    "uncertainty_language": false,
+    "conflict_language": false,
+    "comparison_structure": false,
+    "category_pass": true,
+    "failures": [],
+    "citation_validation": {
+      "allowed_url_count": 7,
+      "corrected_citation_count": 0,
+      "removed_citation_count": 0
+    }
+  },
+  "judge": null
+}

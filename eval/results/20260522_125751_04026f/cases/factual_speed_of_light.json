@@ -1,0 +1,87 @@
+{
+  "id": "factual_speed_of_light",
+  "category": "factual",
+  "query": "What is the speed of light in a vacuum, and how is it defined?",
+  "mode": "deep_research",
+  "deep_research": true,
+  "max_hops": 3,
+  "session_id": "7f0627a3-17fa-4602-8989-626e3b04882d",
+  "elapsed_seconds": 44.84,
+  "plan": {
+    "title": "Defining the Speed of Light",
+    "plan_steps": [
+      "This research will identify the precise numerical value of the speed of light in a vacuum as established by international standards.",
+      "It will further investigate the historical shift in the SI system that redefined the meter based on this constant."
+    ],
+    "search_queries": [
+      "exact speed of light in vacuum m/s",
+      "how is the speed of light defined in SI units",
+      "history of the definition of the meter and speed of light",
+      "CGPM 1983 resolution speed of light",
+      "is the speed of light a defined constant or measured value"
+    ]
+  },
+  "search": {
+    "search_queries": [
+      "exact speed of light in vacuum m/s",
+      "how is the speed of light defined in SI units",
+      "history of the definition of the meter and speed of light",
+      "CGPM 1983 resolution speed of light",
+      "is the speed of light a defined constant or measured value"
+    ],
+    "pages_count": 5,
+    "chunks_count": 13,
+    "hop_count": 1,
+    "selected_count": 13,
+    "unreachable_count": 3,
+    "urls_opened": [
+      "https://physics.stackexchange.com/questions/112096/why-wasnt-the-meter-defined-using-a-round-number-fraction-like-1-300-000-000",
+      "https://physics.stackexchange.com/questions/150150/speed-of-light-definition",
+      "https://physics.stackexchange.com/questions/427743/is-the-speed-of-light-in-vacuum-3-times-108-rm-m-s",
+      "https://physicsfundamentals.org/blog/speed-of-light",
+      "https://www.bipm.org/en/committees/cg/cgpm/24-2011/resolution-1"
+    ],
+    "intermediate_answers": []
+  },
+  "answer": {
+    "raw_answer": "## Summary\nThe speed of light in a vacuum, denoted by the constant $c$, is exactly 299,792,458 meters per second. This value is not a measurement but a fixed definition established by international agreement, which in turn defines the length of the meter.\n\n## The Numerical Value and Definition of $c$\nThe speed of light in a vacuum is defined as exactly 299,792,458 meters per second [The Speed of Light: What Is c and Why Is It Constant? \u2014 physicsfundamentals.org](https://physicsfundamentals.org/blog/speed-of-light). This constant, $c$, represents the speed at which all electromagnetic radiation\u2014including radio waves, visible light, and X-rays\u2014travels through a vacuum [The Speed of Light: What Is c and Why Is It Constant? \u2014 physicsfundamentals.org](https://physicsfundamentals.org/blog/speed-of-light).\n\n<details>\n<summary>Historical context and the definition of the meter</summary>\n\nThe current definition of the meter is derived directly from the speed of light. Specifically, one meter is defined as the distance light travels in a vacuum during a time interval of 1/299,792,458 of a second [The Speed of Light: What Is c and Why Is It Constant? \u2014 physicsfundamentals.org](https://physicsfundamentals.org/blog/speed-of-light). \n\nThis definition was adopted to link the unit of length to an invariant of nature, moving away from reliance on physical artifacts [Resolution 1 of the 24th CGPM (2011) - BIPM \u2014 www.bipm.org](https://www.bipm.org/en/committees/cg/cgpm/24-2011/resolution-1). The specific value of 299,792,458 m/s was chosen because it was the established value of the speed of light at the time of the 1983 definition, with an uncertainty of approximately \u00b11 m/s; adopting this specific number ensured continuity with previous measurements rather than rounding to a \"cleaner\" number like 300,000,000 m/s [history - Why wasn't the meter defined using a round-number fraction (like 1/300 000 000) of the distance travelled by light in 1 second? - Physics Stack Exchange \u2014 physics.stackexchange.com](https://physics.stackexchange.com/questions/112096/why-wasnt-the-meter-defined-using-a-round-number-fraction-like-1-300-000-000).\n</details>\n\n## Speed of Light in Different Media\nWhile the speed of light in a vacuum is a universal constant, light travels more slowly when passing through various materials. The speed in a medium is determined by the refractive index ($n$) of that material, calculated as $v = c/n$ [The Speed of Light: What Is c and Why Is It Constant? \u2014 physicsfundamentals.org](https://physicsfundamentals.org/blog/speed-of-light).\n\n| Medium | Refractive Index ($n$) | Speed of Light (approx.) |\n| :--- | :--- | :--- |\n| Vacuum | 1.000 (exact) | 2.998 \u00d7 10\u2078 m/s |\n| Air | 1.0003 | 2.997 \u00d7 10\u2078 m/s |\n| Water | 1.33 | 2.25 \u00d7 10\u2078 m/s |\n| Crown glass | 1.52 | 1.97 \u00d7 10\u2078 m/s |\n| Diamond | 2.42 | 1.24 \u00d7 10\u2078 m/s |\n\n<details>\n<summary>Additional context on light speed in media</summary>\n\nWhen particles travel through a medium faster than the speed of light in that specific medium (though still slower than $c$ in a vacuum), they emit Cherenkov radiation. This phenomenon manifests as a blue electromagnetic shock wave, similar to a sonic boom, and is the reason nuclear reactor cores often appear to glow blue when submerged in water [The Speed of Light: What Is c and Why Is It Constant? \u2014 physicsfundamentals.org](https://physicsfundamentals.org/blog/speed-of-light).\n</details>\n\n## Key Takeaways\n*   **Exact Value:** The speed of light in a vacuum is defined as exactly 299,792,458 m/s.\n*   **Definition:** The meter is defined by this constant; it is the distance light travels in 1/299,792,458 of a second.\n*   **Universality:** $c$ is the speed limit of the universe, applying to all electromagnetic radiation and massless particles.\n*   **Media Impact:** Light slows down in materials based on their refractive index, which can lead to phenomena like Cherenkov radiation.",
+    "final_answer": "## Summary\nThe speed of light in a vacuum, denoted by the constant $c$, is exactly 299,792,458 meters per second. This value is not a measurement but a fixed definition established by international agreement, which in turn defines the length of the meter.\n\n## The Numerical Value and Definition of $c$\nThe speed of light in a vacuum is defined as exactly 299,792,458 meters per second [The Speed of Light: What Is c and Why Is It Constant? \u2014 physicsfundamentals.org](https://physicsfundamentals.org/blog/speed-of-light). This constant, $c$, represents the speed at which all electromagnetic radiation\u2014including radio waves, visible light, and X-rays\u2014travels through a vacuum [The Speed of Light: What Is c and Why Is It Constant? \u2014 physicsfundamentals.org](https://physicsfundamentals.org/blog/speed-of-light).\n\n<details>\n<summary>Historical context and the definition of the meter</summary>\n\nThe current definition of the meter is derived directly from the speed of light. Specifically, one meter is defined as the distance light travels in a vacuum during a time interval of 1/299,792,458 of a second [The Speed of Light: What Is c and Why Is It Constant? \u2014 physicsfundamentals.org](https://physicsfundamentals.org/blog/speed-of-light). \n\nThis definition was adopted to link the unit of length to an invariant of nature, moving away from reliance on physical artifacts [Resolution 1 of the 24th CGPM (2011) - BIPM \u2014 www.bipm.org](https://www.bipm.org/en/committees/cg/cgpm/24-2011/resolution-1). The specific value of 299,792,458 m/s was chosen because it was the established value of the speed of light at the time of the 1983 definition, with an uncertainty of approximately \u00b11 m/s; adopting this specific number ensured continuity with previous measurements rather than rounding to a \"cleaner\" number like 300,000,000 m/s [history - Why wasn't the meter defined using a round-number fraction (like 1/300 000 000) of the distance travelled by light in 1 second? - Physics Stack Exchange \u2014 physics.stackexchange.com](https://physics.stackexchange.com/questions/112096/why-wasnt-the-meter-defined-using-a-round-number-fraction-like-1-300-000-000).\n</details>\n\n## Speed of Light in Different Media\nWhile the speed of light in a vacuum is a universal constant, light travels more slowly when passing through various materials. The speed in a medium is determined by the refractive index ($n$) of that material, calculated as $v = c/n$ [The Speed of Light: What Is c and Why Is It Constant? \u2014 physicsfundamentals.org](https://physicsfundamentals.org/blog/speed-of-light).\n\n| Medium | Refractive Index ($n$) | Speed of Light (approx.) |\n| :--- | :--- | :--- |\n| Vacuum | 1.000 (exact) | 2.998 \u00d7 10\u2078 m/s |\n| Air | 1.0003 | 2.997 \u00d7 10\u2078 m/s |\n| Water | 1.33 | 2.25 \u00d7 10\u2078 m/s |\n| Crown glass | 1.52 | 1.97 \u00d7 10\u2078 m/s |\n| Diamond | 2.42 | 1.24 \u00d7 10\u2078 m/s |\n\n<details>\n<summary>Additional context on light speed in media</summary>\n\nWhen particles travel through a medium faster than the speed of light in that specific medium (though still slower than $c$ in a vacuum), they emit Cherenkov radiation. This phenomenon manifests as a blue electromagnetic shock wave, similar to a sonic boom, and is the reason nuclear reactor cores often appear to glow blue when submerged in water [The Speed of Light: What Is c and Why Is It Constant? \u2014 physicsfundamentals.org](https://physicsfundamentals.org/blog/speed-of-light).\n</details>\n\n## Key Takeaways\n*   **Exact Value:** The speed of light in a vacuum is defined as exactly 299,792,458 m/s.\n*   **Definition:** The meter is defined by this constant; it is the distance light travels in 1/299,792,458 of a second.\n*   **Universality:** $c$ is the speed limit of the universe, applying to all electromagnetic radiation and massless particles.\n*   **Media Impact:** Light slows down in materials based on their refractive index, which can lead to phenomena like Cherenkov radiation.",
+    "citation_validation": {
+      "allowed_url_count": 5,
+      "corrected_citation_count": 0,
+      "removed_citation_count": 0
+    },
+    "gap_analysis": {
+      "has_gaps": false,
+      "gaps": [],
+      "suggested_queries": [],
+      "severity": "none"
+    }
+  },
+  "follow_up": null,
+  "metrics": {
+    "citation_count": 7,
+    "grounded_citation_rate": 1.0,
+    "format_compliance_rate": 1.0,
+    "unique_domains_cited": 3,
+    "cited_domains": [
+      "bipm.org",
+      "physics.stackexchange.com",
+      "physicsfundamentals.org"
+    ],
+    "sources_retrieved": 5,
+    "context_chunks_selected": 13,
+    "hop_count": 1,
+    "uncertainty_language": true,
+    "conflict_language": false,
+    "comparison_structure": true,
+    "category_pass": true,
+    "failures": [],
+    "citation_validation": {
+      "allowed_url_count": 5,
+      "corrected_citation_count": 0,
+      "removed_citation_count": 0
+    }
+  },
+  "judge": null
+}

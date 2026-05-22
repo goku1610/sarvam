@@ -1,0 +1,291 @@
+{
+  "id": "multi_turn_summarize_sources",
+  "category": "multi_turn",
+  "query": "What are the main causes of climate change according to recent scientific consensus?",
+  "mode": "deep_research",
+  "deep_research": true,
+  "max_hops": 3,
+  "session_id": "59f64c44-2bcd-40be-a0f5-b41584f5965b",
+  "elapsed_seconds": 28.39,
+  "plan": {
+    "title": "Scientific Consensus on Climate Drivers",
+    "plan_steps": [
+      "This research will synthesize authoritative reports from major climate organizations to identify the primary anthropogenic and natural drivers of global warming.",
+      "The investigation will prioritize peer-reviewed data and consensus statements published through May 2026 to ensure the most current scientific understanding."
+    ],
+    "search_queries": [
+      "IPCC Sixth Assessment Report summary of climate change causes",
+      "scientific consensus on anthropogenic climate change 2026",
+      "primary drivers of global warming recent findings",
+      "NASA climate change evidence and causes 2026",
+      "role of greenhouse gas emissions in current climate trends",
+      "natural vs human factors in climate change scientific review"
+    ]
+  },
+  "search": {
+    "search_queries": [
+      "IPCC Sixth Assessment Report summary of climate change causes",
+      "scientific consensus on anthropogenic climate change 2026",
+      "primary drivers of global warming recent findings",
+      "NASA climate change evidence and causes 2026",
+      "role of greenhouse gas emissions in current climate trends",
+      "natural vs human factors in climate change scientific review"
+    ],
+    "pages_count": 6,
+    "chunks_count": 14,
+    "hop_count": 1,
+    "selected_count": 14,
+    "unreachable_count": 4,
+    "urls_opened": [
+      "https://en.wikipedia.org/wiki/IPCC_Sixth_Assessment_Report",
+      "https://science.nasa.gov/climate-change/evidence",
+      "https://www.ctif.org/news/what-natural-climate-change-vs-human-driven-climate-change",
+      "https://www.science.org/doi/10.1126/science.1103618",
+      "https://www.sciencedirect.com/science/article/pii/S0959378025000469",
+      "https://www.sciencedirect.com/science/article/pii/S2325426225000245"
+    ],
+    "intermediate_answers": [
+      {
+        "hop": 1,
+        "answer": "The scientific consensus, supported by organizations like NASA and the IPCC, is that Earth is warming at an unprecedented rate primarily due to human activity. Key anthropogenic drivers include the emission of greenhouse gases (CO2, methane, and nitrous oxide) from fossil fuel combustion, agriculture, and industrial processes. While natural factors (such as orbital variations, volcanic activity, and natural methane sources) have influenced climate throughout history, they are not the cause of the rapid warming observed since the mid-20th century. Natural carbon sinks generally balance natural emissions, whereas human activities act as the primary disruptors of the carbon cycle."
+      }
+    ]
+  },
+  "answer": {
+    "raw_answer": "## Summary\nThe scientific consensus, supported by organizations such as NASA and the IPCC, establishes that Earth is warming at an unprecedented rate primarily due to human activities, particularly the emission of greenhouse gases from fossil fuel combustion, deforestation, and industrial processes. While natural factors like solar cycles and volcanic activity have historically influenced Earth's climate, they are insufficient to explain the rapid warming observed since the mid-20th century, which is unequivocally driven by anthropogenic factors.\n\n## The Role of Human Activity vs. Natural Factors\n\nThe current scientific consensus distinguishes clearly between natural climate variability and the rapid, human-driven warming observed since the mid-20th century. While natural drivers have historically dictated climate shifts over millennia, human activities are now the dominant force.\n\n<details>\n<summary>Supporting evidence: Human vs. Natural drivers</summary>\n\n*   **Human Dominance:** The Intergovernmental Panel on Climate Change (IPCC) reports attribute nearly all observed global warming since the mid-20th century to human activities [What is \"natural\" climate change vs \"human\" driven climate change? | CTIF \u2014 www.ctif.org](https://www.ctif.org/news/what-natural-climate-change-vs-human-driven-climate-change).\n*   **Historical Context:** Earth's climate has changed throughout history due to natural factors like orbital variations (Milankovitch cycles) and solar energy changes. However, the current rate of warming is unprecedented over the last 10,000 years [Evidence - NASA Science \u2014 science.nasa.gov](https://science.nasa.gov/climate-change/evidence).\n*   **Carbon Cycle Disruption:** Natural greenhouse gas fluxes (e.g., from wetlands) are generally balanced by natural carbon sinks. Human activities, conversely, add new carbon to the system, acting as the primary disruptors of this cycle [What is \"natural\" climate change vs \"human\" driven climate change? | CTIF \u2014 www.ctif.org](https://www.ctif.org/news/what-natural-climate-change-vs-human-driven-climate-change).\n</details>\n\n### Comparison of Primary Drivers\n\nThe following table summarizes the relative contributions and characteristics of human versus natural drivers of climate change.\n\n| Driver Category | Primary Mechanisms | Impact on Modern Climate |\n| :--- | :--- | :--- |\n| **Human (Anthropogenic)** | Fossil fuel combustion, deforestation, industrial processes, agriculture | **Primary driver**; responsible for the rapid warming trend since the mid-20th century. |\n| **Natural** | Volcanic activity, solar cycles, orbital variations, natural methane seeps | **Minor/Episodic**; historically significant but insufficient to explain current rapid warming. |\n\n## Greenhouse Gas Emissions\n\nGreenhouse gases (GHGs) are the mechanism through which human activity alters the climate. By trapping solar energy in the Earth's system, these gases have caused the atmosphere, ocean, and land to warm [Evidence - NASA Science \u2014 science.nasa.gov](https://science.nasa.gov/climate-change/evidence).\n\n<details>\n<summary>Detailed breakdown of greenhouse gas sources</summary>\n\n*   **Carbon Dioxide (CO2):** Human activities, including fossil fuel combustion and deforestation, are responsible for over 75% of annual global CO2 emissions. In contrast, volcanic emissions account for less than 1% of annual CO2 [What is \"natural\" climate change vs \"human\" driven climate change? | CTIF \u2014 www.ctif.org](https://www.ctif.org/news/what-natural-climate-change-vs-human-driven-climate-change).\n*   **Methane (CH4):** Approximately 60% of global methane emissions stem from human activities such as livestock agriculture, waste management, and fossil fuel extraction, while 40% originate from natural sources like wetlands [What is \"natural\" climate change vs \"human\" driven climate change? | CTIF \u2014 www.ctif.org](https://www.ctif.org/news/what-natural-climate-change-vs-human-driven-climate-change).\n*   **Nitrous Oxide (N2O):** The majority of N2O emissions are anthropogenic, primarily driven by agricultural activities and the use of fertilizers [What is \"natural\" climate change vs \"human\" driven climate change? | CTIF \u2014 www.ctif.org](https://www.ctif.org/news/what-natural-climate-change-vs-human-driven-climate-change).\n</details>\n\n### Estimated Proportions of Climate Warming Causes\n\nWhile exact percentages can vary by study and context, the following chart illustrates the general scientific understanding of the relative influence of human versus natural causes on modern climate warming.\n\n```chart\n{\"type\": \"bar\", \"title\": \"Estimated Proportions of Climate Warming Causes\", \"xLabel\": \"Cause\", \"yLabel\": \"Percentage Contribution\", \"data\": [{\"label\": \"Human Causes\", \"value\": 76}, {\"label\": \"Natural Causes\", \"value\": 24}]}\n```\n*Note: This chart reflects an approximate understanding based on the relative role of human and natural sources in climate dynamics; it is an interpretation of multiple studies rather than a single consensus number [What is \"natural\" climate change vs \"human\" driven climate change? | CTIF \u2014 www.ctif.org](https://www.ctif.org/news/what-natural-climate-change-vs-human-driven-climate-change).*\n\n## Conclusion\n\nThe scientific consensus is unequivocal: the rapid warming of the Earth since the mid-20th century is primarily driven by human activity. While natural factors have historically influenced the climate, they are currently overshadowed by the massive influx of greenhouse gases from human industrial, agricultural, and energy-related activities. This shift from natural variability to human-induced change is supported by extensive data from ice cores, satellite observations, and climate modeling.",
+    "final_answer": "The key points regarding the causes of climate change, based on the scientific consensus, are as follows:\n\n*   **Human Activity as the Primary Driver:** There is unequivocal scientific evidence that Earth is warming at an unprecedented rate, with human activities\u2014specifically fossil fuel combustion, deforestation, and industrial processes\u2014identified as the principal cause of this trend since the mid-20th century [Evidence - NASA Science \u2014 science.nasa.gov](https://science.nasa.gov/climate-change/evidence).\n*   **Insufficiency of Natural Factors:** While natural drivers such as volcanic activity, solar cycles, and orbital variations have historically influenced Earth\u2019s climate over millennia, these factors are insufficient to explain the rapid warming observed since the mid-1900s [Evidence - NASA Science \u2014 science.nasa.gov](https://science.nasa.gov/climate-change/evidence); [What is \"natural\" climate change vs \"human\" driven climate change? | CTIF - International Association of Fire Services for Safer Citizens through Skilled Firefighters \u2014 www.ctif.org](https://www.ctif.org/news/what-natural-climate-change-vs-human-driven-climate-change).\n*   **Disruption of Natural Carbon Cycles:** Unlike natural greenhouse gas fluxes, which are generally balanced by natural sinks, human-induced emissions add new carbon to the system, making human activity the primary disruptor of the global carbon cycle [What is \"natural\" climate change vs \"human\" driven climate change? | CTIF - International Association of Fire Services for Safer Citizens through Skilled Firefighters \u2014 www.ctif.org](https://www.ctif.org/news/what-natural-climate-change-vs-human-driven-climate-change).\n\n### Comparison of Climate Drivers\nThe following table summarizes the relative roles of human and natural factors in modern climate change:\n\n| Driver Type | Examples | Impact on Modern Warming |\n| :--- | :--- | :--- |\n| **Human (Anthropogenic)** | Fossil fuels, deforestation, agriculture | Primary driver; accounts for nearly all observed warming since 1950 [Evidence - NASA Science \u2014 science.nasa.gov](https://science.nasa.gov/climate-change/evidence); [What is \"natural\" climate change vs \"human\" driven climate change? | CTIF - International Association of Fire Services for Safer Citizens through Skilled Firefighters \u2014 www.ctif.org](https://www.ctif.org/news/what-natural-climate-change-vs-human-driven-climate-change) |\n| **Natural** | Volcanic activity, solar cycles, orbital shifts | Minor and episodic; responsible for baseline fluctuations prior to industrialization [What is \"natural\" climate change vs \"human\" driven climate change? | CTIF - International Association of Fire Services for Safer Citizens through Skilled Firefighters \u2014 www.ctif.org](https://www.ctif.org/news/what-natural-climate-change-vs-human-driven-climate-change) |",
+    "citation_validation": {
+      "allowed_url_count": 6,
+      "corrected_citation_count": 7,
+      "removed_citation_count": 0
+    },
+    "gap_analysis": {
+      "has_gaps": true,
+      "gaps": [
+        "The answer is incomplete; the final sentence regarding methane emissions is cut off mid-sentence, leaving the explanation of human-driven methane sources unfinished."
+      ],
+      "suggested_queries": [
+        "primary human sources of methane emissions IPCC",
+        "breakdown of global greenhouse gas emissions by sector"
+      ],
+      "severity": "minor"
+    }
+  },
+  "follow_up": {
+    "final_answer": "The key points regarding the causes of climate change, based on the scientific consensus, are as follows:\n\n*   **Human Activity as the Primary Driver:** There is unequivocal scientific evidence that Earth is warming at an unprecedented rate, with human activities\u2014specifically fossil fuel combustion, deforestation, and industrial processes\u2014identified as the principal cause of this trend since the mid-20th century [Evidence - NASA Science \u2014 science.nasa.gov](https://science.nasa.gov/climate-change/evidence).\n*   **Insufficiency of Natural Factors:** While natural drivers such as volcanic activity, solar cycles, and orbital variations have historically influenced Earth\u2019s climate over millennia, these factors are insufficient to explain the rapid warming observed since the mid-1900s [Evidence - NASA Science \u2014 science.nasa.gov](https://science.nasa.gov/climate-change/evidence); [What is \"natural\" climate change vs \"human\" driven climate change? | CTIF - International Association of Fire Services for Safer Citizens through Skilled Firefighters \u2014 www.ctif.org](https://www.ctif.org/news/what-natural-climate-change-vs-human-driven-climate-change).\n*   **Disruption of Natural Carbon Cycles:** Unlike natural greenhouse gas fluxes, which are generally balanced by natural sinks, human-induced emissions add new carbon to the system, making human activity the primary disruptor of the global carbon cycle [What is \"natural\" climate change vs \"human\" driven climate change? | CTIF - International Association of Fire Services for Safer Citizens through Skilled Firefighters \u2014 www.ctif.org](https://www.ctif.org/news/what-natural-climate-change-vs-human-driven-climate-change).\n\n### Comparison of Climate Drivers\nThe following table summarizes the relative roles of human and natural factors in modern climate change:\n\n| Driver Type | Examples | Impact on Modern Warming |\n| :--- | :--- | :--- |\n| **Human (Anthropogenic)** | Fossil fuels, deforestation, agriculture | Primary driver; accounts for nearly all observed warming since 1950 [Evidence - NASA Science \u2014 science.nasa.gov](https://science.nasa.gov/climate-change/evidence); [What is \"natural\" climate change vs \"human\" driven climate change? | CTIF - International Association of Fire Services for Safer Citizens through Skilled Firefighters \u2014 www.ctif.org](https://www.ctif.org/news/what-natural-climate-change-vs-human-driven-climate-change) |\n| **Natural** | Volcanic activity, solar cycles, orbital shifts | Minor and episodic; responsible for baseline fluctuations prior to industrialization [What is \"natural\" climate change vs \"human\" driven climate change? | CTIF - International Association of Fire Services for Safer Citizens through Skilled Firefighters \u2014 www.ctif.org](https://www.ctif.org/news/what-natural-climate-change-vs-human-driven-climate-change) |",
+    "citation_validation": {
+      "allowed_url_count": 6,
+      "corrected_citation_count": 7,
+      "removed_citation_count": 0
+    },
+    "search_queries": [],
+    "urls_opened": [],
+    "chunks": [
+      {
+        "text": "is compiled by Bjorn Ulfsson / CTIF, with the help of Chat GPT. Read more on CTIF : Copernicus: CO2 emissions from wildfires the highest in decades Copernicus and CTIF.org report that forest fires can release hundreds of times more CO2 than the human population of the same area produces over an entire year. This statistic illustrates the immense scale of emissions from wildfires, especially during severe fire seasons. For instance, a major wildfire in Canada in 2023 emitted roughly three times as much CO2 as all cars in the country did in 2021\u200b Read more on CTIF : Copernicus: Forest fires can emit hundreds of times more CO2 than the same area\u00b4s entire human population over a year However, the global average proportions are still important to consider. Below is an overview of what many scientists estimate to be the proportions: Here is a bar graph illustrating the rough proportions of human versus natural causes of climate warming. It shows that human causes (e.g., industrial emissions, deforestation, agriculture) account for approximately 76% of climate warming, while natural causes (e.g., volcanic activity, natural methane emissions) contribute about 24%. Sources: These resources offer comprehensive insights into the mechanisms and drivers of climate change. The claim that natural causes contribute approximately 24% to global warming reflects an approximate understanding based on the relative role of human and natural sources in climate change dynamics. However, this specific figure isn't a consensus number from a single source but an interpretation combining insights from multiple",
+        "url": "https://www.ctif.org/news/what-natural-climate-change-vs-human-driven-climate-change",
+        "domain": "www.ctif.org",
+        "title": "What is \"natural\" climate change vs \"human\" driven climate change? | CTIF - International Association of Fire Services for Safer Citizens through Skilled Firefighters",
+        "query": "natural vs human factors in climate change scientific review",
+        "rank": 1,
+        "retrieved_at": "2026-05-22T13:12:33.138358",
+        "chunk_index": 2,
+        "bm25_score": 1.0,
+        "source_id": 1
+      },
+      {
+        "text": "Black Holes The Big Bang Dark Matter Dark Energy Science Earth Science Planetary Science Astrophysics & Space Science The Sun & Heliophysics Biological & Physical Sciences Lunar Science Citizen Science Astromaterials Aeronautics Research Human Space Travel Research Aeronautics Science in the Air NASA Aircraft Flight Innovation Supersonic Flight Air Traffic Solutions Green Aviation Tech Drones & You Technology Technology Transfer & Spinoffs Space Travel Technology Technology Living in Space Manufacturing and Materials Robotics Science Instruments Computing Learning Resources For Kids and Students For Educators For Colleges and Universities For Professionals Science for Everyone Requests for Exhibits, Artifacts, or Speakers STEM Engagement at NASA About NASA NASA's Impacts Centers and Facilities Directorates Organizations People of NASA Careers Internships Our History Doing Business with NASA Get Involved Contact NASA en Espa\u00f1ol Ciencia Aeron\u00e1utica Ciencias Terrestres Sistema Solar Universo News & Events Recently Published Video Series on NASA+ Podcasts & Audio Blogs Newsletters Social Media Media Resources Multimedia Images Videos on NASA+ Interactives NASA Apps Podcasts e-Books STEM Multimedia Highlights 5 min read NASA\u2019s MAVEN Makes 1st Discovery of Atmospheric Effect at Mars article 3 days ago 3 min read Hubble Sights Galaxy in Transition article 7 days ago 4 min read NASA Outlines Preliminary Artemis III Mission Plans article 1 week ago Highlights 2 min read Studying Pneumonia in Space for Heart Health on Earth article 1 week ago 3 min read NASA\u2019s Simulated Mars Mission Marks 200 Days Inside Habitat article 2 weeks ago 2 min read NASA Astronaut to Answer",
+        "url": "https://science.nasa.gov/climate-change/evidence",
+        "domain": "science.nasa.gov",
+        "title": "Evidence - NASA Science",
+        "query": "NASA climate change evidence and causes 2026",
+        "rank": 1,
+        "retrieved_at": "2026-05-22T13:12:32.599977",
+        "chunk_index": 1,
+        "bm25_score": 0.4857230190911207,
+        "source_id": 2
+      },
+      {
+        "text": "Thank you for choosing Automatic Translation. Currently we are offering translations from English into French and German, with more translation languages to be added in the near future. Please be aware that these translations are generated by a third party AI software service. While we have found that the translations are mostly correct, they may not be perfect in every case. To ensure the information you read is correct, please refer to the original article in English. If you find an error in a translation which you would like to bring to our attention, it would help us greatly if you let us know. We can correct any text or section, once we are aware of it. Please do not hesitate to contact our webmaster to let us know of any translation errors. Climate Change As CTIF.org has reported on before, Copernicus reports show that wildfires have a more significant impact on climate change than previously thoughts, especially with the recent massive forest fires that have been burning in Canada and Russia. But what are actually the proportions between \"natural\" and \"human\" causes of climate change? Illustration Credit: Illustration by Bjorn Ulfsson, executed by Chat GPT Text Credit: This research is compiled by Bjorn Ulfsson / CTIF, with the help of Chat GPT. Read more on CTIF : Copernicus: CO2 emissions from wildfires the highest in decades Copernicus and CTIF.org report that forest fires can release hundreds of times more CO2 than the human population of the same area produces",
+        "url": "https://www.ctif.org/news/what-natural-climate-change-vs-human-driven-climate-change",
+        "domain": "www.ctif.org",
+        "title": "What is \"natural\" climate change vs \"human\" driven climate change? | CTIF - International Association of Fire Services for Safer Citizens through Skilled Firefighters",
+        "query": "natural vs human factors in climate change scientific review",
+        "rank": 1,
+        "retrieved_at": "2026-05-22T13:12:33.138358",
+        "chunk_index": 1,
+        "bm25_score": 0.6053222164725828,
+        "source_id": 3
+      },
+      {
+        "text": "Photographers Honored for Award-Winning Portraits article 3 days ago Highlights 11 min read La NASA anuncia la cobertura de la misi\u00f3n lunar Artemis II article 2 months ago 15 min read Agenda diaria de la misi\u00f3n a la Luna de Artemis II de la NASA article 2 months ago 6 min read La NASA refuerza Artemis: a\u00f1ade una misi\u00f3n y perfecciona su arquitectura general article 3 months ago Evidence There is unequivocal evidence that Earth is warming at an unprecedented rate. Human activity is the principal cause. En espa\u00f1ol Takeaways While Earth\u2019s climate has changed throughout its history , the current warming is happening at a rate not seen in the past 10,000 years. According to the Intergovernmental Panel on Climate Change ( IPCC ), \"Since systematic scientific assessments began in the 1970s, the influence of human activity on the warming of the climate system has evolved from theory to established fact.\" 1 Scientific information taken from natural sources (such as ice cores, rocks, and tree rings) and from modern equipment (like satellites and instruments) all show the signs of a changing climate. From global temperature rise to melting ice sheets, the evidence of a warming planet abounds. The rate of change since the mid-20th century is unprecedented over millennia. Earth's climate has changed throughout history. Just in the last 800,000 years, there have been eight cycles of ice ages and warmer periods, with the end of the last ice age about 11,700 years ago marking the beginning of the",
+        "url": "https://science.nasa.gov/climate-change/evidence",
+        "domain": "science.nasa.gov",
+        "title": "Evidence - NASA Science",
+        "query": "NASA climate change evidence and causes 2026",
+        "rank": 1,
+        "retrieved_at": "2026-05-22T13:12:32.599977",
+        "chunk_index": 4,
+        "bm25_score": 0.4949780234940767,
+        "source_id": 4
+      },
+      {
+        "text": "and industrial processes, are responsible for over 75% of global CO2 emissions annually. Volcanic emissions, by contrast, account for less than 1% of total CO2 emissions each year\u200b Harvard SEAS \u200b US EPA Methane (CH4): Around 40% of global methane emissions come from natural sources like wetlands and geological seeps, while 60% stem from human activities, including agriculture (livestock), fossil fuel extraction, and waste management\u200b Harvard SEAS \u200b US EPA . Nitrous Oxide (N2O): Most N2O emissions are anthropogenic, primarily from agricultural activities and fertilizer use, although natural soil processes also contribute significantly. Natural vs. Anthropogenic Influence Natural Drivers: Historically, natural drivers of climate variability, like volcanic eruptions, solar cycles, and changes in Earth's orbit, have influenced the climate over millennia. These factors are responsible for natural temperature fluctuations before industrialization\u200b US EPA Anthropogenic Influence: Since the mid-20th century, human activities have been the primary driver of climate change, with the Intergovernmental Panel on Climate Change (IPCC) attributing over 95% of observed warming since 1950 to human causes. Summary Natural processes contribute to the baseline levels of greenhouse gases, but the sharp and rapid increase in concentrations, especially since the industrial revolution, is predominantly due to human activities. Estimates suggest that human causes now outweigh natural caus",
+        "url": "https://www.ctif.org/news/what-natural-climate-change-vs-human-driven-climate-change",
+        "domain": "www.ctif.org",
+        "title": "What is \"natural\" climate change vs \"human\" driven climate change? | CTIF - International Association of Fire Services for Safer Citizens through Skilled Firefighters",
+        "query": "natural vs human factors in climate change scientific review",
+        "rank": 1,
+        "retrieved_at": "2026-05-22T13:12:33.138358",
+        "chunk_index": 5,
+        "bm25_score": 0.48533669721848127,
+        "source_id": 5
+      },
+      {
+        "text": "the atmosphere, ocean, and land, and widespread and rapid changes in the atmosphere, ocean, cryosphere, and biosphere have occurred. Do scientists agree on climate change? Earth-orbiting satellites and new technologies have helped scientists see the big picture, collecting many different types of information about our planet and its climate all over the world. These data, collected over many years, reveal the signs and patterns of a changing climate. Scientists demonstrated the heat-trapping nature of carbon dioxide and other gases in the mid-19th century. 2 Many of the scien",
+        "url": "https://science.nasa.gov/climate-change/evidence",
+        "domain": "science.nasa.gov",
+        "title": "Evidence - NASA Science",
+        "query": "NASA climate change evidence and causes 2026",
+        "rank": 1,
+        "retrieved_at": "2026-05-22T13:12:32.599977",
+        "chunk_index": 6,
+        "bm25_score": 0.39354798541998354,
+        "source_id": 6
+      },
+      {
+        "text": "climate change. The claim that natural causes contribute approximately 24% to global warming reflects an approximate understanding based on the relative role of human and natural sources in climate change dynamics. However, this specific figure isn't a consensus number from a single source but an interpretation combining insights from multiple studies. Here\u2019s what supports this estimation: IPCC Reports : The Intergovernmental Panel on Climate Change consistently shows that nearly all observed warming since the mid-20th century is due to human activity. While natural sources like volcanoes, solar variations, and methane emissions contribute, their influence is minor and episodic compared to anthropogenic emissions. The specific balance is less about a strict percentage split but rather emphasizes that human activities dominate. Source: IPCC AR6 Report \u200b IPCC NASA Climate Change : NASA highlights that human activities, particularly fossil fuel burning, are the primary drivers of modern climate change. Natural sources play a role, but their impact is relatively minor in the current warming trend. Source: NASA Causes of Climate Change . CTIF Reports on Natural Events : CTIF discusses the impact of events like wildfires on greenhouse gas emissions but clarifies that these emissions are often part of a natural carbon cycle, unlike human-induced emissions, which add new carbon to the system. Source: CTIF.org \u200b IPCC Scientific Reviews on Carbon Cycles : Studies on natural greenhouse gas fluxes (e.g., from wetlands and geological processes) show that these are relatively stable and balanced by natural sinks, unlike human emissions, which are the primary",
+        "url": "https://www.ctif.org/news/what-natural-climate-change-vs-human-driven-climate-change",
+        "domain": "www.ctif.org",
+        "title": "What is \"natural\" climate change vs \"human\" driven climate change? | CTIF - International Association of Fire Services for Safer Citizens through Skilled Firefighters",
+        "query": "natural vs human factors in climate change scientific review",
+        "rank": 1,
+        "retrieved_at": "2026-05-22T13:12:33.138358",
+        "chunk_index": 3,
+        "bm25_score": 0.506891143659649,
+        "source_id": 7
+      },
+      {
+        "text": "Outlines Preliminary Artemis III Mission Plans article 1 week ago Highlights 2 min read Studying Pneumonia in Space for Heart Health on Earth article 1 week ago 3 min read NASA\u2019s Simulated Mars Mission Marks 200 Days Inside Habitat article 2 weeks ago 2 min read NASA Astronaut to Answer Questions from Students in Florida article 2 weeks ago Highlights 5 min read New Eruption in the Bismarck Sea article 24 hours ago 4 min read NASA-developed AI Could Help Track Harmful Algae article 1 day ago 2 min read Fire Chars Santa Rosa Island article 2 days ago Highlights 4 min read NASA\u2019s AWE Completes Mission to Study Earth\u2019s Effect on Space Weather article 9 hours ago 5 min read NASA\u2019s Psyche Mission Aces Mars Flyby, Targets Metal-Rich Asteroid article 2 days ago 5 min read NASA\u2019s MAVEN Makes 1st Discovery of Atmospheric Effect at Mars article 3 days ago Highlights 5 min read NASA\u2019s Fermi Glimpses Power Source of Supercharged Supernovae article 2 days ago 10 min read Helio and You: Seasons on Earth, Mars, and Beyond article 6 days ago 3 min read Hubble Sights Galaxy in Transition article 7 days ago Highlights 4 min read NASA\u2019s AWE Completes Mission to Study Earth\u2019s Effect on Space Weather article 9 hours ago 2 min read D.3 AGIGO: New joint observing program with XMM-Newton added to IXPE GO Cycle 4 article 9 hours ago 2 min read Amendment 58: F.17 Research Initiation Awards Final Text and Due Date article",
+        "url": "https://science.nasa.gov/climate-change/evidence",
+        "domain": "science.nasa.gov",
+        "title": "Evidence - NASA Science",
+        "query": "NASA climate change evidence and causes 2026",
+        "rank": 1,
+        "retrieved_at": "2026-05-22T13:12:32.599977",
+        "chunk_index": 2,
+        "bm25_score": 0.4526210177326538,
+        "source_id": 8
+      },
+      {
+        "text": "unlike human-induced emissions, which add new carbon to the system. Source: CTIF.org \u200b IPCC Scientific Reviews on Carbon Cycles : Studies on natural greenhouse gas fluxes (e.g., from wetlands and geological processes) show that these are relatively stable and balanced by natural sinks, unlike human emissions, which are the primary disruptors. Source: EPA - The Global Carbon Cycle . Global Proportions of Contributions In terms of proportions, however the IPCC \u2014 Intergovernmental Panel on Climate Change reports attribute nearly all recent global warming (approximately 1.2\u00b0C above pre-industrial levels) t o human activities , with natural factors playing a minimal role in the trend. For further exploration of this topic, you can review the IPCC\u2019s AR6 reports IPCC : Climate Change 2021 IPCC : Climate Change 2021: The Physical Science Basis https://www.ipcc.ch/report/ar6/wg1/downloads/outreach/IPCC_AR6_WGI_SummaryForAl\u2026 The relative contributions of natural versus human causes of climate change vary significantly depending on the greenhouse gas and context, but the overwhelming scientific consensus is that human activities dominate modern climate change . Carbon Dioxide (CO2): Natural processes like volcanic activity, ocean-atmosphere exchanges, and plant respiration contribute to the carbon cycle. However, these processes were largely in balance before industrialization. Human activities, such as fossil fuel combustion, deforestation, and industrial processes, are responsible for over 75% of global CO2 emissions annually. Volcanic emissions, by contrast, account for less than 1% of total CO2 emissions each year\u200b Harvard SEAS \u200b US EPA Methane (CH4): Around 40% of global methane emissions come from natural sources like wetlands and geological seeps,",
+        "url": "https://www.ctif.org/news/what-natural-climate-change-vs-human-driven-climate-change",
+        "domain": "www.ctif.org",
+        "title": "What is \"natural\" climate change vs \"human\" driven climate change? | CTIF - International Association of Fire Services for Safer Citizens through Skilled Firefighters",
+        "query": "natural vs human factors in climate change scientific review",
+        "rank": 1,
+        "retrieved_at": "2026-05-22T13:12:33.138358",
+        "chunk_index": 4,
+        "bm25_score": 0.4756641540318541,
+        "source_id": 9
+      },
+      {
+        "text": "of change since the mid-20th century is unprecedented over millennia. Earth's climate has changed throughout history. Just in the last 800,000 years, there have been eight cycles of ice ages and warmer periods, with the end of the last ice age about 11,700 years ago marking the beginning of the modern climate era \u2014 and of human civilization. Most of these climate changes are attributed to very small variations in Earth\u2019s orbit that change the amount of solar energy our planet receives. This graph, based on the comparison of atmospheric samples contained in ice cores and more recent direct measurements, provides evidence that atmospheric CO2 has increased since the Industrial Revolution. Luthi, D., et al.. 2008; Etheridge, D.M., et al. 2010; Vostok ice core data/J.R. Petit et al.; NOAA Mauna Loa CO2 record. Find out more about ice cores (external site). The current warming trend is different because it is clearly the result of human activities since the mid-1800s, and is proceeding at a rate not seen over many recent millennia. 1 It is undeniable that human activities have produced the atmospheric gases that have trapped more of the Sun\u2019s energy in the Earth system. This extra energy has warmed the atmosphere, ocean, and land, and widespread and rapid changes in the atmosphere, ocean, cryosphere, and biosphere have occurred. Do scientists agree on climate change? Earth-orbiting satellites and new technologies have helped scientists see the big picture, collecting many different types of information about our planet and its climate all",
+        "url": "https://science.nasa.gov/climate-change/evidence",
+        "domain": "science.nasa.gov",
+        "title": "Evidence - NASA Science",
+        "query": "NASA climate change evidence and causes 2026",
+        "rank": 1,
+        "retrieved_at": "2026-05-22T13:12:32.599977",
+        "chunk_index": 5,
+        "bm25_score": 0.39544369542675223,
+        "source_id": 10
+      },
+      {
+        "text": "[Content unreachable] This relevant search result was selected, but the page content could not be read. Reason: non-200 response. HTTP status: 403.\nSearch snippet: According to the report, the main source of the increase in global warming is due to the increase in CO 2 emissions, stating that it is likely or very likely to",
+        "url": "https://en.wikipedia.org/wiki/IPCC_Sixth_Assessment_Report",
+        "domain": "en.wikipedia.org",
+        "title": "IPCC Sixth Assessment Report - Wikipedia",
+        "query": "IPCC Sixth Assessment Report summary of climate change causes",
+        "rank": 1,
+        "retrieved_at": "2026-05-22T13:12:31.961834",
+        "chunk_index": 0,
+        "content_unreachable": true,
+        "fetch_error": "non-200 response",
+        "http_status": 403
+      },
+      {
+        "text": "[Content unreachable] This relevant search result was selected, but the page content could not be read. Reason: non-200 response. HTTP status: 403.\nSearch snippet: But there is a scientific consensus on the reality of anthropogenic climate change. Climate scientists have repeatedly tried to make this clear.",
+        "url": "https://www.science.org/doi/10.1126/science.1103618",
+        "domain": "www.science.org",
+        "title": "The Scientific Consensus on Climate Change - Science",
+        "query": "scientific consensus on anthropogenic climate change 2026",
+        "rank": 1,
+        "retrieved_at": "2026-05-22T13:12:31.842270",
+        "chunk_index": 0,
+        "content_unreachable": true,
+        "fetch_error": "non-200 response",
+        "http_status": 403
+      },
+      {
+        "text": "[Content unreachable] This relevant search result was selected, but the page content could not be read. Reason: non-200 response. HTTP status: 403.\nSearch snippet: Recent studies have shown that fossil fuels' CO2 accounts for 68 % of global emissions today and for only 49 % of cumulative emissions since 1820",
+        "url": "https://www.sciencedirect.com/science/article/pii/S0959378025000469",
+        "domain": "www.sciencedirect.com",
+        "title": "The history of a + 3 \u00b0C future: Global and regional drivers of ...",
+        "query": "primary drivers of global warming recent findings",
+        "rank": 1,
+        "retrieved_at": "2026-05-22T13:12:31.893841",
+        "chunk_index": 0,
+        "content_unreachable": true,
+        "fetch_error": "non-200 response",
+        "http_status": 403
+      },
+      {
+        "text": "[Content unreachable] This relevant search result was selected, but the page content could not be read. Reason: non-200 response. HTTP status: 403.\nSearch snippet: Greenhouse gas (GHG) emissions are widely recognized as the primary cause of global warming and climate change (Evans et al., 2021). The rapid increase in",
+        "url": "https://www.sciencedirect.com/science/article/pii/S2325426225000245",
+        "domain": "www.sciencedirect.com",
+        "title": "Global greenhouse gas emissions in the 21st century: Complex ...",
+        "query": "role of greenhouse gas emissions in current climate trends",
+        "rank": 1,
+        "retrieved_at": "2026-05-22T13:12:32.147223",
+        "chunk_index": 0,
+        "content_unreachable": true,
+        "fetch_error": "non-200 response",
+        "http_status": 403
+      }
+    ],
+    "answered_from_existing_context": true,
+    "follow_up_search_reason": "The user is asking for a summary of information already provided in the previous turn, which is contained within the conversation history.",
+    "history_context_nonempty": true
+  },
+  "metrics": {
+    "citation_count": 7,
+    "grounded_citation_rate": 1.0,
+    "format_compliance_rate": 1.0,
+    "unique_domains_cited": 2,
+    "cited_domains": [
+      "ctif.org",
+      "science.nasa.gov"
+    ],
+    "sources_retrieved": 6,
+    "context_chunks_selected": 14,
+    "hop_count": 1,
+    "uncertainty_language": true,
+    "conflict_language": false,
+    "comparison_structure": true,
+    "category_pass": true,
+    "failures": [],
+    "citation_validation": {
+      "allowed_url_count": 6,
+      "corrected_citation_count": 7,
+      "removed_citation_count": 0
+    }
+  },
+  "judge": {
+    "grounding": 5,
+    "usefulness": 5,
+    "uncertainty_handling": 5,
+    "rationale": "The agent provides a clear, accurate, and well-structured summary of the scientific consensus on climate change. It correctly identifies human activity as the primary driver while appropriately contextualizing the role of natural factors. The citations are correctly placed and directly support the claims made, and the use of a table enhances the clarity of the information provided.",
+    "judge_available": true
+  }
+}

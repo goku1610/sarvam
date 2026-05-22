@@ -1,0 +1,91 @@
+{
+  "id": "multi_hop_oppenheimer_spouse",
+  "category": "multi_hop",
+  "query": "Who is the spouse of the director of the film Oppenheimer (2023)?",
+  "mode": "deep_research",
+  "deep_research": true,
+  "max_hops": 3,
+  "session_id": "b7e07493-8054-4ec4-a12e-b35f6423277c",
+  "elapsed_seconds": 40.46,
+  "plan": {
+    "title": "Spouse of Oppenheimer Director",
+    "plan_steps": [
+      "I will identify the director of the 2023 film *Oppenheimer* and verify his current marital status as of May 2026.",
+      "Then, I will confirm the identity of his spouse through reputable biographical databases and recent news coverage."
+    ],
+    "search_queries": [
+      "director of 2023 film Oppenheimer",
+      "who is Christopher Nolan married to",
+      "Christopher Nolan spouse 2026",
+      "Emma Thomas producer relationship to Christopher Nolan",
+      "biography of Christopher Nolan and Emma Thomas"
+    ]
+  },
+  "search": {
+    "search_queries": [
+      "director of 2023 film Oppenheimer",
+      "who is Christopher Nolan married to",
+      "Christopher Nolan spouse 2026",
+      "Emma Thomas producer relationship to Christopher Nolan",
+      "biography of Christopher Nolan and Emma Thomas"
+    ],
+    "pages_count": 5,
+    "chunks_count": 8,
+    "hop_count": 1,
+    "selected_count": 8,
+    "unreachable_count": 4,
+    "urls_opened": [
+      "https://en.wikipedia.org/wiki/Emma_Thomas",
+      "https://gatewayfilmcenter.org/movies/oppenheimer-2023",
+      "https://www.gettyimages.com/photos/christopher-nolan-wife-emma-nolan",
+      "https://www.imdb.com/name/nm0858799",
+      "https://www.menshealth.com/entertainment/a60142466/christopher-nolan-wife-emma-thomas"
+    ],
+    "intermediate_answers": [
+      {
+        "hop": 1,
+        "answer": "The director of the 2023 film *Oppenheimer* is Christopher Nolan. The evidence confirms that he is married to producer Emma Thomas, and they have been married since 1997."
+      }
+    ]
+  },
+  "answer": {
+    "raw_answer": "## Summary\nThe director of the 2023 film *Oppenheimer* is Christopher Nolan. He is married to the film producer Emma Thomas, a partnership that has spanned both their personal and professional lives since they met in college in 1997.\n\n## The Director and His Spouse\nThe director of the 2023 film *Oppenheimer* is Christopher Nolan [Who is Emma Thomas: Meet Christopher Nolan's Wife \u2014 www.menshealth.com](https://www.menshealth.com/entertainment/a60142466/christopher-nolan-wife-emma-thomas). He is married to Emma Thomas, a British film producer who has served as a producer on every feature film Nolan has directed [Who is Emma Thomas: Meet Christopher Nolan's Wife \u2014 www.menshealth.com](https://www.menshealth.com/entertainment/a60142466/christopher-nolan-wife-emma-thomas) [Emma Thomas - IMDb \u2014 www.imdb.com](https://www.imdb.com/name/nm0858799).\n\n<details>\n<summary>Details of their partnership and marriage</summary>\n\nChristopher Nolan and Emma Thomas met during their first week as students at University College London [Who is Emma Thomas: Meet Christopher Nolan's Wife \u2014 www.menshealth.com](https://www.menshealth.com/entertainment/a60142466/christopher-nolan-wife-emma-thomas). They have been married since 1997 and share four children [Who is Emma Thomas: Meet Christopher Nolan's Wife \u2014 www.menshealth.com](https://www.menshealth.com/entertainment/a60142466/christopher-nolan-wife-emma-thomas). \n\nBeyond their marriage, the couple maintains a highly successful professional partnership. They run the production company Syncopy Inc. and have collaborated on every film Nolan has directed since their college days, including *Oppenheimer* [Who is Emma Thomas: Meet Christopher Nolan's Wife \u2014 www.menshealth.com](https://www.menshealth.com/entertainment/a60142466/christopher-nolan-wife-emma-thomas) [Emma Thomas - IMDb \u2014 www.imdb.com](https://www.imdb.com/name/nm0858799). Their collaboration is frequently cited in Hollywood as a \"dynamic, decent, kindest producer-director partnership\" [Who is Emma Thomas: Meet Christopher Nolan's Wife \u2014 www.menshealth.com](https://www.menshealth.com/entertainment/a60142466/christopher-nolan-wife-emma-thomas).\n</details>\n\n## Key Takeaways\n*   **Director:** Christopher Nolan directed the 2023 film *Oppenheimer*.\n*   **Spouse:** Christopher Nolan is married to producer Emma Thomas.\n*   **Partnership:** The couple has been married since 1997 and has collaborated professionally on every feature film Nolan has directed.",
+    "final_answer": "## Summary\nThe director of the 2023 film *Oppenheimer* is Christopher Nolan. He is married to the film producer Emma Thomas, a partnership that has spanned both their personal and professional lives since they met in college in 1997.\n\n## The Director and His Spouse\nThe director of the 2023 film *Oppenheimer* is Christopher Nolan [Who is Emma Thomas: Meet Christopher Nolan's Wife \u2014 www.menshealth.com](https://www.menshealth.com/entertainment/a60142466/christopher-nolan-wife-emma-thomas). He is married to Emma Thomas, a British film producer who has served as a producer on every feature film Nolan has directed [Who is Emma Thomas: Meet Christopher Nolan's Wife \u2014 www.menshealth.com](https://www.menshealth.com/entertainment/a60142466/christopher-nolan-wife-emma-thomas) [Emma Thomas - IMDb \u2014 www.imdb.com](https://www.imdb.com/name/nm0858799).\n\n<details>\n<summary>Details of their partnership and marriage</summary>\n\nChristopher Nolan and Emma Thomas met during their first week as students at University College London [Who is Emma Thomas: Meet Christopher Nolan's Wife \u2014 www.menshealth.com](https://www.menshealth.com/entertainment/a60142466/christopher-nolan-wife-emma-thomas). They have been married since 1997 and share four children [Who is Emma Thomas: Meet Christopher Nolan's Wife \u2014 www.menshealth.com](https://www.menshealth.com/entertainment/a60142466/christopher-nolan-wife-emma-thomas). \n\nBeyond their marriage, the couple maintains a highly successful professional partnership. They run the production company Syncopy Inc. and have collaborated on every film Nolan has directed since their college days, including *Oppenheimer* [Who is Emma Thomas: Meet Christopher Nolan's Wife \u2014 www.menshealth.com](https://www.menshealth.com/entertainment/a60142466/christopher-nolan-wife-emma-thomas) [Emma Thomas - IMDb \u2014 www.imdb.com](https://www.imdb.com/name/nm0858799). Their collaboration is frequently cited in Hollywood as a \"dynamic, decent, kindest producer-director partnership\" [Who is Emma Thomas: Meet Christopher Nolan's Wife \u2014 www.menshealth.com](https://www.menshealth.com/entertainment/a60142466/christopher-nolan-wife-emma-thomas).\n</details>\n\n## Key Takeaways\n*   **Director:** Christopher Nolan directed the 2023 film *Oppenheimer*.\n*   **Spouse:** Christopher Nolan is married to producer Emma Thomas.\n*   **Partnership:** The couple has been married since 1997 and has collaborated professionally on every feature film Nolan has directed.",
+    "citation_validation": {
+      "allowed_url_count": 5,
+      "corrected_citation_count": 0,
+      "removed_citation_count": 0
+    },
+    "gap_analysis": {
+      "has_gaps": false,
+      "gaps": [],
+      "suggested_queries": [],
+      "severity": "none"
+    }
+  },
+  "follow_up": null,
+  "metrics": {
+    "citation_count": 8,
+    "grounded_citation_rate": 1.0,
+    "format_compliance_rate": 1.0,
+    "unique_domains_cited": 2,
+    "cited_domains": [
+      "imdb.com",
+      "menshealth.com"
+    ],
+    "sources_retrieved": 5,
+    "context_chunks_selected": 8,
+    "hop_count": 1,
+    "uncertainty_language": false,
+    "conflict_language": false,
+    "comparison_structure": false,
+    "category_pass": true,
+    "failures": [],
+    "citation_validation": {
+      "allowed_url_count": 5,
+      "corrected_citation_count": 0,
+      "removed_citation_count": 0
+    }
+  },
+  "judge": null
+}

@@ -1,0 +1,122 @@
+{
+  "id": "conflicting_coffee_health",
+  "category": "conflicting_sources",
+  "query": "Is regular coffee consumption good or bad for cardiovascular health? Summarize what evidence says.",
+  "mode": "deep_research",
+  "deep_research": true,
+  "max_hops": 3,
+  "session_id": "d66aaade-5090-404f-bfa4-112653aed489",
+  "elapsed_seconds": 45.47,
+  "plan": {
+    "title": "Coffee Consumption and Cardiovascular Health",
+    "plan_steps": [
+      "I will synthesize current clinical evidence and meta-analyses from 2024\u20132026 to evaluate the correlation between moderate coffee intake and cardiovascular outcomes.",
+      "The research will distinguish between potential protective effects and risks associated with caffeine sensitivity or high-volume consumption."
+    ],
+    "search_queries": [
+      "coffee consumption and cardiovascular disease risk meta-analysis 2026",
+      "long-term effects of regular coffee intake on heart health",
+      "caffeine intake and blood pressure cardiovascular outcomes research",
+      "is coffee consumption associated with reduced mortality 2025 2026",
+      "cardiovascular risks of heavy coffee consumption clinical studies",
+      "mechanisms of coffee polyphenols on endothelial function"
+    ]
+  },
+  "search": {
+    "search_queries": [
+      "coffee consumption and cardiovascular disease risk meta-analysis 2026",
+      "long-term effects of regular coffee intake on heart health",
+      "caffeine intake and blood pressure cardiovascular outcomes research",
+      "is coffee consumption associated with reduced mortality 2025 2026",
+      "cardiovascular risks of heavy coffee consumption clinical studies",
+      "mechanisms of coffee polyphenols on endothelial function",
+      "Shaban et al. 2026 BMC Cardiovascular Disorders coffee cardiovascular health findings",
+      "impact of high-volume coffee consumption on cardiovascular health meta-analysis",
+      "caffeine sensitivity and cardiovascular risk clinical evidence"
+    ],
+    "pages_count": 9,
+    "chunks_count": 10,
+    "hop_count": 2,
+    "selected_count": 10,
+    "unreachable_count": 4,
+    "urls_opened": [
+      "https://consensus.app/search/mechanisms-of-polyphenols-in-modulating-endothelia/F3xz-V0VSY6MPspjRTFztw",
+      "https://europepmc.org/article/med/19804249",
+      "https://pubmed.ncbi.nlm.nih.gov/41945865?fc=None&ff=20260408062131&v=2.19.0.post6+133c1fe",
+      "https://www.ahajournals.org/doi/10.1161/circulationaha.113.005925",
+      "https://www.ajconline.org/article/S0002-9149(22)01072-4/abstract",
+      "https://www.coffeeandhealth.org/health/health-conditions/cardiovascular-health/coffee-and-cvd-risk",
+      "https://www.coffeeandhealth.org/health/health-conditions/cardiovascular-health/coronary-heart-disease-risk",
+      "https://www.coffeeandhealth.org/health/research/e-e-shaban-et-al-2026-coffee-caffeine-and-cardiovascular-health-navigating-risks-and-benefits-an-updated-systematic-review-and-meta-analysis-bmc-cardiovascular-disorders",
+      "https://www.news-medical.net/news/20250819/Review-finds-coffee-linked-to-longer-life-and-lower-disease-risk.aspx"
+    ],
+    "intermediate_answers": [
+      {
+        "hop": 1,
+        "answer": "Current evidence suggests that moderate coffee consumption is generally not associated with an increased risk of cardiovascular disease (CVD) or coronary heart disease (CHD). Some studies indicate potential protective effects, while others note gender-specific differences (e.g., increased risk in men, decreased in women). Heavy consumption is linked to potential risks like hypertension and elevated homocysteine levels. However, the specific findings of the 2026 meta-analysis by Shaban et al. remain inaccessible."
+      },
+      {
+        "hop": 2,
+        "answer": "Current evidence (specifically the 2026 meta-analysis by Shaban et al.) indicates a complex, non-linear relationship between coffee consumption and cardiovascular health. Moderate consumption is generally associated with reduced risks of stroke, cardiac arrhythmias, and cardiovascular mortality (particularly in hypertensive patients). However, higher coffee intake is significantly associated with an increased risk of myocardial infarction (MI). Other studies suggest no significant association between coffee and coronary heart disease (CHD), though results vary. The effects appear to be dose-dependent and condition-specific."
+      }
+    ]
+  },
+  "answer": {
+    "raw_answer": "## Summary\nCurrent clinical evidence indicates that the relationship between coffee consumption and cardiovascular health is complex, non-linear, and condition-specific. While moderate coffee intake is generally not associated with an increased risk of cardiovascular disease (CVD) and may offer protective benefits against stroke and cardiac arrhythmias, higher consumption levels are linked to an increased risk of myocardial infarction (MI) and potential hypertension.\n\n## Cardiovascular Outcomes: Risks and Benefits\nThe impact of coffee on cardiovascular health varies significantly depending on the specific condition being measured. Recent meta-analyses, including the 2026 study by Shaban et al., suggest that coffee cannot be categorized as universally \"good\" or \"bad,\" as its effects are dose-dependent and vary by patient profile.\n\n<details>\n<summary>Detailed analysis of cardiovascular outcomes</summary>\n\nThe 2026 systematic review and meta-analysis by Shaban et al. provides a nuanced view of how coffee consumption correlates with specific cardiovascular events. While the study identified a significant positive association between higher coffee intake and the risk of myocardial infarction (MI), it simultaneously observed an inverse relationship (protective effect) regarding stroke and cardiac arrhythmias [E E Shaban et al, 2026. Coffee, caffeine, and cardiovascular health: navigating risks and benefits-an updated systematic review and meta-analysis, BMC Cardiovascular Disorders \u2014 www.coffeeandhealth.org](https://www.coffeeandhealth.org/health/research/e-e-shaban-et-al-2026-coffee-caffeine-and-cardiovascular-health-navigating-risks-and-benefits-an-updated-systematic-review-and-meta-analysis-bmc-cardiovascular-disorders).\n\nFurthermore, for patients with hypertension, higher caffeine intake was associated with a reduced risk of cardiovascular disease (CVD) mortality [E E Shaban et al, 2026. Coffee, caffeine, and cardiovascular health: navigating risks and benefits-an updated systematic review and meta-analysis, BMC Cardiovascular Disorders \u2014 www.coffeeandhealth.org](https://www.coffeeandhealth.org/health/research/e-e-shaban-et-al-2026-coffee-caffeine-and-cardiovascular-health-navigating-risks-and-benefits-an-updated-systematic-review-and-meta-analysis-bmc-cardiovascular-disorders). \n\nRegarding Coronary Heart Disease (CHD), the evidence is mixed. While some meta-analyses have found no significant association between coffee consumption and CHD risk [Effect of Coffee Consumption on Risk of Coronary Heart Disease in ... \u2014 www.ajconline.org](https://www.ajconline.org/article/S0002-9149(22)01072-4/abstract), others have suggested a potential protective effect at moderate intake levels, though these findings are subject to variation based on gender and study design [Coffee and cardiovascular health: Coffee and coronary heart disease risk \u2014 www.coffeeandhealth.org](https://www.coffeeandhealth.org/health/health-conditions/cardiovascular-health/coronary-heart-disease-risk).\n</details>\n\n### Comparative Impact of Coffee on Cardiovascular Conditions\nThe following table summarizes the associations found in recent meta-analyses, including the 2026 findings by Shaban et al.\n\n| Condition | Association with Coffee Consumption | Key Metric (where available) |\n| :--- | :--- | :--- |\n| **Myocardial Infarction (MI)** | Increased Risk | OR: 1.48 (p < 0.0001) |\n| **Stroke** | Reduced Risk | HR: 0.89 (p = 0.01) |\n| **Cardiac Arrhythmias** | Reduced Risk | HR: 0.94 (p = 0.04) |\n| **CVD Mortality (Hypertensive Patients)** | Reduced Risk | HR: 0.68 (p = 0.001) |\n| **Coronary Heart Disease (CHD)** | No significant association / Mixed | RR: 1.05 (non-significant) |\n| **Hypertension** | Increased Risk (Heavy consumption) | N/A |\n\n```chart\n{\"type\": \"bar\", \"title\": \"Relative Risk/Hazard Ratios for Cardiovascular Outcomes (Shaban et al., 2026)\", \"xLabel\": \"Cardiovascular Outcome\", \"yLabel\": \"Ratio (1.0 = Neutral)\", \"data\": [{\"label\": \"Myocardial Infarction\", \"value\": 1.48}, {\"label\": \"Stroke\", \"value\": 0.89}, {\"label\": \"Cardiac Arrhythmias\", \"value\": 0.94}, {\"label\": \"CVD Mortality (Hypertensive)\", \"value\": 0.68}]}\n```\n\n## Mechanisms and Contextual Factors\nThe physiological effects of coffee are not solely attributable to caffeine. Other compounds, such as polyphenols, play a role in cardiovascular health, and the source of caffeine (e.g., coffee vs. energy drinks) significantly alters the risk profile.\n\n<details>\n<summary>Mechanisms and caffeine source distinctions</summary>\n\n*   **Polyphenols:** Coffee contains polyphenols, which are believed to modulate endothelial function. These compounds may enhance nitric oxide (NO) bioavailability and reduce oxidative stress, potentially contributing to the protective effects observed in some studies [Mechanisms of polyphenols in modulating endothelial function \u2014 consensus.app](https://consensus.app/search/mechanisms-of-polyphenols-in-modulating-endothelia/F3xz-V0VSY6MPspjRTFztw).\n*   **Caffeine Source:** It is critical to distinguish between coffee and other sources of caffeine. Research indicates that energy drinks and concentrated caffeine products demonstrate a distinct risk profile, including QTc prolongation and sustained blood pressure elevation, which is not consistently observed with habitual coffee consumption [Caffeine and Cardiovascular Outcomes: Current Evidence and Clinical Perspectives - PubMed \u2014 pubmed.ncbi.nlm.nih.gov](https://pubmed.ncbi.nlm.nih.gov/41945865?fc=None&ff=20260408062131&v=2.19.0.post6+133c1fe).\n*   **Heavy Consumption Risks:** While moderate consumption is often neutral or protective, long-term heavy coffee consumption has been linked to slightly elevated risks of hypertension and higher levels of plasma homocysteine [Long-Term Coffee Consumption and Risk of Cardiovascular Disease \u2014 www.ahajournals.org](https://www.ahajournals.org/doi/10.1161/circulationaha.113.005925).\n</details>\n\n## Conclusion\nThe evidence suggests that for most individuals, moderate coffee consumption is not detrimental to cardiovascular health and may even provide protective benefits against specific conditions like stroke and arrhythmias. However, this is not a universal rule; heavy consumption is associated with increased risks, particularly regarding myocardial infarction and hypertension. Patients with pre-existing cardiovascular conditions or hypertension should consider these dose-dependent effects and consult clinical guidance, as the risks and benefits are highly individualized.",
+    "final_answer": "## Summary\nCurrent clinical evidence indicates that the relationship between coffee consumption and cardiovascular health is complex, non-linear, and condition-specific. While moderate coffee intake is generally not associated with an increased risk of cardiovascular disease (CVD) and may offer protective benefits against stroke and cardiac arrhythmias, higher consumption levels are linked to an increased risk of myocardial infarction (MI) and potential hypertension.\n\n## Cardiovascular Outcomes: Risks and Benefits\nThe impact of coffee on cardiovascular health varies significantly depending on the specific condition being measured. Recent meta-analyses, including the 2026 study by Shaban et al., suggest that coffee cannot be categorized as universally \"good\" or \"bad,\" as its effects are dose-dependent and vary by patient profile.\n\n<details>\n<summary>Detailed analysis of cardiovascular outcomes</summary>\n\nThe 2026 systematic review and meta-analysis by Shaban et al. provides a nuanced view of how coffee consumption correlates with specific cardiovascular events. While the study identified a significant positive association between higher coffee intake and the risk of myocardial infarction (MI), it simultaneously observed an inverse relationship (protective effect) regarding stroke and cardiac arrhythmias [E E Shaban et al, 2026. Coffee, caffeine, and cardiovascular health: navigating risks and benefits-an updated systematic review and meta-analysis, BMC Cardiovascular Disorders. \u2014 www.coffeeandhealth.org](https://www.coffeeandhealth.org/health/research/e-e-shaban-et-al-2026-coffee-caffeine-and-cardiovascular-health-navigating-risks-and-benefits-an-updated-systematic-review-and-meta-analysis-bmc-cardiovascular-disorders).\n\nFurthermore, for patients with hypertension, higher caffeine intake was associated with a reduced risk of cardiovascular disease (CVD) mortality [E E Shaban et al, 2026. Coffee, caffeine, and cardiovascular health: navigating risks and benefits-an updated systematic review and meta-analysis, BMC Cardiovascular Disorders. \u2014 www.coffeeandhealth.org](https://www.coffeeandhealth.org/health/research/e-e-shaban-et-al-2026-coffee-caffeine-and-cardiovascular-health-navigating-risks-and-benefits-an-updated-systematic-review-and-meta-analysis-bmc-cardiovascular-disorders). \n\nRegarding Coronary Heart Disease (CHD), the evidence is mixed. While some meta-analyses have found no significant association between coffee consumption and CHD risk Effect of Coffee Consumption on Risk of Coronary Heart Disease in ... \u2014 www.ajconline.org [unverified citation removed]01072-4/abstract), others have suggested a potential protective effect at moderate intake levels, though these findings are subject to variation based on gender and study design [Coffee and cardiovascular health: Coffee and coronary heart disease risk \u2014 www.coffeeandhealth.org](https://www.coffeeandhealth.org/health/health-conditions/cardiovascular-health/coronary-heart-disease-risk).\n</details>\n\n### Comparative Impact of Coffee on Cardiovascular Conditions\nThe following table summarizes the associations found in recent meta-analyses, including the 2026 findings by Shaban et al.\n\n| Condition | Association with Coffee Consumption | Key Metric (where available) |\n| :--- | :--- | :--- |\n| **Myocardial Infarction (MI)** | Increased Risk | OR: 1.48 (p < 0.0001) |\n| **Stroke** | Reduced Risk | HR: 0.89 (p = 0.01) |\n| **Cardiac Arrhythmias** | Reduced Risk | HR: 0.94 (p = 0.04) |\n| **CVD Mortality (Hypertensive Patients)** | Reduced Risk | HR: 0.68 (p = 0.001) |\n| **Coronary Heart Disease (CHD)** | No significant association / Mixed | RR: 1.05 (non-significant) |\n| **Hypertension** | Increased Risk (Heavy consumption) | N/A |\n\n```chart\n{\"type\": \"bar\", \"title\": \"Relative Risk/Hazard Ratios for Cardiovascular Outcomes (Shaban et al., 2026)\", \"xLabel\": \"Cardiovascular Outcome\", \"yLabel\": \"Ratio (1.0 = Neutral)\", \"data\": [{\"label\": \"Myocardial Infarction\", \"value\": 1.48}, {\"label\": \"Stroke\", \"value\": 0.89}, {\"label\": \"Cardiac Arrhythmias\", \"value\": 0.94}, {\"label\": \"CVD Mortality (Hypertensive)\", \"value\": 0.68}]}\n```\n\n## Mechanisms and Contextual Factors\nThe physiological effects of coffee are not solely attributable to caffeine. Other compounds, such as polyphenols, play a role in cardiovascular health, and the source of caffeine (e.g., coffee vs. energy drinks) significantly alters the risk profile.\n\n<details>\n<summary>Mechanisms and caffeine source distinctions</summary>\n\n*   **Polyphenols:** Coffee contains polyphenols, which are believed to modulate endothelial function. These compounds may enhance nitric oxide (NO) bioavailability and reduce oxidative stress, potentially contributing to the protective effects observed in some studies [Mechanisms of polyphenols in modulating endothelial function \u2014 consensus.app](https://consensus.app/search/mechanisms-of-polyphenols-in-modulating-endothelia/F3xz-V0VSY6MPspjRTFztw).\n*   **Caffeine Source:** It is critical to distinguish between coffee and other sources of caffeine. Research indicates that energy drinks and concentrated caffeine products demonstrate a distinct risk profile, including QTc prolongation and sustained blood pressure elevation, which is not consistently observed with habitual coffee consumption [Caffeine and Cardiovascular Outcomes: Current Evidence and Clinical Perspectives - PubMed \u2014 pubmed.ncbi.nlm.nih.gov](https://pubmed.ncbi.nlm.nih.gov/41945865?fc=None&ff=20260408062131&v=2.19.0.post6+133c1fe).\n*   **Heavy Consumption Risks:** While moderate consumption is often neutral or protective, long-term heavy coffee consumption has been linked to slightly elevated risks of hypertension and higher levels of plasma homocysteine [Long-Term Coffee Consumption and Risk of Cardiovascular Disease \u2014 www.ahajournals.org](https://www.ahajournals.org/doi/10.1161/circulationaha.113.005925).\n</details>\n\n## Conclusion\nThe evidence suggests that for most individuals, moderate coffee consumption is not detrimental to cardiovascular health and may even provide protective benefits against specific conditions like stroke and arrhythmias. However, this is not a universal rule; heavy consumption is associated with increased risks, particularly regarding myocardial infarction and hypertension. Patients with pre-existing cardiovascular conditions or hypertension should consider these dose-dependent effects and consult clinical guidance, as the risks and benefits are highly individualized.\n\nCitation validation note: removed 1 citation that did not match retrieved sources.",
+    "citation_validation": {
+      "allowed_url_count": 8,
+      "corrected_citation_count": 2,
+      "removed_citation_count": 1
+    },
+    "gap_analysis": {
+      "has_gaps": true,
+      "gaps": [
+        "The answer relies heavily on a single source (Shaban et al., 2026) to define the entire landscape of cardiovascular risk, creating a potential bias or lack of consensus verification.",
+        "The section on Coronary Heart Disease (CHD) explicitly states that evidence is 'mixed' and findings are 'subject to variation,' but fails to clarify what specific factors (e.g., genetic predispositions, brewing methods, or caffeine sensitivity) drive these discrepancies.",
+        "The answer mentions 'higher consumption levels' and 'moderate intake' without defining these thresholds, leaving a significant gap in actionable information for the user."
+      ],
+      "suggested_queries": [
+        "coffee consumption cardiovascular health dose-response threshold definitions",
+        "factors influencing coffee cardiovascular health outcomes genetic variation brewing method",
+        "systematic review coffee consumption coronary heart disease risk consensus"
+      ],
+      "severity": "minor"
+    }
+  },
+  "follow_up": null,
+  "metrics": {
+    "citation_count": 6,
+    "grounded_citation_rate": 0.857,
+    "format_compliance_rate": 1.0,
+    "unique_domains_cited": 4,
+    "cited_domains": [
+      "ahajournals.org",
+      "coffeeandhealth.org",
+      "consensus.app",
+      "pubmed.ncbi.nlm.nih.gov"
+    ],
+    "sources_retrieved": 9,
+    "context_chunks_selected": 10,
+    "hop_count": 2,
+    "uncertainty_language": false,
+    "conflict_language": false,
+    "comparison_structure": true,
+    "category_pass": false,
+    "failures": [
+      "missing conflict language"
+    ],
+    "citation_validation": {
+      "allowed_url_count": 8,
+      "corrected_citation_count": 2,
+      "removed_citation_count": 1
+    }
+  },
+  "judge": {
+    "grounding": 5,
+    "usefulness": 5,
+    "uncertainty_handling": 5,
+    "rationale": "The agent provides a comprehensive and well-structured summary of the complex relationship between coffee consumption and cardiovascular health. It effectively synthesizes the provided sources, including the specific 2026 meta-analysis, and uses a clear table and chart to present conflicting or nuanced findings. The agent appropriately hedges its conclusions by highlighting that the effects are dose-dependent and condition-specific, accurately reflecting the state of the evidence provided.",
+    "judge_available": true
+  }
+}

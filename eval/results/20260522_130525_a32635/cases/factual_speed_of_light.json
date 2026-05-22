@@ -1,0 +1,96 @@
+{
+  "id": "factual_speed_of_light",
+  "category": "factual",
+  "query": "What is the speed of light in a vacuum, and how is it defined?",
+  "mode": "deep_research",
+  "deep_research": true,
+  "max_hops": 3,
+  "session_id": "eca80a2e-8b98-4334-9152-329f153bb526",
+  "elapsed_seconds": 22.88,
+  "plan": {
+    "title": "Defining the Speed of Light",
+    "plan_steps": [
+      "This research will identify the precise numerical value of the speed of light in a vacuum as established by the International System of Units.",
+      "It will further investigate the historical shift from experimental measurement to the current definition based on the fixed value of the meter."
+    ],
+    "search_queries": [
+      "speed of light in vacuum exact value SI units",
+      "how is the meter defined by the speed of light",
+      "history of the definition of the speed of light 1983 CGPM",
+      "is the speed of light a constant or a defined value",
+      "role of the second and meter in defining c"
+    ]
+  },
+  "search": {
+    "search_queries": [
+      "speed of light in vacuum exact value SI units",
+      "how is the meter defined by the speed of light",
+      "history of the definition of the speed of light 1983 CGPM",
+      "is the speed of light a constant or a defined value",
+      "role of the second and meter in defining c"
+    ],
+    "pages_count": 4,
+    "chunks_count": 9,
+    "hop_count": 1,
+    "selected_count": 9,
+    "unreachable_count": 2,
+    "urls_opened": [
+      "https://en.wikipedia.org/wiki/Speed_of_light",
+      "https://metricsystem.net/si/defining-constants/speed-of-light",
+      "https://physics.stackexchange.com/questions/1383/measuring-the-speed-of-light-and-defining-the-metre-absolute-or-relative",
+      "https://van.physics.illinois.edu/ask/listing/23970"
+    ],
+    "intermediate_answers": [
+      {
+        "hop": 1,
+        "answer": "The speed of light in a vacuum (c) is a fundamental physical constant defined as exactly 299,792,458 meters per second. This value is fixed by the International System of Units (SI). The definition of the meter is derived from this constant: the meter is defined as the distance light travels in a vacuum during a time interval of 1/299,792,458 of a second. This represents a shift from historical experimental measurements of c to a system where c is a defined constant, meaning improvements in measurement technology now serve to realize the meter more precisely rather than changing the value of c."
+      }
+    ]
+  },
+  "answer": {
+    "raw_answer": "## Summary\nThe speed of light in a vacuum, denoted by the symbol *c*, is a fundamental physical constant defined as exactly 299,792,458 meters per second. This value is not an experimental measurement but a fixed definition within the International System of Units (SI), which in turn defines the length of the meter itself.\n\n## The Defined Value of *c*\nThe speed of light in a vacuum is a universal physical constant, representing the speed at which all electromagnetic radiation travels through a vacuum [speed of light - Metric System \u2014 metricsystem.net](https://metricsystem.net/si/defining-constants/speed-of-light).\n\n<details>\n<summary>Numerical value and SI status</summary>\n\nThe numerical value of the speed of light in a vacuum is defined to be exactly 299,792,458 meters per second ($m/s$) [speed of light - Metric System \u2014 metricsystem.net](https://metricsystem.net/si/defining-constants/speed-of-light). Because this value is fixed by the International System of Units (SI), it is considered a defined constant rather than a value subject to experimental refinement [Does the Speed of Light Change? | Physics Van - University of Illinois \u2014 van.physics.illinois.edu](https://van.physics.illinois.edu/ask/listing/23970).\n</details>\n\n## Historical Shift and Definition of the Meter\nThe current definition of the meter is derived directly from the speed of light. This represents a significant shift from the 20th century, where the meter was defined by physical artifacts or spectral lines, and the speed of light was a quantity to be measured experimentally.\n\n<details>\n<summary>Evolution of the definition</summary>\n\nIn the latter half of the 20th century, advancements in measurement techniques\u2014such as cavity resonance and laser interferometry\u2014led to increasingly accurate measurements of *c*. By 1975, the 15th Conf\u00e9rence G\u00e9n\u00e9rale des Poids et Mesures (CGPM) recommended using the value 299,792,458 m/s [Does the Speed of Light Change? | Physics Van - University of Illinois \u2014 van.physics.illinois.edu](https://van.physics.illinois.edu/ask/listing/23970).\n\nIn 1983, the 17th CGPM formally redefined the meter based on this constant: \"The metre is the length of the path travelled by light in vacuum during a time interval of 1/299 792 458 of a second\" [Does the Speed of Light Change? | Physics Van - University of Illinois \u2014 van.physics.illinois.edu](https://van.physics.illinois.edu/ask/listing/23970).\n\nThis redefinition means that improvements in measurement technology no longer change the value of *c* in SI units; instead, they allow for a more precise realization of the meter [Does the Speed of Light Change? | Physics Van - University of Illinois \u2014 van.physics.illinois.edu](https://van.physics.illinois.edu/ask/listing/23970).\n</details>\n\n## Key Takeaways\n*   **Exact Value:** The speed of light in a vacuum is exactly 299,792,458 m/s.\n*   **Defined Constant:** It is a fixed constant in the SI system, not a variable subject to experimental measurement error.\n*   **Redefinition of the Meter:** The meter is defined as the distance light travels in a vacuum in 1/299,792,458 of a second.\n*   **Technological Impact:** Because *c* is fixed, modern scientific advancements in measurement serve to define the meter more accurately rather than altering the speed of light itself.",
+    "final_answer": "## Summary\nThe speed of light in a vacuum, denoted by the symbol *c*, is a fundamental physical constant defined as exactly 299,792,458 meters per second. This value is not an experimental measurement but a fixed definition within the International System of Units (SI), which in turn defines the length of the meter itself.\n\n## The Defined Value of *c*\nThe speed of light in a vacuum is a universal physical constant, representing the speed at which all electromagnetic radiation travels through a vacuum [speed of light - Metric System \u2014 metricsystem.net](https://metricsystem.net/si/defining-constants/speed-of-light).\n\n<details>\n<summary>Numerical value and SI status</summary>\n\nThe numerical value of the speed of light in a vacuum is defined to be exactly 299,792,458 meters per second ($m/s$) [speed of light - Metric System \u2014 metricsystem.net](https://metricsystem.net/si/defining-constants/speed-of-light). Because this value is fixed by the International System of Units (SI), it is considered a defined constant rather than a value subject to experimental refinement [Does the Speed of Light Change? | Physics Van - University of Illinois \u2014 van.physics.illinois.edu](https://van.physics.illinois.edu/ask/listing/23970).\n</details>\n\n## Historical Shift and Definition of the Meter\nThe current definition of the meter is derived directly from the speed of light. This represents a significant shift from the 20th century, where the meter was defined by physical artifacts or spectral lines, and the speed of light was a quantity to be measured experimentally.\n\n<details>\n<summary>Evolution of the definition</summary>\n\nIn the latter half of the 20th century, advancements in measurement techniques\u2014such as cavity resonance and laser interferometry\u2014led to increasingly accurate measurements of *c*. By 1975, the 15th Conf\u00e9rence G\u00e9n\u00e9rale des Poids et Mesures (CGPM) recommended using the value 299,792,458 m/s [Does the Speed of Light Change? | Physics Van - University of Illinois \u2014 van.physics.illinois.edu](https://van.physics.illinois.edu/ask/listing/23970).\n\nIn 1983, the 17th CGPM formally redefined the meter based on this constant: \"The metre is the length of the path travelled by light in vacuum during a time interval of 1/299 792 458 of a second\" [Does the Speed of Light Change? | Physics Van - University of Illinois \u2014 van.physics.illinois.edu](https://van.physics.illinois.edu/ask/listing/23970).\n\nThis redefinition means that improvements in measurement technology no longer change the value of *c* in SI units; instead, they allow for a more precise realization of the meter [Does the Speed of Light Change? | Physics Van - University of Illinois \u2014 van.physics.illinois.edu](https://van.physics.illinois.edu/ask/listing/23970).\n</details>\n\n## Key Takeaways\n*   **Exact Value:** The speed of light in a vacuum is exactly 299,792,458 m/s.\n*   **Defined Constant:** It is a fixed constant in the SI system, not a variable subject to experimental measurement error.\n*   **Redefinition of the Meter:** The meter is defined as the distance light travels in a vacuum in 1/299,792,458 of a second.\n*   **Technological Impact:** Because *c* is fixed, modern scientific advancements in measurement serve to define the meter more accurately rather than altering the speed of light itself.",
+    "citation_validation": {
+      "allowed_url_count": 4,
+      "corrected_citation_count": 0,
+      "removed_citation_count": 0
+    },
+    "gap_analysis": {
+      "has_gaps": false,
+      "gaps": [],
+      "suggested_queries": [],
+      "severity": "none"
+    }
+  },
+  "follow_up": null,
+  "metrics": {
+    "citation_count": 6,
+    "grounded_citation_rate": 1.0,
+    "format_compliance_rate": 1.0,
+    "unique_domains_cited": 2,
+    "cited_domains": [
+      "metricsystem.net",
+      "van.physics.illinois.edu"
+    ],
+    "sources_retrieved": 4,
+    "context_chunks_selected": 9,
+    "hop_count": 1,
+    "uncertainty_language": false,
+    "conflict_language": false,
+    "comparison_structure": false,
+    "category_pass": true,
+    "failures": [],
+    "citation_validation": {
+      "allowed_url_count": 4,
+      "corrected_citation_count": 0,
+      "removed_citation_count": 0
+    }
+  },
+  "judge": {
+    "grounding": 5,
+    "usefulness": 5,
+    "uncertainty_handling": 5,
+    "rationale": "The answer is highly accurate, well-structured, and directly addresses both parts of the prompt. It correctly identifies the exact numerical value of the speed of light and explains the crucial conceptual shift where the meter is defined by the speed of light rather than the other way around. The citations are relevant and correctly placed, and the tone is appropriately definitive given the factual nature of the constants involved.",
+    "judge_available": true
+  }
+}

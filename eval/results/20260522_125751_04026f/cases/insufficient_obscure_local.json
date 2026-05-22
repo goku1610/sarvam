@@ -1,0 +1,112 @@
+{
+  "id": "insufficient_obscure_local",
+  "category": "insufficient_evidence",
+  "query": "How many visitors attended the opening day of the municipal library in Vostok Station, Antarctica in 2019?",
+  "mode": "deep_research",
+  "deep_research": true,
+  "max_hops": 3,
+  "session_id": "2dd93f66-4a76-4612-8c9e-f2d51c9ceb5e",
+  "elapsed_seconds": 44.24,
+  "plan": {
+    "title": "Vostok Station Library Opening Attendance",
+    "plan_steps": [
+      "I will investigate historical records and expedition logs from the 2019 Vostok Station season to identify any documented library inauguration events.",
+      "Given the extreme isolation of the station, I will verify if such a facility exists or if the query refers to a symbolic or temporary installation."
+    ],
+    "search_queries": [
+      "Vostok Station Antarctica library opening 2019",
+      "Vostok Station research facility amenities 2019",
+      "Did Vostok Station open a library in 2019?",
+      "list of facilities at Vostok Station Antarctica",
+      "Russian Antarctic Expedition 2019 library inauguration"
+    ]
+  },
+  "search": {
+    "search_queries": [
+      "Vostok Station Antarctica library opening 2019",
+      "Vostok Station research facility amenities 2019",
+      "Did Vostok Station open a library in 2019?",
+      "list of facilities at Vostok Station Antarctica",
+      "Russian Antarctic Expedition 2019 library inauguration",
+      "Does Vostok Station Antarctica have a municipal library?",
+      "Vostok Station Antarctica facilities 2019",
+      "Vostok Station library opening",
+      "Russian Antarctic Expedition Vostok Station infrastructure",
+      "Did Vostok Station have a public library in 2019",
+      "'Vostok Station' Antarctica library opening 2019",
+      "Did Vostok Station have a library inauguration in 2019?",
+      "Is there a municipal library at Vostok Station Antarctica?"
+    ],
+    "pages_count": 12,
+    "chunks_count": 20,
+    "hop_count": 3,
+    "selected_count": 20,
+    "unreachable_count": 8,
+    "urls_opened": [
+      "http://en.kremlin.ru/events/president/news/73336",
+      "https://en.wikipedia.org/wiki/Vostok_Station",
+      "https://forpost-sz.ru/en/a/2022-10-13/polar-scientists-talk-about-typical-day-vostok-research-station",
+      "https://meduza.io/en/feature/2020/12/22/trouble-at-the-vostok-station",
+      "https://polarjournal.net/russia-builds-new-vostok-station",
+      "https://seas.umich.edu/news/inaugurated-antarcticas-first-ice-core-library",
+      "https://www.aari.ru/science-and-projects/new-wintering-vostok-station",
+      "https://www.bookbub.com/blog/antarctica-library",
+      "https://www.comnap.aq/antarctic-facilities-information",
+      "https://www.prlib.ru/en/news/1285278"
+    ],
+    "intermediate_answers": [
+      {
+        "hop": 1,
+        "answer": "Vostok Station is a Russian research station founded in 1957. There is no evidence of a 'municipal library' at the station; the only library-related mention is an 'ice core library' opened by the Ice Memory Foundation in 2026, which is unrelated to a municipal facility in 2019."
+      },
+      {
+        "hop": 2,
+        "answer": "Vostok Station is a Russian research facility in Antarctica. There is no evidence of a 'municipal library' existing at the station; the station is a scientific research base, and its 'library' consists of specialized technical and scientific books for researchers. The station was undergoing major renovations and construction of a new wintering complex around 2019-2020, but no public municipal library inauguration occurred."
+      }
+    ]
+  },
+  "answer": {
+    "raw_answer": "## Summary\nThere is no record of a \"municipal library\" opening at Vostok Station in 2019, nor does such a facility exist at the station. Vostok Station is a specialized Russian scientific research base, not a municipality, and its infrastructure consists of research laboratories, drilling complexes, and living quarters for scientists and support staff [Trouble at the Vostok Station After investing millions in a brand-new ... \u2014 meduza.io](https://meduza.io/en/feature/2020/12/22/trouble-at-the-vostok-station).\n\n## Facility Overview and Infrastructure\nVostok Station is a remote, isolated research facility located in the interior of Antarctica, founded in 1957 [Russia builds new 'Vostok' station - Polar Journal](https://polarjournal.net/russia-builds-new-vostok-station). It is not a town or city and therefore does not contain municipal infrastructure such as public libraries.\n\n<details>\n<summary>Nature of Vostok Station's \"Library\" and Facilities</summary>\n\nThe station functions exclusively as a scientific outpost. While researchers have access to books, these are limited to specialized technical and scientific literature required for their work, such as documentation on drilling complexes or international law [Polar scientists talk about a typical day at the Vostok research station \u2014 forpost-sz.ru](https://forpost-sz.ru/en/a/2022-10-13/polar-scientists-talk-about-typical-day-vostok-research-station). \n\nThe station's primary purpose is scientific research, including meteorology, aerology, geophysics, and ice core studies [Trouble at the Vostok Station After investing millions in a brand-new ... \u2014 meduza.io](https://meduza.io/en/feature/2020/12/22/trouble-at-the-vostok-station). In 2019, the Russian government initiated plans to rebuild the station's aging infrastructure, which had been in disrepair, but this project focused on a new wintering complex for researchers, not public amenities [Trouble at the Vostok Station After investing millions in a brand-new ... \u2014 meduza.io](https://meduza.io/en/feature/2020/12/22/trouble-at-the-vostok-station).\n</details>\n\n## Clarification on Potential Misconceptions\nThe query likely conflates the station's scientific activities with public infrastructure. There is no evidence of any \"municipal library\" inauguration in 2019.\n\n<details>\n<summary>Distinguishing between research facilities and public institutions</summary>\n\n*   **Scientific Focus:** Vostok Station is a research base. Its \"library\" is a collection of technical books for researchers, not a public facility [Polar scientists talk about a typical day at the Vostok research station \u2014 forpost-sz.ru](https://forpost-sz.ru/en/a/2022-10-13/polar-scientists-talk-about-typical-day-vostok-research-station).\n*   **2019 Activity:** In 2019, the Russian government signed a decree to build a new wintering complex to replace the aging station, which had been largely buried under snow [Trouble at the Vostok Station After investing millions in a brand-new ... \u2014 meduza.io](https://meduza.io/en/feature/2020/12/22/trouble-at-the-vostok-station). There were no public events or library openings associated with this construction project.\n*   **Ice Core Library:** While an \"ice core library\" was inaugurated in Antarctica by the Ice Memory Foundation, this occurred in January 2026 and is a scientific archive, not a municipal library [Inaugurated: Antarctica's first ice core library \u2014 seas.umich.edu](https://seas.umich.edu/news/inaugurated-antarcticas-first-ice-core-library).\n</details>\n\n## Key Takeaways\n*   **No Municipal Library:** Vostok Station is a scientific research base and does not have a municipal library.\n*   **2019 Context:** The only major activity regarding Vostok Station in 2019 was the government decree to modernize the station's aging wintering complex [Trouble at the Vostok Station After investing millions in a brand-new ... \u2014 meduza.io](https://meduza.io/en/feature/2020/12/22/trouble-at-the-vostok-station).\n*   **Facility Type:** The station is an isolated, extreme-environment research facility with a limited population (typically 12\u201313 winterers and 35 summer researchers), making the concept of a municipal library inapplicable [Trouble at the Vostok Station After investing millions in a brand-new ... \u2014 meduza.io](https://meduza.io/en/feature/2020/12/22/trouble-at-the-vostok-station).",
+    "final_answer": "## Summary\nThere is no record of a \"municipal library\" opening at Vostok Station in 2019, nor does such a facility exist at the station. Vostok Station is a specialized Russian scientific research base, not a municipality, and its infrastructure consists of research laboratories, drilling complexes, and living quarters for scientists and support staff [Trouble at the Vostok Station After investing millions in a brand-new ... \u2014 meduza.io](https://meduza.io/en/feature/2020/12/22/trouble-at-the-vostok-station).\n\n## Facility Overview and Infrastructure\nVostok Station is a remote, isolated research facility located in the interior of Antarctica, founded in 1957 [Russia builds new 'Vostok' station - Polar Journal \u2014 polarjournal.net](https://polarjournal.net/russia-builds-new-vostok-station). It is not a town or city and therefore does not contain municipal infrastructure such as public libraries.\n\n<details>\n<summary>Nature of Vostok Station's \"Library\" and Facilities</summary>\n\nThe station functions exclusively as a scientific outpost. While researchers have access to books, these are limited to specialized technical and scientific literature required for their work, such as documentation on drilling complexes or international law [Polar scientists talk about a typical day at the Vostok research station \u2014 forpost-sz.ru](https://forpost-sz.ru/en/a/2022-10-13/polar-scientists-talk-about-typical-day-vostok-research-station). \n\nThe station's primary purpose is scientific research, including meteorology, aerology, geophysics, and ice core studies [Trouble at the Vostok Station After investing millions in a brand-new ... \u2014 meduza.io](https://meduza.io/en/feature/2020/12/22/trouble-at-the-vostok-station). In 2019, the Russian government initiated plans to rebuild the station's aging infrastructure, which had been in disrepair, but this project focused on a new wintering complex for researchers, not public amenities [Trouble at the Vostok Station After investing millions in a brand-new ... \u2014 meduza.io](https://meduza.io/en/feature/2020/12/22/trouble-at-the-vostok-station).\n</details>\n\n## Clarification on Potential Misconceptions\nThe query likely conflates the station's scientific activities with public infrastructure. There is no evidence of any \"municipal library\" inauguration in 2019.\n\n<details>\n<summary>Distinguishing between research facilities and public institutions</summary>\n\n*   **Scientific Focus:** Vostok Station is a research base. Its \"library\" is a collection of technical books for researchers, not a public facility [Polar scientists talk about a typical day at the Vostok research station \u2014 forpost-sz.ru](https://forpost-sz.ru/en/a/2022-10-13/polar-scientists-talk-about-typical-day-vostok-research-station).\n*   **2019 Activity:** In 2019, the Russian government signed a decree to build a new wintering complex to replace the aging station, which had been largely buried under snow [Trouble at the Vostok Station After investing millions in a brand-new ... \u2014 meduza.io](https://meduza.io/en/feature/2020/12/22/trouble-at-the-vostok-station). There were no public events or library openings associated with this construction project.\n*   **Ice Core Library:** While an \"ice core library\" was inaugurated in Antarctica by the Ice Memory Foundation, this occurred in January 2026 and is a scientific archive, not a municipal library [Inaugurated: Antarctica's first ice core library \u2014 seas.umich.edu](https://seas.umich.edu/news/inaugurated-antarcticas-first-ice-core-library).\n</details>\n\n## Key Takeaways\n*   **No Municipal Library:** Vostok Station is a scientific research base and does not have a municipal library.\n*   **2019 Context:** The only major activity regarding Vostok Station in 2019 was the government decree to modernize the station's aging wintering complex [Trouble at the Vostok Station After investing millions in a brand-new ... \u2014 meduza.io](https://meduza.io/en/feature/2020/12/22/trouble-at-the-vostok-station).\n*   **Facility Type:** The station is an isolated, extreme-environment research facility with a limited population (typically 12\u201313 winterers and 35 summer researchers), making the concept of a municipal library inapplicable [Trouble at the Vostok Station After investing millions in a brand-new ... \u2014 meduza.io](https://meduza.io/en/feature/2020/12/22/trouble-at-the-vostok-station).",
+    "citation_validation": {
+      "allowed_url_count": 8,
+      "corrected_citation_count": 1,
+      "removed_citation_count": 0
+    },
+    "gap_analysis": {
+      "has_gaps": false,
+      "gaps": [],
+      "suggested_queries": [],
+      "severity": "none"
+    }
+  },
+  "follow_up": null,
+  "metrics": {
+    "citation_count": 10,
+    "grounded_citation_rate": 1.0,
+    "format_compliance_rate": 1.0,
+    "unique_domains_cited": 4,
+    "cited_domains": [
+      "forpost-sz.ru",
+      "meduza.io",
+      "polarjournal.net",
+      "seas.umich.edu"
+    ],
+    "sources_retrieved": 12,
+    "context_chunks_selected": 20,
+    "hop_count": 3,
+    "uncertainty_language": false,
+    "conflict_language": false,
+    "comparison_structure": false,
+    "category_pass": false,
+    "failures": [
+      "missing uncertainty language"
+    ],
+    "citation_validation": {
+      "allowed_url_count": 8,
+      "corrected_citation_count": 1,
+      "removed_citation_count": 0
+    }
+  },
+  "judge": null
+}

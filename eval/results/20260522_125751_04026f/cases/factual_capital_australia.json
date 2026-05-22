@@ -1,0 +1,93 @@
+{
+  "id": "factual_capital_australia",
+  "category": "factual",
+  "query": "What is the capital city of Australia?",
+  "mode": "deep_research",
+  "deep_research": true,
+  "max_hops": 3,
+  "session_id": "a8967f21-579b-4dd4-a35b-241061570930",
+  "elapsed_seconds": 21.49,
+  "plan": {
+    "title": "Capital City of Australia Research",
+    "plan_steps": [
+      "This research will verify the official capital city of Australia through authoritative government and geographical databases.",
+      "The investigation will also confirm the historical context of its selection to ensure comprehensive accuracy."
+    ],
+    "search_queries": [
+      "what is the capital city of Australia",
+      "official capital of Australia government website",
+      "history of Canberra as Australia's capital",
+      "is Sydney or Melbourne the capital of Australia",
+      "geography and administrative status of Canberra 2026"
+    ]
+  },
+  "search": {
+    "search_queries": [
+      "what is the capital city of Australia",
+      "official capital of Australia government website",
+      "history of Canberra as Australia's capital",
+      "is Sydney or Melbourne the capital of Australia",
+      "geography and administrative status of Canberra 2026"
+    ],
+    "pages_count": 5,
+    "chunks_count": 13,
+    "hop_count": 1,
+    "selected_count": 13,
+    "unreachable_count": 2,
+    "urls_opened": [
+      "https://gtanswact.org.au/event/2026-agta-conference-canberra",
+      "https://ovolohotels.com/ovolo/blog/sydney-isnt-the-capital-of-australia",
+      "https://www.britannica.com/place/Canberra",
+      "https://www.nca.gov.au/education/canberras-history/canberra-seat-government",
+      "https://youtooproject.com/en/blog/australia-en/capital-of-australia-canberra"
+    ],
+    "intermediate_answers": [
+      {
+        "hop": 1,
+        "answer": "The capital city of Australia is Canberra. It was selected as the site for the new capital in 1909 following the federation of the Australian colonies in 1901. The city was designed by American architects Walter Burley Griffin and Marion Mahony Griffin, and the federal Parliament officially transferred from Melbourne to Canberra on May 9, 1927."
+      }
+    ]
+  },
+  "answer": {
+    "raw_answer": "## Summary\nThe capital city of Australia is Canberra [Canberra | History, Map, Population, Climate, & Facts - Britannica](https://www.britannica.com/place/Canberra). While cities like Sydney and Melbourne are often mistakenly identified as the capital, Canberra was purpose-built to serve as the nation's seat of government following the federation of the Australian colonies in 1901 [What is the capital of Australia? If you thought it was Sydney, keep ... \u2014 youtooproject.com](https://youtooproject.com/en/blog/australia-en/capital-of-australia-canberra).\n\n## Historical Context and Selection\nThe selection of Canberra as the capital was a strategic compromise between Australia's two largest cities, Sydney and Melbourne, both of which vied for the title after the Commonwealth of Australia was established on January 1, 1901 [What is the capital of Australia? If you thought it was Sydney, keep ... \u2014 youtooproject.com](https://youtooproject.com/en/blog/australia-en/capital-of-australia-canberra) [Canberra, the Seat of Government | National Capital Authority \u2014 www.nca.gov.au](https://www.nca.gov.au/education/canberras-history/canberra-seat-government).\n\n<details>\n<summary>Details on the selection and development of the capital</summary>\n\n*   **The Compromise:** Because both Sydney and Melbourne were coastal and considered vulnerable to potential naval attacks, a decision was made to build a new capital city from the ground up [What is the capital of Australia? If you thought it was Sydney, keep ... \u2014 youtooproject.com](https://youtooproject.com/en/blog/australia-en/capital-of-australia-canberra).\n*   **Constitutional Requirements:** The Australian Constitution mandated that the capital be located at least 100 miles (160 km) from Sydney, with the federal Parliament sitting in Melbourne until the new capital was completed [Sydney isn't the capital of Australia! - Ovolo Hotels \u2014 ovolohotels.com](https://ovolohotels.com/ovolo/blog/sydney-isnt-the-capital-of-australia).\n*   **Timeline of Establishment:**\n    *   **1901:** Federation of the Australian colonies [Canberra, the Seat of Government | National Capital Authority \u2014 www.nca.gov.au](https://www.nca.gov.au/education/canberras-history/canberra-seat-government).\n    *   **1909:** The site for the new capital was officially chosen [Canberra | History, Map, Population, Climate, & Facts - Britannica](https://www.britannica.com/place/Canberra).\n    *   **1911:** A worldwide competition was launched to design the city, which was won by American architects Walter Burley Griffin and Marion Mahony Griffin [Canberra | History, Map, Population, Climate, & Facts - Britannica](https://www.britannica.com/place/Canberra).\n    *   **1913:** Construction began, and the city was officially named by Lady Denman on March 12, 1913 [Canberra | History, Map, Population, Climate, & Facts - Britannica](https://www.britannica.com/place/Canberra) [Canberra, the Seat of Government | National Capital Authority \u2014 www.nca.gov.au](https://www.nca.gov.au/education/canberras-history/canberra-seat-government).\n    *   **1927:** The federal Parliament officially transferred from Melbourne to Canberra [Canberra | History, Map, Population, Climate, & Facts - Britannica](https://www.britannica.com/place/Canberra).\n</details>\n\n## Geography and Administrative Status\nCanberra is located in the Australian Capital Territory (ACT) in southeastern Australia, approximately 150 miles (240 km) southwest of Sydney [Canberra | History, Map, Population, Climate, & Facts - Britannica](https://www.britannica.com/place/Canberra). The city is situated on the Molonglo River and is home to major national institutions [Canberra | History, Map, Population, Climate, & Facts - Britannica](https://www.britannica.com/place/Canberra).\n\n<details>\n<summary>Key facts about Canberra's status and features</summary>\n\n*   **Etymology:** The name \"Canberra\" is derived from an Aboriginal term meaning \"meeting place\" [Canberra | History, Map, Population, Climate, & Facts - Britannica](https://www.britannica.com/place/Canberra).\n*   **Key Institutions:** The city houses the Parliament House (opened in 1988), the High Court of Australia, the National Library of Australia, and the Australian National War Memorial [Canberra | History, Map, Population, Climate, & Facts - Britannica](https://www.britannica.com/place/Canberra).\n*   **Urban Planning:** The city was designed with specific functional zones for administration, business, and trade, and features an ornamental water axis known as Lake Burley Griffin, created in 1963 [Canberra | History, Map, Population, Climate, & Facts - Britannica](https://www.britannica.com/place/Canberra) [What is the capital of Australia? If you thought it was Sydney, keep ... \u2014 youtooproject.com](https://youtooproject.com/en/blog/australia-en/capital-of-australia-canberra).\n</details>\n\n## Key Takeaways\n*   **Official Capital:** Canberra is the federal capital of Australia.\n*   **Common Misconception:** Sydney and Melbourne are frequently mistaken for the capital due to their size and prominence, but neither holds the title.\n*   **Strategic Origins:** Canberra was purpose-built as a compromise between Sydney and Melbourne, fulfilling a constitutional requirement to be located away from Sydney.\n*   **Development:** The city was designed by Walter Burley Griffin and Marion Mahony Griffin, with the federal government moving there in 1927.",
+    "final_answer": "## Summary\nThe capital city of Australia is Canberra [Canberra | History, Map, Population, Climate, & Facts - Britannica \u2014 www.britannica.com](https://www.britannica.com/place/Canberra). While cities like Sydney and Melbourne are often mistakenly identified as the capital, Canberra was purpose-built to serve as the nation's seat of government following the federation of the Australian colonies in 1901 [What is the capital of Australia? If you thought it was Sydney, keep ... \u2014 youtooproject.com](https://youtooproject.com/en/blog/australia-en/capital-of-australia-canberra).\n\n## Historical Context and Selection\nThe selection of Canberra as the capital was a strategic compromise between Australia's two largest cities, Sydney and Melbourne, both of which vied for the title after the Commonwealth of Australia was established on January 1, 1901 [What is the capital of Australia? If you thought it was Sydney, keep ... \u2014 youtooproject.com](https://youtooproject.com/en/blog/australia-en/capital-of-australia-canberra) [Canberra, the Seat of Government | National Capital Authority \u2014 www.nca.gov.au](https://www.nca.gov.au/education/canberras-history/canberra-seat-government).\n\n<details>\n<summary>Details on the selection and development of the capital</summary>\n\n*   **The Compromise:** Because both Sydney and Melbourne were coastal and considered vulnerable to potential naval attacks, a decision was made to build a new capital city from the ground up [What is the capital of Australia? If you thought it was Sydney, keep ... \u2014 youtooproject.com](https://youtooproject.com/en/blog/australia-en/capital-of-australia-canberra).\n*   **Constitutional Requirements:** The Australian Constitution mandated that the capital be located at least 100 miles (160 km) from Sydney, with the federal Parliament sitting in Melbourne until the new capital was completed [Sydney isn't the capital of Australia! - Ovolo Hotels \u2014 ovolohotels.com](https://ovolohotels.com/ovolo/blog/sydney-isnt-the-capital-of-australia).\n*   **Timeline of Establishment:**\n    *   **1901:** Federation of the Australian colonies [Canberra, the Seat of Government | National Capital Authority \u2014 www.nca.gov.au](https://www.nca.gov.au/education/canberras-history/canberra-seat-government).\n    *   **1909:** The site for the new capital was officially chosen [Canberra | History, Map, Population, Climate, & Facts - Britannica \u2014 www.britannica.com](https://www.britannica.com/place/Canberra).\n    *   **1911:** A worldwide competition was launched to design the city, which was won by American architects Walter Burley Griffin and Marion Mahony Griffin [Canberra | History, Map, Population, Climate, & Facts - Britannica \u2014 www.britannica.com](https://www.britannica.com/place/Canberra).\n    *   **1913:** Construction began, and the city was officially named by Lady Denman on March 12, 1913 [Canberra | History, Map, Population, Climate, & Facts - Britannica \u2014 www.britannica.com](https://www.britannica.com/place/Canberra) [Canberra, the Seat of Government | National Capital Authority \u2014 www.nca.gov.au](https://www.nca.gov.au/education/canberras-history/canberra-seat-government).\n    *   **1927:** The federal Parliament officially transferred from Melbourne to Canberra [Canberra | History, Map, Population, Climate, & Facts - Britannica \u2014 www.britannica.com](https://www.britannica.com/place/Canberra).\n</details>\n\n## Geography and Administrative Status\nCanberra is located in the Australian Capital Territory (ACT) in southeastern Australia, approximately 150 miles (240 km) southwest of Sydney [Canberra | History, Map, Population, Climate, & Facts - Britannica \u2014 www.britannica.com](https://www.britannica.com/place/Canberra). The city is situated on the Molonglo River and is home to major national institutions [Canberra | History, Map, Population, Climate, & Facts - Britannica \u2014 www.britannica.com](https://www.britannica.com/place/Canberra).\n\n<details>\n<summary>Key facts about Canberra's status and features</summary>\n\n*   **Etymology:** The name \"Canberra\" is derived from an Aboriginal term meaning \"meeting place\" [Canberra | History, Map, Population, Climate, & Facts - Britannica \u2014 www.britannica.com](https://www.britannica.com/place/Canberra).\n*   **Key Institutions:** The city houses the Parliament House (opened in 1988), the High Court of Australia, the National Library of Australia, and the Australian National War Memorial [Canberra | History, Map, Population, Climate, & Facts - Britannica \u2014 www.britannica.com](https://www.britannica.com/place/Canberra).\n*   **Urban Planning:** The city was designed with specific functional zones for administration, business, and trade, and features an ornamental water axis known as Lake Burley Griffin, created in 1963 [Canberra | History, Map, Population, Climate, & Facts - Britannica \u2014 www.britannica.com](https://www.britannica.com/place/Canberra) [What is the capital of Australia? If you thought it was Sydney, keep ... \u2014 youtooproject.com](https://youtooproject.com/en/blog/australia-en/capital-of-australia-canberra).\n</details>\n\n## Key Takeaways\n*   **Official Capital:** Canberra is the federal capital of Australia.\n*   **Common Misconception:** Sydney and Melbourne are frequently mistaken for the capital due to their size and prominence, but neither holds the title.\n*   **Strategic Origins:** Canberra was purpose-built as a compromise between Sydney and Melbourne, fulfilling a constitutional requirement to be located away from Sydney.\n*   **Development:** The city was designed by Walter Burley Griffin and Marion Mahony Griffin, with the federal government moving there in 1927.",
+    "citation_validation": {
+      "allowed_url_count": 5,
+      "corrected_citation_count": 10,
+      "removed_citation_count": 0
+    },
+    "gap_analysis": {
+      "has_gaps": false,
+      "gaps": [],
+      "suggested_queries": [],
+      "severity": "none"
+    }
+  },
+  "follow_up": null,
+  "metrics": {
+    "citation_count": 18,
+    "grounded_citation_rate": 1.0,
+    "format_compliance_rate": 1.0,
+    "unique_domains_cited": 4,
+    "cited_domains": [
+      "britannica.com",
+      "nca.gov.au",
+      "ovolohotels.com",
+      "youtooproject.com"
+    ],
+    "sources_retrieved": 5,
+    "context_chunks_selected": 13,
+    "hop_count": 1,
+    "uncertainty_language": false,
+    "conflict_language": false,
+    "comparison_structure": false,
+    "category_pass": true,
+    "failures": [],
+    "citation_validation": {
+      "allowed_url_count": 5,
+      "corrected_citation_count": 10,
+      "removed_citation_count": 0
+    }
+  },
+  "judge": null
+}

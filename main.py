@@ -15,6 +15,7 @@ from google import genai
 from google.genai import types
 from filtering import build_context_from_pages
 from search import WebSearchScraper
+from agent_pipeline import run_search, run_answer, run_follow_up_chat
 
 
 def load_local_env(env_path: str = ".env") -> None:
@@ -1364,186 +1365,74 @@ async def execute_search(request: SearchRequest):
             yield json.dumps({"type": "error", "message": "No search queries selected."}) + "\n"
             return
 
+        events: list[dict[str, Any]] = []
+
+        def capture_event(event: dict[str, Any]) -> None:
+            events.append(event)
+
         try:
-            all_attempted_queries = queries[:]
-            all_valid_pages = []
-            all_accumulated_chunks = []
-            intermediate_answers = []
-            plan_steps = []  # We don't have the plan here, so use empty
+            search_result = await run_search(
+                planner,
+                scraper,
+                request.query or " ".join(queries),
+                queries,
+                max_hops=max_hops,
+                on_event=capture_event,
+            )
 
-            for hop in range(1, max_hops + 1):
-                active_queries = all_attempted_queries if hop == 1 else hop_queries
+            for event in events:
+                if event.get("type") == "hop_start":
+                    hop = event["hop"]
+                    max_h = event["max_hops"]
+                    active = event.get("queries", [])
+                    event["message"] = (
+                        f"Hop {hop} of {max_h}: searching {len(active)} "
+                        f"{'query' if len(active) == 1 else 'queries'}"
+                    )
+                if event.get("type") == "result" and "snippet" not in event:
+                    for page in search_result.pages:
+                        if page.get("url") == event.get("url"):
+                            event["snippet"] = page.get("snippet", "")
+                            event["score"] = page.get("score")
+                            event["retrieved_at"] = page.get("retrieved_at", "")
+                            event["query"] = page.get("query", "")
+                            event["rank"] = page.get("rank")
+                            break
+                if event.get("type") == "context_ready":
+                    event["chunk_count"] = search_result.chunk_count
+                    event["selected_count"] = search_result.selected_count
+                    event["unreachable_count"] = search_result.unreachable_count
+                    event["attempted_queries"] = search_result.search_queries
+                yield json.dumps(event) + "\n"
+                await asyncio.sleep(0)
 
-                # Only emit hop_start events for multi-hop (deep research) mode
-                if max_hops > 1:
-                    yield json.dumps({
-                        "type": "hop_start",
-                        "hop": hop,
-                        "max_hops": max_hops,
-                        "queries": active_queries,
-                        "message": f"Hop {hop} of {max_hops}: searching {len(active_queries)} {'query' if len(active_queries) == 1 else 'queries'}",
-                    }) + "\n"
-
-                # --- Search with zero-result retry ---
-                attempted_queries = active_queries[:]
-                current_active = active_queries[:]
-                valid_pages = []
-                for retry_index in range(ZERO_RESULT_SEARCH_RETRY_LIMIT + 1):
-                    yield json.dumps({
-                        "type": "progress",
-                        "message": "Searching the web" if retry_index == 0 else "Retrying with broader search queries",
-                        "queries": current_active,
-                    }) + "\n"
-                    valid_pages = await scraper.execute_concurrent_research(current_active)
-                    if valid_pages:
-                        break
-
-                    try:
-                        recovery_queries = await asyncio.to_thread(
-                            planner.generate_zero_result_queries,
-                            request.query or " ".join(queries),
-                            attempted_queries,
-                        )
-                    except Exception:
-                        recovery_queries = []
-                    recovery_queries = [
-                        query
-                        for query in recovery_queries
-                        if query.strip().lower() not in {aq.lower() for aq in attempted_queries}
-                    ]
-                    if not recovery_queries:
-                        break
-
-                    attempted_queries.extend(recovery_queries)
-                    current_active = recovery_queries
-
-                # Track all attempted queries across hops
-                for q in attempted_queries:
-                    if q not in all_attempted_queries:
-                        all_attempted_queries.append(q)
-
-                yield json.dumps({"type": "progress", "message": "Fetching and cleaning sources"}) + "\n"
-
-                for page in valid_pages:
-                    yield json.dumps({
-                        "type": "result",
-                        "title": page["title"],
-                        "url": page["url"],
-                        "domain": page["domain"],
-                        "content": page["content"][:300],
-                        "snippet": page.get("snippet", ""),
-                        "score": page.get("score"),
-                        "retrieved_at": page.get("retrieved_at", ""),
-                        "query": page.get("query", ""),
-                        "rank": page.get("rank"),
-                        "hop": hop,
-                    }) + "\n"
-                    await asyncio.sleep(0)
-
-                all_valid_pages.extend(valid_pages)
-
-                # Build context from ALL accumulated pages
-                yield json.dumps({"type": "progress", "message": "Selecting relevant context"}) + "\n"
-                research_context = build_context_from_pages(
-                    request.query or " ".join(queries),
-                    all_valid_pages,
-                    additional_queries=all_attempted_queries,
-                    deep_research=(max_hops > 1),
-                )
-                all_accumulated_chunks = research_context.get("chunks", [])
-
-                yield json.dumps({
-                    "type": "context_ready",
-                    "chunks": research_context["chunks"],
-                    "context": research_context["context"],
-                    "chunk_count": research_context["chunk_count"],
-                    "selected_count": research_context["selected_count"],
-                    "unreachable_count": research_context.get("unreachable_count", 0),
-                    "attempted_queries": all_attempted_queries,
-                    "hop": hop,
-                }) + "\n"
-
-                # --- Multi-hop evaluation: should we do another hop? ---
-                # Skip multi-hop evaluation entirely for fast search (max_hops == 1)
-                if max_hops <= 1 or hop >= max_hops:
-                    # Single-hop fast search or reached max hops, stop
-                    break
-
-                if not all_accumulated_chunks:
-                    # No chunks found at all, no point in hopping
-                    break
-
-                yield json.dumps({
-                    "type": "progress",
-                    "message": f"Evaluating whether context is sufficient (hop {hop} of {max_hops})",
-                }) + "\n"
-
-                evaluation = await asyncio.to_thread(
-                    planner.evaluate_context_sufficiency,
-                    request.query or " ".join(queries),
-                    plan_steps,
-                    all_accumulated_chunks,
-                    hop,
-                    max_hops,
-                )
-
-                yield json.dumps({
-                    "type": "hop_evaluation",
-                    "hop": hop,
-                    "sufficient": evaluation["sufficient"],
-                    "intermediate_answer": evaluation["intermediate_answer"],
-                    "missing_info": evaluation["missing_info"],
-                    "reasoning": evaluation["reasoning"],
-                    "next_queries": evaluation["next_queries"],
-                }) + "\n"
-
-                if evaluation["intermediate_answer"]:
-                    intermediate_answers.append({
-                        "hop": hop,
-                        "answer": evaluation["intermediate_answer"],
-                    })
-
-                if evaluation["sufficient"] or not evaluation["next_queries"]:
-                    # Context is sufficient, stop hopping
-                    break
-
-                # Prepare next hop queries, filtering duplicates
-                already_searched = {q.strip().lower() for q in all_attempted_queries}
-                hop_queries = [
-                    q for q in evaluation["next_queries"]
-                    if q.strip().lower() not in already_searched
-                ]
-                if not hop_queries:
-                    break
-
-            # --- Final session state update ---
             if request.session_id:
-                final_context = build_context_from_pages(
-                    request.query or " ".join(queries),
-                    all_valid_pages,
-                    additional_queries=all_attempted_queries,
-                    deep_research=(max_hops > 1),
-                )
                 session_store.update_state(
                     request.session_id,
                     {
-                        "opened_urls": [page["url"] for page in all_valid_pages],
-                        "fetched_pages": all_valid_pages,
-                        "research_context": final_context,
-                        "selected_queries": all_attempted_queries,
-                        "hop_count": hop,
-                        "intermediate_answers": intermediate_answers,
+                        "opened_urls": [page["url"] for page in search_result.pages],
+                        "fetched_pages": search_result.pages,
+                        "research_context": {
+                            "chunks": search_result.chunks,
+                            "context": search_result.context,
+                            "chunk_count": search_result.chunk_count,
+                            "selected_count": search_result.selected_count,
+                            "unreachable_count": search_result.unreachable_count,
+                        },
+                        "selected_queries": search_result.search_queries,
+                        "hop_count": search_result.hop_count,
+                        "intermediate_answers": search_result.intermediate_answers,
                     },
                     {
                         "type": "context_selected",
-                        "opened_url_count": len(all_valid_pages),
-                        "attempted_query_count": len(all_attempted_queries),
-                        "selected_count": final_context["selected_count"],
-                        "unreachable_count": final_context.get("unreachable_count", 0),
-                        "hop_count": hop,
+                        "opened_url_count": len(search_result.pages),
+                        "attempted_query_count": len(search_result.search_queries),
+                        "selected_count": search_result.selected_count,
+                        "unreachable_count": search_result.unreachable_count,
+                        "hop_count": search_result.hop_count,
                     },
                 )
-            yield json.dumps({"type": "done", "hop_count": hop}) + "\n"
+            yield json.dumps({"type": "done", "hop_count": search_result.hop_count}) + "\n"
         except Exception as error:
             yield json.dumps({"type": "error", "message": str(error)}) + "\n"
 
@@ -1572,85 +1461,41 @@ async def generate_answer(request: AnswerRequest):
             return
 
         yield json.dumps({"type": "progress", "message": "Generating answer with citations"}) + "\n"
-        final_answer_parts = []
-        for token in planner.generate_answer_stream(
-            user_query=request.query,
-            plan=request.plan,
-            search_queries=request.search_queries,
-            web_context=context,
-            chunks=request.chunks,
-            history_context=history_context,
-            intermediate_answers=intermediate_answers,
-            deep_research=request.deep_research,
-        ):
-            final_answer_parts.append(token)
+
+        token_queue: asyncio.Queue[str | None] = asyncio.Queue()
+
+        def on_token(token: str) -> None:
+            token_queue.put_nowait(token)
+
+        async def produce_answer():
+            result = await run_answer(
+                planner,
+                request.query,
+                request.plan,
+                request.search_queries,
+                context,
+                request.chunks,
+                history_context=history_context,
+                intermediate_answers=intermediate_answers,
+                deep_research=request.deep_research,
+                on_token=on_token,
+                refine_gaps=request.deep_research,
+            )
+            await token_queue.put(None)
+            return result
+
+        answer_task = asyncio.create_task(produce_answer())
+        while True:
+            token = await token_queue.get()
+            if token is None:
+                break
             yield json.dumps({"type": "token", "text": token}) + "\n"
             await asyncio.sleep(0)
 
-        raw_answer = "".join(final_answer_parts).strip()
-        final_answer, citation_validation = validate_answer_citations(raw_answer, request.chunks)
-
-        # --- Post-process: detect answer gaps (deep research only) ---
-        gap_analysis = {"has_gaps": False, "gaps": [], "suggested_queries": [], "severity": "none"}
-        if request.deep_research:
-            gap_analysis = await asyncio.to_thread(
-                planner.detect_answer_gaps,
-                final_answer,
-                request.query,
-                request.chunks,
-            )
-
-            # --- Answer refinement loop: re-generate if major gaps found ---
-            refinement_count = 0
-            while (
-                gap_analysis.get("has_gaps")
-                and gap_analysis.get("severity") == "major"
-                and refinement_count < MAX_ANSWER_REFINEMENT_LOOPS
-            ):
-                refinement_count += 1
-                gap_descriptions = "\n".join(
-                    f"- {gap}" for gap in gap_analysis.get("gaps", [])
-                )
-                yield json.dumps({
-                    "type": "progress",
-                    "message": f"Refining answer to address gaps (attempt {refinement_count})",
-                }) + "\n"
-
-                # Re-generate with gap feedback — same context, better prompting
-                refined_parts = []
-                refinement_prompt_suffix = (
-                    f"\n\n**IMPORTANT — Previous answer had these gaps:**\n{gap_descriptions}\n"
-                    "Re-examine the source evidence carefully and produce a more complete answer "
-                    "that addresses these gaps. Do not repeat the same hedging."
-                )
-                for token in planner.generate_answer_stream(
-                    user_query=request.query + refinement_prompt_suffix,
-                    plan=request.plan,
-                    search_queries=request.search_queries,
-                    web_context=context,
-                    chunks=request.chunks,
-                    history_context=history_context,
-                    intermediate_answers=intermediate_answers,
-                    deep_research=request.deep_research,
-                ):
-                    refined_parts.append(token)
-                    yield json.dumps({"type": "token", "text": token}) + "\n"
-                    await asyncio.sleep(0)
-
-                refined_raw = "".join(refined_parts).strip()
-                if len(refined_raw) > len(final_answer) * 0.5:
-                    # Accept refinement only if it produced a substantial answer
-                    final_answer, citation_validation = validate_answer_citations(
-                        refined_raw, request.chunks
-                    )
-                    gap_analysis = await asyncio.to_thread(
-                        planner.detect_answer_gaps,
-                        final_answer,
-                        request.query,
-                        request.chunks,
-                    )
-                else:
-                    break
+        answer_result = await answer_task
+        final_answer = answer_result.final_answer
+        citation_validation = answer_result.citation_validation
+        gap_analysis = answer_result.gap_analysis
 
         if request.session_id:
             session_store.append_message(request.session_id, "assistant", final_answer)

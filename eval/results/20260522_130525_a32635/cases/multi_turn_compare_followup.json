@@ -1,0 +1,284 @@
+{
+  "id": "multi_turn_compare_followup",
+  "category": "multi_turn",
+  "query": "What are the pros and cons of solar versus wind power for grid-scale electricity?",
+  "mode": "deep_research",
+  "deep_research": true,
+  "max_hops": 3,
+  "session_id": "d366cbb8-cc45-49b7-8ccd-543ac8eb8ea5",
+  "elapsed_seconds": 84.42,
+  "plan": {
+    "title": "Grid-Scale Solar vs Wind Comparison",
+    "plan_steps": [
+      "This research will evaluate the technical, economic, and environmental trade-offs between utility-scale solar and wind energy systems.",
+      "The analysis will focus on capacity factors, levelized cost of energy (LCOE), and grid integration challenges as of May 2026."
+    ],
+    "search_queries": [
+      "LCOE comparison utility-scale solar vs wind 2026",
+      "grid integration challenges solar vs wind power",
+      "capacity factor trends for solar and wind energy 2026",
+      "environmental impact of utility-scale solar vs wind farms",
+      "intermittency and energy storage requirements for solar and wind",
+      "technological advancements in grid-scale renewable energy 2026"
+    ]
+  },
+  "search": {
+    "search_queries": [
+      "LCOE comparison utility-scale solar vs wind 2026",
+      "grid integration challenges solar vs wind power",
+      "capacity factor trends for solar and wind energy 2026",
+      "environmental impact of utility-scale solar vs wind farms",
+      "intermittency and energy storage requirements for solar and wind",
+      "technological advancements in grid-scale renewable energy 2026",
+      "current capacity factor utility-scale solar vs wind 2026",
+      "levelized cost of energy LCOE comparison utility-scale solar vs wind 2026"
+    ],
+    "pages_count": 7,
+    "chunks_count": 18,
+    "hop_count": 2,
+    "selected_count": 18,
+    "unreachable_count": 1,
+    "urls_opened": [
+      "http://large.stanford.edu/courses/2024/ph240/yuan2",
+      "https://citypowerandgas.com/blog/renewable-energy-trends-you-need-to-know",
+      "https://news.gatech.edu/news/2026/04/17/researchers-survey-challenges-integrating-wind-and-solar-power-grids",
+      "https://www.rtoinsider.com/108308-lazard-solar-wind-retain-lowest-lcoes",
+      "https://www.sciencedirect.com/science/article/pii/S2589004222006496",
+      "https://www.sierraclub.org/wisconsin/blog/2023/08/misconceptions-series-3-utility-scale-solar-and-environment",
+      "https://www.sunhub.com/blog/grid-scale-storage-2026"
+    ],
+    "intermediate_answers": [
+      {
+        "hop": 1,
+        "answer": "The evidence establishes that both solar and wind are low-cost, zero-marginal-cost energy sources that are cheaper than fossil fuels. Key pros include price stability and reduced reliance on volatile fuel markets. Key cons include intermittency (the 'sun doesn't always shine, wind doesn't always blow' problem), the need for grid-scale storage, and land-use requirements. While LCOE trends are mentioned (15% learning rate for wind, 24% for solar), a direct comparative analysis of current capacity factors and specific LCOE values for 2026 is lacking."
+      },
+      {
+        "hop": 2,
+        "answer": "The evidence establishes that both solar and wind are among the lowest-cost sources of electricity (LCOE) as of 2025-2026. Key pros include low operating costs and environmental benefits compared to fossil fuels. Key cons/challenges include intermittency (requiring grid-scale storage or backup), land use requirements, and the economic difficulty of maintaining grid stability when high volumes of zero-marginal-cost energy enter the market. Grid-scale storage (lithium-ion, thermal, etc.) is identified as the primary solution to intermittency, though long-duration storage remains an economic hurdle."
+      }
+    ]
+  },
+  "answer": {
+    "raw_answer": "## Summary\nAs of May 2026, utility-scale solar and wind energy are established as the lowest-cost new-build electricity sources globally, offering significant advantages in price stability and zero-marginal-cost generation. However, both technologies face substantial grid integration challenges due to their inherent intermittency, necessitating advancements in grid-scale storage and cross-disciplinary collaboration between engineers, economists, and policymakers to maintain grid reliability.\n\n## Economic and Operational Comparison\n\nThe following table summarizes the primary trade-offs between utility-scale solar and wind power.\n\n| Feature | Solar Power | Wind Power |\n| :--- | :--- | :--- |\n| **Primary Economic Advantage** | Rapidly declining costs; 24% learning rate [Levelized cost-based learning analysis of utility-scale wind and ... \u2014 www.sciencedirect.com](https://www.sciencedirect.com/science/article/pii/S2589004222006496) | High capacity potential, especially with offshore floating foundations [Renewable Energy Trends You Need to Know in 2026 \u2014 citypowerandgas.com](https://citypowerandgas.com/blog/renewable-energy-trends-you-need-to-know) |\n| **Intermittency Profile** | Diurnal (daytime generation) [How Do We Solve the Intermittency Problem? \u2014 large.stanford.edu](http://large.stanford.edu/courses/2024/ph240/yuan2) | Weather-dependent (variable wind speeds) [Researchers Survey the Challenges of Integrating Wind and Solar Into Power Grids \u2014 news.gatech.edu](https://news.gatech.edu/news/2026/04/17/researchers-survey-challenges-integrating-wind-and-solar-power-grids) |\n| **Land Use Considerations** | High footprint, but supports dual-use (e.g., agrivoltaics) [Misconceptions Series 3: Utility-scale solar and the environment \u2014 www.sierraclub.org](https://www.sierraclub.org/wisconsin/blog/2023/08/misconceptions-series-3-utility-scale-solar-and-environment) | High footprint, but allows for continued agricultural use around turbine bases [Renewable Energy Trends You Need to Know in 2026 \u2014 citypowerandgas.com](https://citypowerandgas.com/blog/renewable-energy-trends-you-need-to-know) |\n| **Learning Rate** | 24% [Levelized cost-based learning analysis of utility-scale wind and ... \u2014 www.sciencedirect.com](https://www.sciencedirect.com/science/article/pii/S2589004222006496) | 15% [Levelized cost-based learning analysis of utility-scale wind and ... \u2014 www.sciencedirect.com](https://www.sciencedirect.com/science/article/pii/S2589004222006496) |\n\n### Technological Efficiency Gains\nThe economic viability of these technologies is driven by their respective learning rates, which measure cost reductions as cumulative capacity increases.\n\n```chart\n{\"type\": \"bar\", \"title\": \"LCOE-Based Learning Rates (Efficiency Gains)\", \"xLabel\": \"Technology\", \"yLabel\": \"Learning Rate (%)\", \"data\": [{\"label\": \"Solar\", \"value\": 24}, {\"label\": \"Wind\", \"value\": 15}]}\n```\n\n## Detailed Findings\n\n### Economic Viability and Market Position\n<details>\n<summary>Analysis of LCOE and market trends</summary>\n\nFor the 10th consecutive year, wind and solar have been identified as the least-expensive new-build power generation options [Lazard: Solar and Wind Retain Lowest LCOEs \u2014 www.rtoinsider.com](https://www.rtoinsider.com/108308-lazard-solar-wind-retain-lowest-lcoes). As of 2024, solar power costs dropped 41% below the cheapest fossil fuels, while wind power is 53% cheaper than coal or gas [Renewable Energy Trends You Need to Know in 2026 \u2014 citypowerandgas.com](https://citypowerandgas.com/blog/renewable-energy-trends-you-need-to-know). \n\nHowever, there is a nuance in the economic debate: while generation costs are low, the \"system cost\" of integrating these resources\u2014specifically the need for storage to manage intermittency\u2014remains a point of contention. Some research indicates that for long-duration storage (e.g., 12+ hours), natural gas remains more economically competitive than current battery or pumped hydro storage solutions [How Do We Solve the Intermittency Problem? \u2014 large.stanford.edu](http://large.stanford.edu/courses/2024/ph240/yuan2).\n</details>\n\n### Grid Integration and Intermittency Challenges\n<details>\n<summary>Engineering and economic hurdles</summary>\n\nThe primary challenge for both solar and wind is their \"zero marginal cost\" nature combined with intermittency. Because they do not generate power at a constant rate, grid operators face difficulties in matching supply to demand [Researchers Survey the Challenges of Integrating Wind and Solar Into Power Grids \u2014 news.gatech.edu](https://news.gatech.edu/news/2026/04/17/researchers-survey-challenges-integrating-wind-and-solar-power-grids).\n\n*   **Short-term Intermittency:** Lithium-ion battery systems are currently the most widely deployed solution for short-term (2-4 hour) fluctuations, providing frequency control and grid balancing [Grid Scale Storage 2026: Critical Power Breakthroughs \u2014 www.sunhub.com](https://www.sunhub.com/blog/grid-scale-storage-2026).\n*   **Long-term Intermittency:** Addressing seasonal or multi-day gaps remains difficult. While technologies like pumped hydro, compressed air energy storage (CAES), and hydrogen storage are being explored, they currently face economic or geographic limitations compared to the flexibility of natural gas plants [Grid Scale Storage 2026: Critical Power Breakthroughs \u2014 www.sunhub.com](https://www.sunhub.com/blog/grid-scale-storage-2026); [How Do We Solve the Intermittency Problem? \u2014 large.stanford.edu](http://large.stanford.edu/courses/2024/ph240/yuan2).\n</details>\n\n### Environmental and Land Use Perspectives\n<details>\n<summary>Addressing common misconceptions</summary>\n\nCritics often cite land use as a disadvantage for both solar and wind. However, proponents argue that these concerns are often overstated.\n*   **Solar:** While solar farms require significant land, they can be integrated with agriculture (dual-use) to provide revenue for farmers without displacing crop production [Misconceptions Series 3: Utility-scale solar and the environment \u2014 www.sierraclub.org](https://www.sierraclub.org/wisconsin/blog/2023/08/misconceptions-series-3-utility-scale-solar-and-environment).\n*   **Wind:** Modern offshore wind developments, including floating foundations, allow for energy production in deeper waters, reducing the pressure on land-based sites and providing more consistent wind resources [Renewable Energy Trends You Need to Know in 2026 \u2014 citypowerandgas.com](https://citypowerandgas.com/blog/renewable-energy-trends-you-need-to-know).\n</details>\n\n## Key Takeaways\n*   **Cost Leadership:** Solar and wind are the most cost-effective new-build energy sources, with solar exhibiting a higher learning rate (24%) than wind (15%).\n*   **The Intermittency Gap:** The main disadvantage of both is intermittency. While lithium-ion batteries effectively handle short-term grid balancing, long-duration storage remains economically challenging compared to traditional natural gas backup.\n*   **Systemic Integration:** Successful grid integration requires a shift from viewing engineering, economics, and policy as separate silos to a unified, cross-disciplinary approach to manage the variability of zero-marginal-cost energy.",
+    "final_answer": "According to the provided sources, both utility-scale solar and wind energy are recognized as the lowest-cost sources of new-build electricity generation, a status they have maintained for over a decade [Lazard: Solar and Wind Retain Lowest LCOEs - RTO Insider \u2014 www.rtoinsider.com](https://www.rtoinsider.com/108308-lazard-solar-wind-retain-lowest-lcoes).\n\nThe available documentation does not explicitly rank one as having a lower Levelized Cost of Energy (LCOE) than the other; instead, they are consistently grouped together as the most affordable options compared to other forms of power generation [Lazard: Solar and Wind Retain Lowest LCOEs - RTO Insider \u2014 www.rtoinsider.com](https://www.rtoinsider.com/108308-lazard-solar-wind-retain-lowest-lcoes). While one source notes that solar power is \"the most affordable source of electricity on the planet\" due to an 80% drop in panel costs over the last decade [Renewable Energy Trends You Need to Know in 2026 - \u2014 citypowerandgas.com](https://citypowerandgas.com/blog/renewable-energy-trends-you-need-to-know), this does not provide a direct comparative LCOE figure against wind power.\n\n### Comparative Economic Context\n| Technology | Economic Status | Key Characteristic |\n|---|---|---|\n| **Utility-Scale Solar** | Lowest-cost new-build generation | Zero marginal cost; costs dropped >80% in a decade |\n| **Wind Power** | Lowest-cost new-build generation | Zero marginal cost; high output from modern turbines |\n\n**Evidence Status:**\nThe evidence confirms that both technologies share the top tier of cost-competitiveness. However, the provided sources lack a granular, side-by-side LCOE comparison (e.g., $/MWh) for the current year.\n\n**Proposed Next Research Step:**\nTo determine if one is definitively cheaper than the other, a review of the full 2025 Lazard LCOE report\u2014referenced in the context\u2014would be required to see if it provides specific, differing values for onshore wind versus utility-scale solar.",
+    "citation_validation": {
+      "allowed_url_count": 6,
+      "corrected_citation_count": 0,
+      "removed_citation_count": 0
+    },
+    "gap_analysis": {
+      "has_gaps": true,
+      "gaps": [
+        "The answer is cut off mid-sentence at the end of the 'Systemic Solutions' section, leaving the explanation of grid integration strategies incomplete.",
+        "The answer lacks a direct comparison of the specific land-use requirements or environmental impact trade-offs between wind and solar, which are standard components of a 'pros and cons' analysis."
+      ],
+      "suggested_queries": [
+        "land use requirements per megawatt solar vs wind power",
+        "environmental impact comparison utility-scale solar vs wind farms",
+        "strategies for integrating high shares of variable renewable energy into power grids"
+      ],
+      "severity": "minor"
+    }
+  },
+  "follow_up": {
+    "final_answer": "According to the provided sources, both utility-scale solar and wind energy are recognized as the lowest-cost sources of new-build electricity generation, a status they have maintained for over a decade [Lazard: Solar and Wind Retain Lowest LCOEs - RTO Insider \u2014 www.rtoinsider.com](https://www.rtoinsider.com/108308-lazard-solar-wind-retain-lowest-lcoes).\n\nThe available documentation does not explicitly rank one as having a lower Levelized Cost of Energy (LCOE) than the other; instead, they are consistently grouped together as the most affordable options compared to other forms of power generation [Lazard: Solar and Wind Retain Lowest LCOEs - RTO Insider \u2014 www.rtoinsider.com](https://www.rtoinsider.com/108308-lazard-solar-wind-retain-lowest-lcoes). While one source notes that solar power is \"the most affordable source of electricity on the planet\" due to an 80% drop in panel costs over the last decade [Renewable Energy Trends You Need to Know in 2026 - \u2014 citypowerandgas.com](https://citypowerandgas.com/blog/renewable-energy-trends-you-need-to-know), this does not provide a direct comparative LCOE figure against wind power.\n\n### Comparative Economic Context\n| Technology | Economic Status | Key Characteristic |\n|---|---|---|\n| **Utility-Scale Solar** | Lowest-cost new-build generation | Zero marginal cost; costs dropped >80% in a decade |\n| **Wind Power** | Lowest-cost new-build generation | Zero marginal cost; high output from modern turbines |\n\n**Evidence Status:**\nThe evidence confirms that both technologies share the top tier of cost-competitiveness. However, the provided sources lack a granular, side-by-side LCOE comparison (e.g., $/MWh) for the current year.\n\n**Proposed Next Research Step:**\nTo determine if one is definitively cheaper than the other, a review of the full 2025 Lazard LCOE report\u2014referenced in the context\u2014would be required to see if it provides specific, differing values for onshore wind versus utility-scale solar.",
+    "citation_validation": {
+      "allowed_url_count": 6,
+      "corrected_citation_count": 0,
+      "removed_citation_count": 0
+    },
+    "search_queries": [],
+    "urls_opened": [],
+    "chunks": [
+      {
+        "text": "Lazard: Solar and Wind Retain Lowest LCOEs Skip to content Already registered? Login Reset your password? Reset Password Looking to read the full article? Scroll down and login or sign up today! Page Reload Scroll Position Lazard: Solar and Wind Retain Lowest LCOEs Annual Report Backs Renewable Generation but Says Changes are Expected Lazard\u2019s 2025 report on the levelized cost of energy breaks down the economics of multiple forms of power generation under various scenarios. | Lazard Jun 17, 2025 | John Cropley Lazard\u2019s latest analysis of the levelized costs of e nergy concludes that wind and solar are the least-expensive new-build power generation for the 10th year in a row. Battery Electric Storage Energy Market Energy Storage Natural Gas Natural Gas Onshore Wind Onshore Wind Power Utility scale solar Utility-scale Solar Keywords battery energy storage systems (BESS) Lazard levelized cost of energy (LCOE) natural gas onshore wind utility-scale solar John Cropley DOE Authorizes PJM to Activate Data Center Backup Generation More From This Author \u2192 We Recommend 1 New England Regulators Grapple with Grid Infrastructure, Supply Costs May 21, 2026 ISO-NE Jon Lamson 2 PJM, State Officials Debate Roles in Addressing Data Center Demand May 21, 2026 Load Michael Brooks 3 FERC Summer Assessment Foresees High Temps, Low Hydropower May 21, 2026 Public Policy James Downing 4 Renewables are Nice, but Natural Gas is Still the Way to Go May 21, 2026 Commentary Stakeholder 5 Bring Your Own Power: Is Policy Catching up to Data Center Reality? May 21,",
+        "url": "https://www.rtoinsider.com/108308-lazard-solar-wind-retain-lowest-lcoes",
+        "domain": "www.rtoinsider.com",
+        "title": "Lazard: Solar and Wind Retain Lowest LCOEs - RTO Insider",
+        "query": "levelized cost of energy LCOE comparison utility-scale solar vs wind 2026",
+        "rank": 1,
+        "retrieved_at": "2026-05-22T13:13:18.532087",
+        "chunk_index": 0,
+        "bm25_score": 1.0,
+        "source_id": 1
+      },
+      {
+        "text": "be spread across a larger area than fossil fuel plants, it isn\u2019t an accurate picture of land use in the electric sector. First, this fact ignores the large amount of land used to mine the coal to be burned at that smaller plant. In fact, mining, and in particular strip mining, continues to expand the operation to produce more coal. Once the coal on a stretch of land is used up, the mining company must dig on another tract. As this process happens, toxic chemicals are released from the mining process and leach into the soil and groundwater. This land is then rendered unusable for agriculture. In contrast to the expanding land use of fossil fuels, solar panels sit on the same patch of ground year after year, and do not gradually eat up ever more fertile lands to produce more energy. A useful metric to compare the two impacts is \u201cAcres per GWh per year,\u201d indicating the acres needed to produce a unit of electricity annually by energy type. This measure includes mining in its figures. While coal has an impact of 11.11 Acres/GWh/year, solar has only 8.33 Acres/GWh/year [1]. Although natural gas has a lower Acres/GWh/year value than solar, this energy source still comes with many impacts such as leakage of extraction chemicals into water supplies, sulfate and carbon dioxide emissions, and methane leaks (see our past blog about why gas is not a bridge fuel ). Two comparative statistics put the concerns about solar land use into",
+        "url": "https://www.sierraclub.org/wisconsin/blog/2023/08/misconceptions-series-3-utility-scale-solar-and-environment",
+        "domain": "www.sierraclub.org",
+        "title": "Misconceptions Series 3: Utility-scale solar and the environment",
+        "query": "environmental impact of utility-scale solar vs wind farms",
+        "rank": 1,
+        "retrieved_at": "2026-05-22T13:13:03.822648",
+        "chunk_index": 1,
+        "bm25_score": 0.8955807064200595,
+        "source_id": 2
+      },
+      {
+        "text": "can address short-term intermittency. However, lithium batteries lose their economic advantage when built for greater durations of storage. This prevents them from addressing long-term intermittency, such as during cloudy or rainy seasons. In the absence of batteries, natural gas plants are used. They are flexible, controllable, and perhaps most importantly, economically competitive. For 12-hour durations, combined cycle natural gas has a lower levelized cost of energy (LCOE) than all other energy storage technologies, around $70-80/MWh. [1] This holds true even for future projections, where lithium-ion is expected to drop even further in price ($80-90/MWh), but still not below that of combined cycle natural gas. [1] Pumped hydro storage (see Fig. 1) is widely considered one of the cheapest forms of energy storage. But at around $120/MWh, it is still not cheaper than the gas alternative. [1] Moreover, gas has an even stronger economic advantage at 120 hours than it does at 12 hours, hovering between $50-100/MWh. [1] Conclusion At the moment, using storage to address renewable intermittency does not make economic sense. It is more expensive than natural gas for single-day, multi-day, and season-long periods of intermittency. Therefore, without some form of price manipulation or shock, it is hard to imagine storage becoming the most widely-used solution to intermittency in renewables. Thinking deeper, there is also a land problem. Storage uses excess energy (i.e, curtailed energy) to charge. Thus, to power periods of long-term intermittency, we would need to overbuild renewable generation. Serpal et al. found that such overbuilding could",
+        "url": "http://large.stanford.edu/courses/2024/ph240/yuan2",
+        "domain": "large.stanford.edu",
+        "title": "How Do We Solve the Intermittency Problem?",
+        "query": "intermittency and energy storage requirements for solar and wind",
+        "rank": 1,
+        "retrieved_at": "2026-05-22T13:13:02.774520",
+        "chunk_index": 1,
+        "bm25_score": 0.9013555643058605,
+        "source_id": 3
+      },
+      {
+        "text": "elevated reservoir when excess electricity is available and releasing it through turbines to generate electricity when needed. PHS systems can provide large quantities of storage over long durations, often lasting for several hours of high demand. Despite being geographically limited, requiring suitable elevation and water resources, pumped hydro accounts for a significant share of global grid storage capacity and continues to be expanded or modernized in many regions. Flow batteries Flow batteries use two liquid electrolytes stored in separate tanks, with energy generated when the liquids flow through a cell stack. A key advantage of flow batteries is that power capacity (the size of the cell stack) and energy capacity (the size of the electrolyte tanks) can be scaled independently. This flexibility makes flow batteries attractive for longer-duration storage applications that require sustained energy release. Flow batteries also boast long lifecycles and can be safer than some other battery chemistries because they are less prone to overheating, which is critical for utility-scale installations. Compressed air energy storage Compressed Air Energy Storage (CAES) stores energy by compressing air into large underground caverns or tanks when electricity supply is plentiful. When electricity is needed, the compressed air expands through turbines to generate power. This system works well for long discharge durations, making it suitable for balancing renewable generation over hours or even days. CAES plants are fewer in number than other storage types, largely because suitable geological sites are required and because efficiencies tend to be lower than those of battery systems,",
+        "url": "https://www.sunhub.com/blog/grid-scale-storage-2026",
+        "domain": "www.sunhub.com",
+        "title": "Grid Scale Storage 2026: Critical Power Breakthroughs",
+        "query": "technological advancements in grid-scale renewable energy 2026",
+        "rank": 1,
+        "retrieved_at": "2026-05-22T13:13:03.662771",
+        "chunk_index": 3,
+        "bm25_score": 0.804039731979354,
+        "source_id": 4
+      },
+      {
+        "text": "policy implications of managing renewable energy sources that are both intermittent and effectively zero-cost to operate. \u201cWind and solar are now among the lowest-cost sources of electricity in many parts of the world, but integrating them into the grid isn\u2019t simple,\u201d said Matthew Oliver , associate professor in the School of Economics and lead author of the study. \u201cThe wind doesn\u2019t always blow, and the sun isn\u2019t always shining, so output can fluctuate significantly, which complicates grid management.\u201d He added, \u201cHistorically, variation in electricity systems generally came from the demand side, and operators could simply ramp generation up or down. Now, we have variability on both supply and demand sides.\u201d Analyzing the Data Looking at the problem, Oliver knew he would need to be familiar with engineering concepts to get at the heart of the issue. He created a research team with Daniel Matisoff , professor in the Jimmy and Rosalynn Carter School of Public Policy ; Santiago Grijalva , professor in the School of Electrical and Computer Engineering ; and graduate student co-authors Maghfira Ramadhani (economics), Oliver Chapman (public policy), and Amanda West (electrical and computer engineering). Analyzing over 200 studies published since 2010, the team mapped the complex interactions between electricity market design, grid operations, and renewable technologies. They also explored the economic implications of large amounts of zero-marginal-cost electricity entering wholesale electricity markets. Because wind and solar have very low operating costs, they can lower prices in wholesale electricity markets. That benefits consumers, but it can also",
+        "url": "https://news.gatech.edu/news/2026/04/17/researchers-survey-challenges-integrating-wind-and-solar-power-grids",
+        "domain": "news.gatech.edu",
+        "title": "Researchers Survey the Challenges of Integrating Wind and Solar Into Power Grids | News Center",
+        "query": "grid integration challenges solar vs wind power",
+        "rank": 2,
+        "retrieved_at": "2026-05-22T13:13:02.308168",
+        "chunk_index": 1,
+        "bm25_score": 0.8000569583196694,
+        "source_id": 5
+      },
+      {
+        "text": "excess energy when supply exceeds demand and releasing it during peaks or when generation is low. Grid scale storage is critical because renewable energy sources such as solar and wind do not generate power all the time. Solar produces during the day and wind varies with weather. Without storage, utilities would struggle to maintain a stable supply that matches demand at all hours. Storage systems help with: Balancing supply and demand Frequency and voltage regulation Peak shaving (reducing demand at high-cost times) Backup power during outages Integration of high levels of renewables These functions make grid scale storage a cornerstone of resilient and low-carbon energy systems. How grid scale storage works Grid-scale storage technologies differ in how they store energy, whether chemically, mechanically, or thermally, but they share the common goal of converting electricity into a storable form and then converting it back when needed. Generally, the cycle involves: Charging or storing energy when supply is abundant or cheap, such as midday solar generation. Holding the energy in a stable form until it is needed later. Discharging the energy back to the grid during peak demand or outages. Whether the storage medium is water, compressed gas, molten salt, or electrochemical cells, the goal is the same: capture excess energy and release it later with minimal losses. Top grid scale storage technologies shaping markets According to recent market analysis, the global grid-scale storage market is growing rapidly, with revenue expected to expand from about $40.7 billion in 2024 to $151.2 billion",
+        "url": "https://www.sunhub.com/blog/grid-scale-storage-2026",
+        "domain": "www.sunhub.com",
+        "title": "Grid Scale Storage 2026: Critical Power Breakthroughs",
+        "query": "technological advancements in grid-scale renewable energy 2026",
+        "rank": 1,
+        "retrieved_at": "2026-05-22T13:13:03.662771",
+        "chunk_index": 1,
+        "bm25_score": 0.8076345245514812,
+        "source_id": 6
+      },
+      {
+        "text": "Energy Certificates (RECs) from sources like solar, wind, and hydro. So when you pick one of our 100% renewable plans, your usage is matched with clean energy fed into the grid. What surprised us most, though, is how quickly residential solar has gone mainstream. Five years ago, it felt like a niche choice. Today, it is a no-brainer for millions of homes. Part of that shift comes down to simple math \u2013 when clean energy is cheaper, people switch. How Is Wind Power Changing the Energy Map? Wind energy is not new. People have used windmills for centuries. But the turbines going up today look nothing like what you picture from old Dutch paintings. Modern wind turbines are massive \u2013 some offshore models stand taller than the Statue of Liberty \u2013 and they produce far more power per rotation than earlier designs. Offshore wind is where a lot of the new growth is happening. Floating turbine foundations now make it possible to place wind farms in deeper waters, where winds blow stronger and more steady. The result is higher output with fewer gaps in production. In 2022, wind and solar together accounted for the bulk of new electricity capacity added to grids around the world (IEA, 2023). That is not a small trend. That is a structural shift in how the world makes power. The United States, Europe, and parts of Asia are all pushing hard on wind. In fact, countries with strong offshore wind programs are seeing energy prices",
+        "url": "https://citypowerandgas.com/blog/renewable-energy-trends-you-need-to-know",
+        "domain": "citypowerandgas.com",
+        "title": "Renewable Energy Trends You Need to Know in 2026 -",
+        "query": "capacity factor trends for solar and wind energy 2026",
+        "rank": 1,
+        "retrieved_at": "2026-05-22T13:13:03.937842",
+        "chunk_index": 2,
+        "bm25_score": 0.7097097751755427,
+        "source_id": 7
+      },
+      {
+        "text": "cells, the goal is the same: capture excess energy and release it later with minimal losses. Top grid scale storage technologies shaping markets According to recent market analysis, the global grid-scale storage market is growing rapidly, with revenue expected to expand from about $40.7 billion in 2024 to $151.2 billion by 2029, reflecting strong demand for large-scale storage solutions worldwide. Here are the leading technologies that are shaping this growth. Lithium-ion battery systems Lithium-ion batteries are currently the most widely deployed grid scale storage technology. Known for high energy density, high efficiency, modularity, and rapidly declining costs, lithium-ion systems are used by utilities to balance short-term fluctuations, provide backup power, and integrate renewable energy. These systems can be scaled from tens of megawatts to hundreds of megawatts. Battery installations such as large battery energy storage systems (BESS) can respond in milliseconds to changes in demand or supply, making them valuable for grid balancing, frequency control, and ancillary services. New products like utility-scale battery blocks promise faster deployment and lower construction costs, further accelerating adoption. Pumped hydroelectric storage Pumped hydroelectric storage (PHS) is one of the oldest and most established grid scale storage technologies. It works by pumping water to an elevated reservoir when excess electricity is available and releasing it through turbines to generate electricity when needed. PHS systems can provide large quantities of storage over long durations, often lasting for several hours of high demand. Despite being geographically limited, requiring suitable elevation and water resources, pumped hydro accounts for",
+        "url": "https://www.sunhub.com/blog/grid-scale-storage-2026",
+        "domain": "www.sunhub.com",
+        "title": "Grid Scale Storage 2026: Critical Power Breakthroughs",
+        "query": "technological advancements in grid-scale renewable energy 2026",
+        "rank": 1,
+        "retrieved_at": "2026-05-22T13:13:03.662771",
+        "chunk_index": 2,
+        "bm25_score": 0.7749174670719944,
+        "source_id": 8
+      },
+      {
+        "text": "the front lines. We supply homes and businesses in New York and Pennsylvania with energy plans that include 100% renewable options. So we have a real stake in what happens next with solar, wind, and storage tech. This guide breaks down the biggest renewable energy trends right now \u2013 what is working, what is still hard, and what it all means for your monthly bill and the planet. Why Is Solar Energy Growing So Fast? Solar power is now the most affordable source of electricity on the planet, with panel costs dropping by over 80% in the last decade (IRENA, 2024). The Earth gets hit with roughly 10,000 times more solar energy than the entire world uses, so the raw supply is not the problem. The tech has just finally caught up. New sun-tracking panels can now hit efficiency rates above 30%, which means they pull more energy from the same amount of sunlight. For context, panels from just five years ago topped out around 20%. That gap is huge when you scale it across a rooftop or a solar farm. Here at City Power and Gas \u2013 Natural Gas Company , we offer green energy plans backed by Renewable Energy Certificates (RECs) from sources like solar, wind, and hydro. So when you pick one of our 100% renewable plans, your usage is matched with clean energy fed into the grid. What surprised us most, though, is how quickly residential solar has gone mainstream. Five years ago, it felt like",
+        "url": "https://citypowerandgas.com/blog/renewable-energy-trends-you-need-to-know",
+        "domain": "citypowerandgas.com",
+        "title": "Renewable Energy Trends You Need to Know in 2026 -",
+        "query": "capacity factor trends for solar and wind energy 2026",
+        "rank": 1,
+        "retrieved_at": "2026-05-22T13:13:03.937842",
+        "chunk_index": 1,
+        "bm25_score": 0.7136953189298828,
+        "source_id": 9
+      },
+      {
+        "text": "Researchers Survey the Challenges of Integrating Wind and Solar Into Power Grids | News Center Skip to main navigation Skip to main content Researchers Survey the Challenges of Integrating Wind and Solar Into Power Grids New interdisciplinary research highlights how engineering, economics, and policy experts must work together to manage intermittent renewable energy. To fully integrate renewables like solar and wind in to the power grid, policy experts, engineers, and economists will have to work together. Apr 17, 2026 As wind and solar power expand rapidly worldwide, researchers are confronting a growing challenge: how to effectively integrate them into the power grid. Wind turbines and solar panels have what economists call zero marginal cost, meaning producing additional units of electricity requires no fuel once installed. At the same time, this renewable energy varies greatly with the weather and can create operational challenges for grid operators. A new review study from Georgia Tech examines how these characteristics are reshaping electricity markets and grid operations \u2014 and why addressing the challenge requires cross-disciplinary collaboration. The study , published in Renewable and Sustainable Energy Reviews , synthesizes more than a decade of research. It analyzes over 200 studies on the engineering, economic, and policy implications of managing renewable energy sources that are both intermittent and effectively zero-cost to operate. \u201cWind and solar are now among the lowest-cost sources of electricity in many parts of the world, but integrating them into the grid isn\u2019t simple,\u201d said Matthew Oliver , associate professor in the School",
+        "url": "https://news.gatech.edu/news/2026/04/17/researchers-survey-challenges-integrating-wind-and-solar-power-grids",
+        "domain": "news.gatech.edu",
+        "title": "Researchers Survey the Challenges of Integrating Wind and Solar Into Power Grids | News Center",
+        "query": "grid integration challenges solar vs wind power",
+        "rank": 2,
+        "retrieved_at": "2026-05-22T13:13:02.308168",
+        "chunk_index": 0,
+        "bm25_score": 0.6983828359853927,
+        "source_id": 10
+      },
+      {
+        "text": "interactions between electricity market design, grid operations, and renewable technologies. They also explored the economic implications of large amounts of zero-marginal-cost electricity entering wholesale electricity markets. Because wind and solar have very low operating costs, they can lower prices in wholesale electricity markets. That benefits consumers, but it can also make it harder for flexible conventional plants to earn enough revenue to stay available when renewable output falls. Collaborating Across Disciplines The team argues that successfully scaling renewable energy will depend on collaboration across traditionally separate fields. \u201cEngineering constraints affect how electricity markets work, markets influence investment decisions, and policy shapes how those investments happen,\u201d Oliver said. \u201cWhen it comes to complex topics like this, you can\u2019t really treat engineering, economics, and policy as separate problems. They\u2019re all part of the same system.\u201d The researchers found that electricity systems with high shares of renewable energy will require coordinated solutions that combine improved engineering practices, market reforms that value flexibility and reliability, and policies that align private investment with long-term decarbonization goals. \u201cOur hope is that this paper helps researchers across disciplines communicate more effectively,\u201d Oliver said. \u201cIf we want electricity systems with high levels of renewable energy to work reliably, then engineers, economists, and policymakers all have to understand how their decisions affect the others.\u201d Citation : Oliver, Matthew E., et al. \u201cManaging Zero-marginal-cost, intermittent renewable energy: A survey of the engineering, economic, and Policy Challenges.\u201d Renewable and Sustainable Energy Reviews , vol. 226, Jan. 2026. DOI : https://doi.org/10.1016/j.rser.2025.116334 Contact",
+        "url": "https://news.gatech.edu/news/2026/04/17/researchers-survey-challenges-integrating-wind-and-solar-power-grids",
+        "domain": "news.gatech.edu",
+        "title": "Researchers Survey the Challenges of Integrating Wind and Solar Into Power Grids | News Center",
+        "query": "grid integration challenges solar vs wind power",
+        "rank": 2,
+        "retrieved_at": "2026-05-22T13:13:02.308168",
+        "chunk_index": 2,
+        "bm25_score": 0.6381608678861711,
+        "source_id": 11
+      },
+      {
+        "text": "managed and native pollinator species have access to habitat. Additional concerns about the appearance of solar panels are linked to fear of decreased property values. A number of studies have found no evidence of decreased property values after construction of a solar farm . Myth 3: Solar panel production is as damaging as fossil fuel production, if not more. Another objection to utility-scale solar is that the production of the solar panels needed to construct a facility would be more damaging to the environment and to public health than the equivalent emissions from a fossil fuel plant. While it is true that under the current energy system, fossil fuels are needed to produce solar panels, the increased lifetime of current solar panels more than makes up for this initial investment. Battery manufacturing, which accounts for 28% of the GHG emissions of solar utility construction [3], in no way indicates that solar utility manufacturing is unsustainable from a carbon standpoint. Provided that a solar utility is in operation for at least 3.8 years, it will become a net saver of GHG emissions. The lifetime emissions of any energy generated using solar will always be many times smaller than the equivalent power produced in a gas or coal-fired facility [4]. Additionally, there are many false claims about health and safety impacts of solar panels. RENEW Wisconsin clarifies this; \u201cPanels are primarily made of glass, aluminum, copper, and other common materials. Solar projects also utilize steel racks to position panels, electrical cable and",
+        "url": "https://www.sierraclub.org/wisconsin/blog/2023/08/misconceptions-series-3-utility-scale-solar-and-environment",
+        "domain": "www.sierraclub.org",
+        "title": "Misconceptions Series 3: Utility-scale solar and the environment",
+        "query": "environmental impact of utility-scale solar vs wind farms",
+        "rank": 1,
+        "retrieved_at": "2026-05-22T13:13:03.822648",
+        "chunk_index": 4,
+        "bm25_score": 0.579037126719894,
+        "source_id": 12
+      },
+      {
+        "text": "picture has improved too. Many states offer tax credits, rebates, and low-interest loans for rooftop solar. And choosing a clean energy plan from City Power and Gas does not require any upfront investment at all \u2013 you just pick the plan that fits your budget. What Do Regional Trends Look Like Across the Globe? The renewable energy shift is global, but it does not look the same everywhere. Here is a quick snapshot. North America: The U.S. continues to expand solar and wind capacity, though recent federal policy shifts around offshore wind leasing have created some uncertainty. Canada is investing heavily in hydropower and wind, with several provinces running on near-100% renewable grids already. Europe: The EU has set aggressive clean energy targets. Countries like Germany, Denmark, and Spain lead in wind and solar, with strong policy support and grid integration programs. The European energy crisis of 2022 actually sped up the shift to renewables. Asia: China is on track to meet its re",
+        "url": "https://citypowerandgas.com/blog/renewable-energy-trends-you-need-to-know",
+        "domain": "citypowerandgas.com",
+        "title": "Renewable Energy Trends You Need to Know in 2026 -",
+        "query": "capacity factor trends for solar and wind energy 2026",
+        "rank": 1,
+        "retrieved_at": "2026-05-22T13:13:03.937842",
+        "chunk_index": 6,
+        "bm25_score": 0.5936923724323833,
+        "source_id": 13
+      }
+    ],
+    "answered_from_existing_context": true,
+    "follow_up_search_reason": "The provided source (Source 1) explicitly states that Lazard's 2025 analysis concludes that both wind and solar are the least-expensive new-build power generation, implying they are comparable and both lower than other sources, without designating one as definitively cheaper than the other in a general sense.",
+    "history_context_nonempty": true
+  },
+  "metrics": {
+    "citation_count": 3,
+    "grounded_citation_rate": 1.0,
+    "format_compliance_rate": 1.0,
+    "unique_domains_cited": 2,
+    "cited_domains": [
+      "citypowerandgas.com",
+      "rtoinsider.com"
+    ],
+    "sources_retrieved": 7,
+    "context_chunks_selected": 18,
+    "hop_count": 2,
+    "uncertainty_language": false,
+    "conflict_language": false,
+    "comparison_structure": true,
+    "category_pass": true,
+    "failures": [],
+    "citation_validation": {
+      "allowed_url_count": 6,
+      "corrected_citation_count": 0,
+      "removed_citation_count": 0
+    }
+  },
+  "judge": {
+    "grounding": 5,
+    "usefulness": 5,
+    "uncertainty_handling": 5,
+    "rationale": "The agent provides a clear, well-structured answer that directly addresses the prompt while accurately reflecting the limitations of the provided source material. It correctly identifies that while both are cost-competitive, the sources do not provide a granular, direct comparison of current LCOE values, and it appropriately hedges its conclusions rather than speculating. The use of a summary table and a clear 'Evidence Status' section makes the information highly accessible and transparent.",
+    "judge_available": true
+  }
+}

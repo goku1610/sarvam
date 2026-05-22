@@ -45,3 +45,4 @@ Thumbs.db
 *.log
 *.pid
 data/sessions.json
+data/eval_sessions.json

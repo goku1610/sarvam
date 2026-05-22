@@ -1,0 +1,99 @@
+{
+  "id": "factual_capital_australia",
+  "category": "factual",
+  "query": "What is the capital city of Australia?",
+  "mode": "deep_research",
+  "deep_research": true,
+  "max_hops": 3,
+  "session_id": "41511035-3093-43a8-841f-4dfcb54cf4d8",
+  "elapsed_seconds": 29.23,
+  "plan": {
+    "title": "Capital City of Australia Research",
+    "plan_steps": [
+      "I will verify the official capital city of Australia through authoritative government and geographical databases.",
+      "This research will confirm the historical context of its selection to ensure accuracy and comprehensive understanding."
+    ],
+    "search_queries": [
+      "what is the capital city of Australia",
+      "history of Canberra as Australia's capital",
+      "why was Canberra chosen as the capital of Australia",
+      "official government of Australia capital city information",
+      "is Sydney or Melbourne the capital of Australia"
+    ]
+  },
+  "search": {
+    "search_queries": [
+      "what is the capital city of Australia",
+      "history of Canberra as Australia's capital",
+      "why was Canberra chosen as the capital of Australia",
+      "official government of Australia capital city information",
+      "is Sydney or Melbourne the capital of Australia"
+    ],
+    "pages_count": 5,
+    "chunks_count": 14,
+    "hop_count": 1,
+    "selected_count": 14,
+    "unreachable_count": 2,
+    "urls_opened": [
+      "https://lovecanberra.com.au/why-is-canberra-the-capital-of-australia",
+      "https://ovolohotels.com/ovolo/blog/sydney-isnt-the-capital-of-australia",
+      "https://www.britannica.com/place/Canberra",
+      "https://www.infrastructure.gov.au/department/media/publications/australian-government-response-canberra-capital-place-report-independent-review-national-capital",
+      "https://youtooproject.com/en/blog/australia-en/capital-of-australia-canberra"
+    ],
+    "intermediate_answers": [
+      {
+        "hop": 1,
+        "answer": "The capital city of Australia is Canberra. It was selected as a compromise between Sydney and Melbourne, with the site chosen in the early 20th century and the federal Parliament officially transferring there from Melbourne in 1927."
+      }
+    ]
+  },
+  "answer": {
+    "raw_answer": "## Summary\nThe capital city of Australia is Canberra, located in the Australian Capital Territory (ACT) in the southeastern part of the country. It was selected as a compromise between the rival cities of Sydney and Melbourne, with the federal Parliament officially transferring to the new capital in 1927 [Canberra | History, Map, Population, Climate, & Facts \u2014 Britannica](https://www.britannica.com/place/Canberra) [Why is Canberra the Capital of Australia \u2014 lovecanberra.com.au](https://lovecanberra.com.au/why-is-canberra-the-capital-of-australia).\n\n## The Selection of Canberra\nThe choice of Canberra as the national capital was the result of a political compromise during the federation process in the early 20th century.\n\n<details>\n<summary>Historical context and the compromise between Sydney and Melbourne</summary>\n\nFollowing the inauguration of the Commonwealth of Australia in 1901, there was significant disagreement between Sydney and Melbourne regarding which city should serve as the national capital [Why is Canberra the Capital of Australia \u2014 lovecanberra.com.au](https://lovecanberra.com.au/why-is-canberra-the-capital-of-australia) [What is the capital of Australia? If you thought it was Sydney, keep ... \u2014 youtooproject.com](https://youtooproject.com/en/blog/australia-en/capital-of-australia-canberra). \n\nTo resolve this, it was decided that a new capital city would be built. The compromise stipulated that the new capital must be located in New South Wales but at least 100 miles (approximately 160 km) from Sydney [Why is Canberra the Capital of Australia \u2014 lovecanberra.com.au](https://lovecanberra.com.au/why-is-canberra-the-capital-of-australia) [Sydney isn't the capital of Australia! - Ovolo Hotels \u2014 ovolohotels.com](https://ovolohotels.com/ovolo/blog/sydney-isnt-the-capital-of-australia). During the interim period while the new capital was being constructed, the federal Parliament sat in Melbourne [Why is Canberra the Capital of Australia \u2014 lovecanberra.com.au](https://lovecanberra.com.au/why-is-canberra-the-capital-of-australia).\n\nThe site for Canberra was officially chosen in 1908, and a worldwide competition for the city's design was launched in 1911, which was won by American architect Walter Burley Griffin [Canberra | History, Map, Population, Climate, & Facts \u2014 Britannica](https://www.britannica.com/place/Canberra). The federal Parliament officially transferred to the new capital on May 9, 1927 [Canberra | History, Map, Population, Climate, & Facts \u2014 Britannica](https://www.britannica.com/place/Canberra).\n</details>\n\n## Common Misconceptions\nIt is a frequent misconception that Sydney or Melbourne serves as the capital of Australia.\n\n<details>\n<summary>Why Sydney and Melbourne are often mistaken for the capital</summary>\n\nSydney and Melbourne are the two most populous and internationally recognized cities in Australia, which often leads to the assumption that one of them is the capital [What is the capital of Australia? If you thought it was Sydney, keep ... \u2014 youtooproject.com](https://youtooproject.com/en/blog/australia-en/capital-of-australia-canberra). \n\n*   **Sydney:** While it is the capital of the state of New South Wales, it has never been the capital of Australia [Why is Canberra the Capital of Australia \u2014 lovecanberra.com.au](https://lovecanberra.com.au/why-is-canberra-the-capital-of-australia).\n*   **Melbourne:** It served as the interim seat of the federal Parliament from 1901 until 1927, but it was never the official capital of the Commonwealth of Australia [Why is Canberra the Capital of Australia \u2014 lovecanberra.com.au](https://lovecanberra.com.au/why-is-canberra-the-capital-of-australia).\n</details>\n\n## Key Facts About Canberra\nThe following table summarizes key geographical and historical facts regarding Australia's capital.\n\n| Feature | Detail |\n| :--- | :--- |\n| **Capital City** | Canberra |\n| **Territory** | Australian Capital Territory (ACT) |\n| **Official Founding** | March 12, 1913 |\n| **Parliament Transfer** | May 9, 1927 |\n| **Designer** | Walter Burley Griffin |\n| **Name Origin** | Derived from an Aboriginal term meaning \"meeting place\" |\n\n*Sources: [Canberra | History, Map, Population, Climate, & Facts \u2014 Britannica](https://www.britannica.com/place/Canberra), [Why is Canberra the Capital of Australia \u2014 lovecanberra.com.au](https://lovecanberra.com.au/why-is-canberra-the-capital-of-australia)*\n\n## Conclusion\nCanberra is the official capital of Australia, a status it has held since the federal Parliament moved there in 1927. It was purpose-built as a compromise to resolve the intense rivalry between Sydney and Melbourne, ensuring that neither of the two largest cities held the title of national capital.",
+    "final_answer": "## Summary\nThe capital city of Australia is Canberra, located in the Australian Capital Territory (ACT) in the southeastern part of the country. It was selected as a compromise between the rival cities of Sydney and Melbourne, with the federal Parliament officially transferring to the new capital in 1927 [Canberra | History, Map, Population, Climate, & Facts - Britannica \u2014 www.britannica.com](https://www.britannica.com/place/Canberra) [Why is Canberra the Capital of Australia \u2014 lovecanberra.com.au](https://lovecanberra.com.au/why-is-canberra-the-capital-of-australia).\n\n## The Selection of Canberra\nThe choice of Canberra as the national capital was the result of a political compromise during the federation process in the early 20th century.\n\n<details>\n<summary>Historical context and the compromise between Sydney and Melbourne</summary>\n\nFollowing the inauguration of the Commonwealth of Australia in 1901, there was significant disagreement between Sydney and Melbourne regarding which city should serve as the national capital [Why is Canberra the Capital of Australia \u2014 lovecanberra.com.au](https://lovecanberra.com.au/why-is-canberra-the-capital-of-australia) [What is the capital of Australia? If you thought it was Sydney, keep ... \u2014 youtooproject.com](https://youtooproject.com/en/blog/australia-en/capital-of-australia-canberra). \n\nTo resolve this, it was decided that a new capital city would be built. The compromise stipulated that the new capital must be located in New South Wales but at least 100 miles (approximately 160 km) from Sydney [Why is Canberra the Capital of Australia \u2014 lovecanberra.com.au](https://lovecanberra.com.au/why-is-canberra-the-capital-of-australia) [Sydney isn't the capital of Australia! - Ovolo Hotels \u2014 ovolohotels.com](https://ovolohotels.com/ovolo/blog/sydney-isnt-the-capital-of-australia). During the interim period while the new capital was being constructed, the federal Parliament sat in Melbourne [Why is Canberra the Capital of Australia \u2014 lovecanberra.com.au](https://lovecanberra.com.au/why-is-canberra-the-capital-of-australia).\n\nThe site for Canberra was officially chosen in 1908, and a worldwide competition for the city's design was launched in 1911, which was won by American architect Walter Burley Griffin [Canberra | History, Map, Population, Climate, & Facts - Britannica \u2014 www.britannica.com](https://www.britannica.com/place/Canberra). The federal Parliament officially transferred to the new capital on May 9, 1927 [Canberra | History, Map, Population, Climate, & Facts - Britannica \u2014 www.britannica.com](https://www.britannica.com/place/Canberra).\n</details>\n\n## Common Misconceptions\nIt is a frequent misconception that Sydney or Melbourne serves as the capital of Australia.\n\n<details>\n<summary>Why Sydney and Melbourne are often mistaken for the capital</summary>\n\nSydney and Melbourne are the two most populous and internationally recognized cities in Australia, which often leads to the assumption that one of them is the capital [What is the capital of Australia? If you thought it was Sydney, keep ... \u2014 youtooproject.com](https://youtooproject.com/en/blog/australia-en/capital-of-australia-canberra). \n\n*   **Sydney:** While it is the capital of the state of New South Wales, it has never been the capital of Australia [Why is Canberra the Capital of Australia \u2014 lovecanberra.com.au](https://lovecanberra.com.au/why-is-canberra-the-capital-of-australia).\n*   **Melbourne:** It served as the interim seat of the federal Parliament from 1901 until 1927, but it was never the official capital of the Commonwealth of Australia [Why is Canberra the Capital of Australia \u2014 lovecanberra.com.au](https://lovecanberra.com.au/why-is-canberra-the-capital-of-australia).\n</details>\n\n## Key Facts About Canberra\nThe following table summarizes key geographical and historical facts regarding Australia's capital.\n\n| Feature | Detail |\n| :--- | :--- |\n| **Capital City** | Canberra |\n| **Territory** | Australian Capital Territory (ACT) |\n| **Official Founding** | March 12, 1913 |\n| **Parliament Transfer** | May 9, 1927 |\n| **Designer** | Walter Burley Griffin |\n| **Name Origin** | Derived from an Aboriginal term meaning \"meeting place\" |\n\n*Sources: [Canberra | History, Map, Population, Climate, & Facts - Britannica \u2014 www.britannica.com](https://www.britannica.com/place/Canberra), [Why is Canberra the Capital of Australia \u2014 lovecanberra.com.au](https://lovecanberra.com.au/why-is-canberra-the-capital-of-australia)*\n\n## Conclusion\nCanberra is the official capital of Australia, a status it has held since the federal Parliament moved there in 1927. It was purpose-built as a compromise to resolve the intense rivalry between Sydney and Melbourne, ensuring that neither of the two largest cities held the title of national capital.",
+    "citation_validation": {
+      "allowed_url_count": 5,
+      "corrected_citation_count": 4,
+      "removed_citation_count": 0
+    },
+    "gap_analysis": {
+      "has_gaps": false,
+      "gaps": [],
+      "suggested_queries": [],
+      "severity": "none"
+    }
+  },
+  "follow_up": null,
+  "metrics": {
+    "citation_count": 14,
+    "grounded_citation_rate": 1.0,
+    "format_compliance_rate": 1.0,
+    "unique_domains_cited": 4,
+    "cited_domains": [
+      "britannica.com",
+      "lovecanberra.com.au",
+      "ovolohotels.com",
+      "youtooproject.com"
+    ],
+    "sources_retrieved": 5,
+    "context_chunks_selected": 14,
+    "hop_count": 1,
+    "uncertainty_language": false,
+    "conflict_language": true,
+    "comparison_structure": true,
+    "category_pass": true,
+    "failures": [],
+    "citation_validation": {
+      "allowed_url_count": 5,
+      "corrected_citation_count": 4,
+      "removed_citation_count": 0
+    }
+  },
+  "judge": {
+    "grounding": 5,
+    "usefulness": 5,
+    "uncertainty_handling": 5,
+    "rationale": "The agent provides a comprehensive, accurate, and well-structured answer. It correctly identifies Canberra as the capital, explains the historical context of the compromise between Sydney and Melbourne, and addresses common misconceptions. The information is fully supported by the provided sources, and the citations are placed appropriately throughout the text.",
+    "judge_available": true
+  }
+}

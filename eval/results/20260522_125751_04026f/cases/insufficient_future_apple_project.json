@@ -1,0 +1,108 @@
+{
+  "id": "insufficient_future_apple_project",
+  "category": "insufficient_evidence",
+  "query": "What was Apple's exact internal R&D budget for Project Titan in fiscal year 2035?",
+  "mode": "deep_research",
+  "deep_research": true,
+  "max_hops": 3,
+  "session_id": "7102ee1b-a93b-45be-8d2f-c40ea6fe0835",
+  "elapsed_seconds": 33.73,
+  "plan": {
+    "title": "Apple Project Titan R&D Budget",
+    "plan_steps": [
+      "I will investigate Apple's financial disclosures and historical reporting from 2026 through 2035 to identify specific R&D expenditure data related to the Project Titan initiative.",
+      "Given that 2035 is a future date relative to today, I will analyze current projections and industry analyst reports to determine if such granular internal budget data has been made public or remains classified."
+    ],
+    "search_queries": [
+      "Apple Project Titan R&D budget fiscal year 2035",
+      "Apple internal R&D spending breakdown 2035",
+      "status of Apple Project Titan as of May 2026",
+      "Apple SEC filings R&D expenditure 2035",
+      "leaked internal Apple project budgets 2035",
+      "analysis of Apple autonomous vehicle development costs 2035"
+    ]
+  },
+  "search": {
+    "search_queries": [
+      "Apple Project Titan R&D budget fiscal year 2035",
+      "Apple internal R&D spending breakdown 2035",
+      "status of Apple Project Titan as of May 2026",
+      "Apple SEC filings R&D expenditure 2035",
+      "leaked internal Apple project budgets 2035",
+      "analysis of Apple autonomous vehicle development costs 2035",
+      "Does Apple publicly disclose project-specific R&D budgets in SEC filings?",
+      "Is there any credible analyst estimate for Apple's Project Titan annual spending?",
+      "Status of Apple Project Titan as of 2035"
+    ],
+    "pages_count": 9,
+    "chunks_count": 17,
+    "hop_count": 2,
+    "selected_count": 17,
+    "unreachable_count": 2,
+    "urls_opened": [
+      "https://9to5mac.com/2026/04/30/apples-rd-spending-hits-new-record-as-ai-investment-ramps-up",
+      "https://investor.apple.com/sec-filings/sec-filings-details/default.aspx?FilingId=17028298",
+      "https://mashable.com/article/apple-secrecy-structure-leaked",
+      "https://www.aboveavalon.com/notes/2015/5/3/significant-rd-increase-suggests-apple-is-working-on-something-big",
+      "https://www.autopromotec.com/en/Artificial-intelligence-pulls-the-plug-on-Project-Titan-Apple-says-goodbye-to/a970",
+      "https://www.gminsights.com/industry-analysis/autonomous-vehicle-development-platform-market",
+      "https://www.motortrend.com/news/project-titans-apple-car-delayed-2026",
+      "https://www.siliconrepublic.com/companies/apple-rd-pivot-project-titan-electric-car"
+    ],
+    "intermediate_answers": [
+      {
+        "hop": 1,
+        "answer": "Apple's R&D spending is reported in aggregate in SEC filings and financial disclosures. While Project Titan (Apple's car project) has been a known initiative since at least 2016, Apple does not publicly disclose granular, project-specific R&D budgets in its financial reports. The evidence confirms that Apple maintains extreme secrecy regarding its internal projects."
+      },
+      {
+        "hop": 2,
+        "answer": "Evidence indicates that Apple's 'Project Titan' (the self-driving car project) was definitively shut down in April 2024. Consequently, there is no internal R&D budget for this project in the fiscal year 2035, as the project no longer exists."
+      }
+    ]
+  },
+  "answer": {
+    "raw_answer": "## Summary\nThere is no internal R&D budget for Apple's \"Project Titan\" in fiscal year 2035 because the initiative was definitively shut down in April 2024. Furthermore, Apple does not publicly disclose granular, project-specific R&D budgets in its financial filings, maintaining a policy of extreme corporate secrecy regarding its internal development costs.\n\n## Status of Project Titan\nProject Titan, Apple's long-standing initiative to develop an autonomous electric vehicle, is no longer an active project.\n\n<details>\n<summary>Project cancellation details</summary>\n\nApple officially shut down Project Titan in April 2024. The decision was driven by a strategic pivot to prioritize the development of generative artificial intelligence technologies. Following the cancellation, approximately 2,000 employees previously assigned to the project were largely transferred to Apple's AI division [Autopromotec Blog - Artificial intelligence pulls the plug on Project Titan: Apple says goodbye to iCar \u2014 www.autopromotec.com](https://www.autopromotec.com/en/Artificial-intelligence-pulls-the-plug-on-Project-Titan-Apple-says-goodbye-to/a970).\n</details>\n\n## Apple's R&D Financial Disclosure Practices\nApple does not provide itemized R&D budgets for specific internal projects in its public financial disclosures.\n\n<details>\n<summary>Analysis of Apple's financial reporting and secrecy</summary>\n\nApple reports its research and development spending in aggregate within its financial statements. While the company has seen its total R&D expenditure rise significantly\u2014reaching $11.4 billion in the second fiscal quarter of 2026\u2014these figures are not broken down by individual project [Apple's R&D spending hits new record as AI investment ramps up \u2014 9to5mac.com](https://9to5mac.com/2026/04/30/apples-rd-spending-hits-new-record-as-ai-investment-ramps-up).\n\nApple maintains an intensely secretive corporate culture to protect its product pipeline. This culture includes rigorous screening processes and specialized security teams designed to prevent leaks of confidential information [Apple internal presentation about fighting leaks was leaked \u2014 mashable.com](https://mashable.com/article/apple-secrecy-structure-leaked). Because of this, even when the company was actively pursuing Project Titan, specific budget allocations for the project were never publicly disclosed [Apple triples R&D budget to $10bn for biggest pivot yet: Project Titan \u2014 www.siliconrepublic.com](https://www.siliconrepublic.com/companies/apple-rd-pivot-project-titan-electric-car).\n</details>\n\n## Market Context for 2035\nWhile Apple is no longer involved in the autonomous vehicle market, the broader industry continues to grow.\n\n<details>\n<summary>Autonomous vehicle market outlook</summary>\n\nThe global autonomous vehicle development platform market is projected to grow significantly between 2026 and 2035. Industry analysts forecast the market size to reach approximately $380.3 billion by 2035, driven by advancements in AI, machine learning, and simulation infrastructure [Autonomous Vehicle Development Platform Market, 2035 Report \u2014 www.gminsights.com](https://www.gminsights.com/industry-analysis/autonomous-vehicle-development-platform-market).\n\n| Metric | Data |\n| :--- | :--- |\n| 2025 Market Size | USD 46.8 Billion |\n| 2026 Market Size | USD 60.5 Billion |\n| 2035 Forecast Market Size | USD 380.3 Billion |\n| CAGR (2026\u20132035) | 22.7% |\n\n*Source: [Autonomous Vehicle Development Platform Market, 2035 Report \u2014 www.gminsights.com](https://www.gminsights.com/industry-analysis/autonomous-vehicle-development-platform-market)*\n</details>\n\n## Key Takeaways\n*   **Project Status:** Project Titan was cancelled in April 2024; therefore, no budget exists for it in 2035.\n*   **Disclosure Policy:** Apple does not publicly report project-specific R&D spending, providing only aggregate figures in its financial reports.\n*   **Strategic Shift:** Apple has redirected its resources and personnel from automotive development toward generative AI, which is now a primary focus for the company's future investment.",
+    "final_answer": "## Summary\nThere is no internal R&D budget for Apple's \"Project Titan\" in fiscal year 2035 because the initiative was definitively shut down in April 2024. Furthermore, Apple does not publicly disclose granular, project-specific R&D budgets in its financial filings, maintaining a policy of extreme corporate secrecy regarding its internal development costs.\n\n## Status of Project Titan\nProject Titan, Apple's long-standing initiative to develop an autonomous electric vehicle, is no longer an active project.\n\n<details>\n<summary>Project cancellation details</summary>\n\nApple officially shut down Project Titan in April 2024. The decision was driven by a strategic pivot to prioritize the development of generative artificial intelligence technologies. Following the cancellation, approximately 2,000 employees previously assigned to the project were largely transferred to Apple's AI division [Autopromotec Blog - Artificial intelligence pulls the plug on Project Titan: Apple says goodbye to iCar \u2014 www.autopromotec.com](https://www.autopromotec.com/en/Artificial-intelligence-pulls-the-plug-on-Project-Titan-Apple-says-goodbye-to/a970).\n</details>\n\n## Apple's R&D Financial Disclosure Practices\nApple does not provide itemized R&D budgets for specific internal projects in its public financial disclosures.\n\n<details>\n<summary>Analysis of Apple's financial reporting and secrecy</summary>\n\nApple reports its research and development spending in aggregate within its financial statements. While the company has seen its total R&D expenditure rise significantly\u2014reaching $11.4 billion in the second fiscal quarter of 2026\u2014these figures are not broken down by individual project [Apple's R&D spending hits new record as AI investment ramps up \u2014 9to5mac.com](https://9to5mac.com/2026/04/30/apples-rd-spending-hits-new-record-as-ai-investment-ramps-up).\n\nApple maintains an intensely secretive corporate culture to protect its product pipeline. This culture includes rigorous screening processes and specialized security teams designed to prevent leaks of confidential information [Apple internal presentation about fighting leaks was leaked \u2014 mashable.com](https://mashable.com/article/apple-secrecy-structure-leaked). Because of this, even when the company was actively pursuing Project Titan, specific budget allocations for the project were never publicly disclosed [Apple triples R&D budget to $10bn for biggest pivot yet: Project Titan \u2014 www.siliconrepublic.com](https://www.siliconrepublic.com/companies/apple-rd-pivot-project-titan-electric-car).\n</details>\n\n## Market Context for 2035\nWhile Apple is no longer involved in the autonomous vehicle market, the broader industry continues to grow.\n\n<details>\n<summary>Autonomous vehicle market outlook</summary>\n\nThe global autonomous vehicle development platform market is projected to grow significantly between 2026 and 2035. Industry analysts forecast the market size to reach approximately $380.3 billion by 2035, driven by advancements in AI, machine learning, and simulation infrastructure [Autonomous Vehicle Development Platform Market, 2035 Report \u2014 www.gminsights.com](https://www.gminsights.com/industry-analysis/autonomous-vehicle-development-platform-market).\n\n| Metric | Data |\n| :--- | :--- |\n| 2025 Market Size | USD 46.8 Billion |\n| 2026 Market Size | USD 60.5 Billion |\n| 2035 Forecast Market Size | USD 380.3 Billion |\n| CAGR (2026\u20132035) | 22.7% |\n\n*Source: [Autonomous Vehicle Development Platform Market, 2035 Report \u2014 www.gminsights.com](https://www.gminsights.com/industry-analysis/autonomous-vehicle-development-platform-market)*\n</details>\n\n## Key Takeaways\n*   **Project Status:** Project Titan was cancelled in April 2024; therefore, no budget exists for it in 2035.\n*   **Disclosure Policy:** Apple does not publicly report project-specific R&D spending, providing only aggregate figures in its financial reports.\n*   **Strategic Shift:** Apple has redirected its resources and personnel from automotive development toward generative AI, which is now a primary focus for the company's future investment.",
+    "citation_validation": {
+      "allowed_url_count": 6,
+      "corrected_citation_count": 0,
+      "removed_citation_count": 0
+    },
+    "gap_analysis": {
+      "has_gaps": false,
+      "gaps": [],
+      "suggested_queries": [],
+      "severity": "none"
+    }
+  },
+  "follow_up": null,
+  "metrics": {
+    "citation_count": 6,
+    "grounded_citation_rate": 1.0,
+    "format_compliance_rate": 1.0,
+    "unique_domains_cited": 5,
+    "cited_domains": [
+      "9to5mac.com",
+      "autopromotec.com",
+      "gminsights.com",
+      "mashable.com",
+      "siliconrepublic.com"
+    ],
+    "sources_retrieved": 9,
+    "context_chunks_selected": 17,
+    "hop_count": 2,
+    "uncertainty_language": false,
+    "conflict_language": false,
+    "comparison_structure": true,
+    "category_pass": false,
+    "failures": [
+      "missing uncertainty language"
+    ],
+    "citation_validation": {
+      "allowed_url_count": 6,
+      "corrected_citation_count": 0,
+      "removed_citation_count": 0
+    }
+  },
+  "judge": null
+}
