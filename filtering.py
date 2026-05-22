@@ -85,25 +85,56 @@ def calculate_jaccard_similarity(text1: str, text2: str) -> float:
 
 
 def mmr_filter_chunks(
-    query: str,
+    queries: list[str] | str,
     chunks: list[dict[str, Any]],
     top_k: int = 15,
     lambda_param: float = 0.6,
     per_domain_limit: int = 3,
 ) -> list[dict[str, Any]]:
-    """Select relevant and diverse chunks using BM25 plus MMR redundancy penalties."""
+    """Select relevant and diverse chunks using BM25 plus MMR redundancy penalties.
+
+    ``queries`` may be a single string or a list of strings.  When multiple
+    queries are provided (e.g. the original user question plus sub-queries
+    generated during multi-hop reasoning), the BM25 score for each chunk is
+    the *maximum* score across all queries.  This prevents chunks retrieved
+    for a hop sub-question from being penalised because they don't match
+    the original wording.
+    """
     if not chunks:
         return []
 
-    tokenized_query = tokenize_text(query)
+    # Normalise queries to a list
+    if isinstance(queries, str):
+        query_list = [queries]
+    else:
+        query_list = [q for q in queries if q.strip()] or [""]
+
     tokenized_corpus = [tokenize_text(chunk["text"]) for chunk in chunks]
-    if not tokenized_query or not any(tokenized_corpus):
+    if not any(tokenized_corpus):
         return chunks[:top_k]
 
     bm25 = BM25Okapi(tokenized_corpus)
-    base_scores = bm25.get_scores(tokenized_query)
-    max_score = max(base_scores) if len(base_scores) and max(base_scores) > 0 else 1
-    normalized_scores = [score / max_score for score in base_scores]
+
+    # Compute per-chunk scores as the max across all queries
+    combined_scores = [0.0] * len(chunks)
+    for q in query_list:
+        tokenized_q = tokenize_text(q)
+        if not tokenized_q:
+            continue
+        scores = bm25.get_scores(tokenized_q)
+        for idx, score in enumerate(scores):
+            if score > combined_scores[idx]:
+                combined_scores[idx] = score
+
+    max_score = max(combined_scores) if combined_scores and max(combined_scores) > 0 else 1
+    normalized_scores = [score / max_score for score in combined_scores]
+
+    # Dynamic per-domain limit: allow more chunks when source diversity is low
+    unique_domains = {chunk.get("domain", "") for chunk in chunks if chunk.get("domain")}
+    if len(unique_domains) <= 3:
+        effective_domain_limit = max(per_domain_limit, 5)
+    else:
+        effective_domain_limit = per_domain_limit
 
     unselected = list(range(len(chunks)))
     selected_indices = []
@@ -115,7 +146,7 @@ def mmr_filter_chunks(
 
         for idx in unselected:
             domain = chunks[idx].get("domain", "")
-            if selected_domain_counts.get(domain, 0) >= per_domain_limit:
+            if selected_domain_counts.get(domain, 0) >= effective_domain_limit:
                 continue
 
             relevance = normalized_scores[idx]
@@ -157,8 +188,24 @@ def build_context_from_pages(
     overlap: int = 50,
     lambda_param: float = 0.6,
     max_context_chars: int = 24000,
+    additional_queries: list[str] | None = None,
+    deep_research: bool = False,
 ) -> dict[str, Any]:
-    """Build a compact, diverse research context from scraped pages."""
+    """Build a compact, diverse research context from scraped pages.
+
+    Parameters
+    ----------
+    additional_queries:
+        Extra queries (e.g. multi-hop sub-queries) to include when scoring
+        chunk relevance.  Chunks matching *any* of these queries will receive
+        a high BM25 score, preventing hop-specific content from being dropped.
+    deep_research:
+        When True, selects more chunks (``top_k`` bumped to 20 unless the
+        caller already set a higher value) and allows a larger context window.
+    """
+    effective_top_k = max(top_k, 20) if deep_research else top_k
+    effective_max_chars = max(max_context_chars, 32000) if deep_research else max_context_chars
+
     all_chunks = []
     unreachable_chunks = []
     for page in pages:
@@ -180,19 +227,24 @@ def build_context_from_pages(
             )
         )
 
+    # Build composite query list for BM25 scoring
+    scoring_queries: list[str] = [query]
+    if additional_queries:
+        scoring_queries.extend(q for q in additional_queries if q.strip())
+
     filtered_chunks = mmr_filter_chunks(
-        query=query,
+        queries=scoring_queries,
         chunks=all_chunks,
-        top_k=top_k,
+        top_k=effective_top_k,
         lambda_param=lambda_param,
     )
-    selected_chunks = filtered_chunks + unreachable_chunks[: max(0, top_k - len(filtered_chunks))]
+    selected_chunks = filtered_chunks + unreachable_chunks[: max(0, effective_top_k - len(filtered_chunks))]
 
     capped_chunks = []
     used_chars = 0
     for chunk in selected_chunks:
         next_size = len(chunk.get("text", "")) + len(chunk.get("title", "")) + len(chunk.get("url", "")) + 80
-        if capped_chunks and used_chars + next_size > max_context_chars:
+        if capped_chunks and used_chars + next_size > effective_max_chars:
             break
         capped_chunks.append(chunk)
         used_chars += next_size
@@ -203,7 +255,7 @@ def build_context_from_pages(
         "chunk_count": len(all_chunks) + len(unreachable_chunks),
         "selected_count": len(capped_chunks),
         "unreachable_count": len(unreachable_chunks),
-        "max_context_chars": max_context_chars,
+        "max_context_chars": effective_max_chars,
     }
 
 

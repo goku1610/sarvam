@@ -272,6 +272,7 @@ class AnswerRequest(BaseModel):
     context: str = ""
     chunks: list[dict[str, Any]] = []
     deep_research: bool = False
+    intermediate_answers: list[dict[str, Any]] = []
 
 
 class ContinueChatRequest(BaseModel):
@@ -948,6 +949,8 @@ class ResearchPlanner:
         web_context: str,
         chunks: list[dict[str, Any]],
         history_context: str = "",
+        intermediate_answers: list[dict[str, Any]] | None = None,
+        deep_research: bool = False,
     ):
         source_catalog = [
             {
@@ -959,26 +962,102 @@ class ResearchPlanner:
             for index, chunk in enumerate(chunks)
         ]
         current_date = datetime.now().strftime("%B %d, %Y")
-        prompt = (
-            "You are a deep research answer writer. Answer only from the supplied web context and relevant "
-            "conversation context. Do not invent sources. For every claim-heavy sentence or paragraph, cite the "
-            "supporting source using this exact shape: [Title — domain](URL). If sources disagree, explicitly "
-            "state the disagreement and cite both sides. If evidence is weak or missing, say so and propose the "
-            "next research step. Keep the response clear, useful, and grounded.\n\n"
+
+        # Build intermediate findings section for multi-hop context
+        intermediate_section = ""
+        if intermediate_answers:
+            findings = []
+            for item in intermediate_answers:
+                hop = item.get("hop", "?")
+                answer = str(item.get("answer", "")).strip()
+                if answer:
+                    findings.append(f"Hop {hop} finding: {answer}")
+            if findings:
+                intermediate_section = (
+                    "Intermediate findings established during multi-hop research:\n"
+                    + "\n".join(findings) + "\n\n"
+                    "These intermediate findings were derived from the source evidence. When you reference "
+                    "these findings, cite the original source(s) from the web context that support each claim, "
+                    "not the hop itself.\n\n"
+                )
+
+        table_rule = (
             "**Table formatting rule:** When the answer involves structured comparisons, lists of entities "
             "with shared attributes, timelines, numeric data, feature comparisons, or any data that has two or "
             "more columns of information, present it as a Markdown table using `| col | col |` syntax with a "
             "header row and separator row (`|---|---|`). Always prefer tables over bullet lists for comparative "
             "or tabular data.\n\n"
-            f"Today's date: {current_date}\n"
-            f"User query: {user_query}\n"
-            f"Research plan: {json.dumps(plan)}\n"
-            f"Search queries issued: {json.dumps(search_queries)}\n"
-            f"Relevant prior conversation/turns:\n{history_context or 'None'}\n\n"
-            f"Source catalog:\n{json.dumps(source_catalog, indent=2)}\n\n"
-            f"Selected web context:\n{web_context}\n\n"
-            "Now produce the final answer with citations."
+            "**Chart formatting rule:** When the answer contains numeric data that would benefit from "
+            "visualisation (trends over time, distributions, market share, rankings, comparisons of quantities), "
+            "include an interactive chart using a fenced code block with the language `chart` and a JSON body. "
+            "Use this exact format:\n"
+            "```chart\n"
+            "{\"type\": \"bar\", \"title\": \"Chart Title\", \"xLabel\": \"X Axis\", \"yLabel\": \"Y Axis\", "
+            "\"data\": [{\"label\": \"Item 1\", \"value\": 42}, {\"label\": \"Item 2\", \"value\": 58}]}\n"
+            "```\n"
+            "Supported chart types: `bar` (comparisons, rankings), `line` (trends over time), "
+            "`area` (cumulative trends), `pie` (proportions/shares). "
+            "For multi-series data use: {\"name\": \"2024\", \"revenue\": 100, \"profit\": 30}. "
+            "Always place the chart near the relevant discussion. Use charts sparingly — only when they add "
+            "genuine visual insight beyond what the text or table already conveys.\n\n"
         )
+
+        if deep_research:
+            prompt = (
+                "You are a deep research report writer producing a comprehensive, structured research report. "
+                "Answer only from the supplied web context, intermediate findings, and relevant conversation "
+                "context. Do not invent sources. For every claim-heavy sentence or paragraph, cite the "
+                "supporting source using this exact shape: [Title — domain](URL). If sources disagree, explicitly "
+                "state the disagreement and cite both sides.\n\n"
+                "**Report structure:** Organise your answer as a structured report:\n"
+                "1. Start with a concise **executive summary** (2-3 sentences) under a `## Summary` heading.\n"
+                "2. Break the detailed findings into logical sub-sections using `## Section Title` headings.\n"
+                "3. For each section, use `<details>` and `<summary>` HTML tags to create collapsible detail "
+                "blocks for supporting evidence, extended analysis, or lengthy data. The summary line should "
+                "be a concise title, and the hidden content should contain the detail. Example:\n"
+                "   <details>\n"
+                "   <summary>Supporting evidence and detailed analysis</summary>\n\n"
+                "   Detailed content here with citations...\n\n"
+                "   </details>\n\n"
+                "4. If the query asks for multiple examples, comparisons, or entities, ensure every requested "
+                "item is covered. If evidence for some items is missing, explicitly state which items lack "
+                "sufficient evidence and why.\n"
+                "5. End with a brief `## Conclusion` or `## Key Takeaways` section.\n\n"
+                f"{table_rule}"
+                "**Coverage rule:** If the user asks for N examples/items/comparisons, verify your answer "
+                "covers all N. If you can only find evidence for fewer, state: 'Note: The available sources "
+                "covered X of the Y requested items.'\n\n"
+                f"Today's date: {current_date}\n"
+                f"User query: {user_query}\n"
+                f"Research plan: {json.dumps(plan)}\n"
+                f"Search queries issued: {json.dumps(search_queries)}\n"
+                f"Relevant prior conversation/turns:\n{history_context or 'None'}\n\n"
+                f"{intermediate_section}"
+                f"Source catalog:\n{json.dumps(source_catalog, indent=2)}\n\n"
+                f"Selected web context:\n{web_context}\n\n"
+                "**Citation breadth:** You have been provided sources from multiple research hops. "
+                "Make sure to cite sources from ALL parts of the web context — including earlier sources "
+                "near the top. Do not favour only the most recent sources.\n\n"
+                "Now produce the comprehensive research report with citations."
+            )
+        else:
+            prompt = (
+                "You are a deep research answer writer. Answer only from the supplied web context and relevant "
+                "conversation context. Do not invent sources. For every claim-heavy sentence or paragraph, cite the "
+                "supporting source using this exact shape: [Title — domain](URL). If sources disagree, explicitly "
+                "state the disagreement and cite both sides. If evidence is weak or missing, say so and propose the "
+                "next research step. Keep the response clear, useful, and grounded.\n\n"
+                f"{table_rule}"
+                f"Today's date: {current_date}\n"
+                f"User query: {user_query}\n"
+                f"Research plan: {json.dumps(plan)}\n"
+                f"Search queries issued: {json.dumps(search_queries)}\n"
+                f"Relevant prior conversation/turns:\n{history_context or 'None'}\n\n"
+                f"{intermediate_section}"
+                f"Source catalog:\n{json.dumps(source_catalog, indent=2)}\n\n"
+                f"Selected web context:\n{web_context}\n\n"
+                "Now produce the final answer with citations."
+            )
 
         contents = [
             types.Content(
@@ -987,7 +1066,9 @@ class ResearchPlanner:
             ),
         ]
         config = types.GenerateContentConfig(
-            thinking_config=types.ThinkingConfig(thinking_level="MINIMAL"),
+            thinking_config=types.ThinkingConfig(
+                thinking_level="LOW" if deep_research else "MINIMAL",
+            ),
             temperature=0.2,
         )
 
@@ -1036,6 +1117,19 @@ class ResearchPlanner:
             "more columns of information, present it as a Markdown table using `| col | col |` syntax with a "
             "header row and separator row (`|---|---|`). Always prefer tables over bullet lists for comparative "
             "or tabular data.\n\n"
+            "**Chart formatting rule:** When the answer contains numeric data that would benefit from "
+            "visualisation (trends over time, distributions, market share, rankings, comparisons of quantities), "
+            "include an interactive chart using a fenced code block with the language `chart` and a JSON body. "
+            "Use this exact format:\n"
+            "```chart\n"
+            "{\"type\": \"bar\", \"title\": \"Chart Title\", \"xLabel\": \"X Axis\", \"yLabel\": \"Y Axis\", "
+            "\"data\": [{\"label\": \"Item 1\", \"value\": 42}, {\"label\": \"Item 2\", \"value\": 58}]}\n"
+            "```\n"
+            "Supported chart types: `bar` (comparisons, rankings), `line` (trends over time), "
+            "`area` (cumulative trends), `pie` (proportions/shares). "
+            "For multi-series data use: {\"name\": \"2024\", \"revenue\": 100, \"profit\": 30}. "
+            "Always place the chart near the relevant discussion. Use charts sparingly — only when they add "
+            "genuine visual insight beyond what the text or table already conveys.\n\n"
             f"Today's date: {current_date}\n"
             f"User follow-up: {user_message}\n\n"
             f"Relevant prior conversation/turns:\n{history_context or 'None'}\n\n"
@@ -1353,6 +1447,8 @@ async def execute_search(request: SearchRequest):
                 research_context = build_context_from_pages(
                     request.query or " ".join(queries),
                     all_valid_pages,
+                    additional_queries=all_attempted_queries,
+                    deep_research=(max_hops > 1),
                 )
                 all_accumulated_chunks = research_context.get("chunks", [])
 
@@ -1425,6 +1521,8 @@ async def execute_search(request: SearchRequest):
                 final_context = build_context_from_pages(
                     request.query or " ".join(queries),
                     all_valid_pages,
+                    additional_queries=all_attempted_queries,
+                    deep_research=(max_hops > 1),
                 )
                 session_store.update_state(
                     request.session_id,
@@ -1457,7 +1555,13 @@ async def generate_answer(request: AnswerRequest):
     planner = ResearchPlanner()
     session = session_store.get(request.session_id) if request.session_id else None
     history_context = build_history_context(session, current_query=request.query)
-    context = trim_text(request.context, 28000)
+    context = trim_text(request.context, 32000 if request.deep_research else 28000)
+
+    # Collect intermediate answers from both the request and saved session state
+    intermediate_answers = request.intermediate_answers or []
+    if not intermediate_answers and session:
+        state = session.get("state", {})
+        intermediate_answers = state.get("intermediate_answers", [])
 
     async def event_generator():
         if not context.strip():
@@ -1476,6 +1580,8 @@ async def generate_answer(request: AnswerRequest):
             web_context=context,
             chunks=request.chunks,
             history_context=history_context,
+            intermediate_answers=intermediate_answers,
+            deep_research=request.deep_research,
         ):
             final_answer_parts.append(token)
             yield json.dumps({"type": "token", "text": token}) + "\n"
@@ -1485,6 +1591,7 @@ async def generate_answer(request: AnswerRequest):
         final_answer, citation_validation = validate_answer_citations(raw_answer, request.chunks)
 
         # --- Post-process: detect answer gaps (deep research only) ---
+        gap_analysis = {"has_gaps": False, "gaps": [], "suggested_queries": [], "severity": "none"}
         if request.deep_research:
             gap_analysis = await asyncio.to_thread(
                 planner.detect_answer_gaps,
@@ -1492,8 +1599,58 @@ async def generate_answer(request: AnswerRequest):
                 request.query,
                 request.chunks,
             )
-        else:
-            gap_analysis = {"has_gaps": False, "gaps": [], "suggested_queries": [], "severity": "none"}
+
+            # --- Answer refinement loop: re-generate if major gaps found ---
+            refinement_count = 0
+            while (
+                gap_analysis.get("has_gaps")
+                and gap_analysis.get("severity") == "major"
+                and refinement_count < MAX_ANSWER_REFINEMENT_LOOPS
+            ):
+                refinement_count += 1
+                gap_descriptions = "\n".join(
+                    f"- {gap}" for gap in gap_analysis.get("gaps", [])
+                )
+                yield json.dumps({
+                    "type": "progress",
+                    "message": f"Refining answer to address gaps (attempt {refinement_count})",
+                }) + "\n"
+
+                # Re-generate with gap feedback — same context, better prompting
+                refined_parts = []
+                refinement_prompt_suffix = (
+                    f"\n\n**IMPORTANT — Previous answer had these gaps:**\n{gap_descriptions}\n"
+                    "Re-examine the source evidence carefully and produce a more complete answer "
+                    "that addresses these gaps. Do not repeat the same hedging."
+                )
+                for token in planner.generate_answer_stream(
+                    user_query=request.query + refinement_prompt_suffix,
+                    plan=request.plan,
+                    search_queries=request.search_queries,
+                    web_context=context,
+                    chunks=request.chunks,
+                    history_context=history_context,
+                    intermediate_answers=intermediate_answers,
+                    deep_research=request.deep_research,
+                ):
+                    refined_parts.append(token)
+                    yield json.dumps({"type": "token", "text": token}) + "\n"
+                    await asyncio.sleep(0)
+
+                refined_raw = "".join(refined_parts).strip()
+                if len(refined_raw) > len(final_answer) * 0.5:
+                    # Accept refinement only if it produced a substantial answer
+                    final_answer, citation_validation = validate_answer_citations(
+                        refined_raw, request.chunks
+                    )
+                    gap_analysis = await asyncio.to_thread(
+                        planner.detect_answer_gaps,
+                        final_answer,
+                        request.query,
+                        request.chunks,
+                    )
+                else:
+                    break
 
         if request.session_id:
             session_store.append_message(request.session_id, "assistant", final_answer)

@@ -407,6 +407,239 @@ const ReadingProgress = ({ containerRef }) => {
   );
 };
 
+// ---------- Interactive Chart Component ----------
+
+import {
+  ResponsiveContainer,
+  BarChart, Bar,
+  LineChart, Line,
+  AreaChart, Area,
+  PieChart, Pie, Cell,
+  XAxis, YAxis, CartesianGrid,
+  Tooltip as RechartsTooltip,
+  Legend,
+} from "recharts";
+
+const CHART_PALETTE = [
+  "#d6c3a1", "#5ee6b8", "#7cacf8", "#f0a0c0",
+  "#f5d88a", "#a78bfa", "#f97171", "#67e8f9",
+];
+
+const ChartTooltipContent = ({ active, payload, label }) => {
+  if (!active || !payload?.length) return null;
+  return (
+    <div className="rounded-xl border border-white/10 bg-[#1a1a1a]/95 px-3.5 py-2.5 shadow-xl backdrop-blur-lg">
+      {label != null && (
+        <p className="m-0 mb-1.5 text-xs font-semibold text-stone-300">{label}</p>
+      )}
+      {payload.map((entry, idx) => (
+        <div key={idx} className="flex items-center gap-2 text-xs">
+          <span
+            className="h-2 w-2 shrink-0 rounded-full"
+            style={{ background: entry.color || CHART_PALETTE[idx % CHART_PALETTE.length] }}
+          />
+          <span className="text-stone-400">{entry.name || "Value"}:</span>
+          <span className="font-semibold text-stone-100">
+            {typeof entry.value === "number" ? entry.value.toLocaleString() : entry.value}
+          </span>
+        </div>
+      ))}
+    </div>
+  );
+};
+
+const InteractiveChart = ({ config }) => {
+  const [activeType, setActiveType] = React.useState(config.type || "bar");
+
+  const data = React.useMemo(() => {
+    if (!Array.isArray(config.data)) return [];
+    return config.data.map((item) => {
+      // Normalise: support {label, value}, {x, y}, {name, value}, or arbitrary keys
+      if (item.label !== undefined && item.value !== undefined) {
+        return { name: String(item.label), value: Number(item.value) || 0 };
+      }
+      if (item.x !== undefined && item.y !== undefined) {
+        return { name: String(item.x), value: Number(item.y) || 0 };
+      }
+      if (item.name !== undefined && item.value !== undefined) {
+        return { name: String(item.name), value: Number(item.value) || 0 };
+      }
+      // Multi-series: return as-is but ensure name key
+      const entry = { ...item };
+      if (!entry.name && entry.label) { entry.name = entry.label; delete entry.label; }
+      if (!entry.name && entry.x) { entry.name = entry.x; delete entry.x; }
+      return entry;
+    });
+  }, [config.data]);
+
+  // Detect multi-series: keys other than "name"
+  const seriesKeys = React.useMemo(() => {
+    if (data.length === 0) return ["value"];
+    const allKeys = new Set();
+    data.forEach((d) => Object.keys(d).forEach((k) => { if (k !== "name") allKeys.add(k); }));
+    return allKeys.size > 0 ? [...allKeys] : ["value"];
+  }, [data]);
+
+  if (data.length === 0) return null;
+
+  const allowedTypes = config.type === "pie" ? ["pie", "bar"] : ["bar", "line", "area"];
+  const isPie = activeType === "pie";
+  const title = config.title || "";
+  const xLabel = config.xLabel || config.x_label || "";
+  const yLabel = config.yLabel || config.y_label || "";
+
+  const axisProps = {
+    tick: { fill: "#a8a29e", fontSize: 11 },
+    axisLine: { stroke: "rgba(255,255,255,0.06)" },
+    tickLine: false,
+  };
+
+  const renderCartesian = () => {
+    const ChartWrapper = activeType === "area" ? AreaChart : activeType === "line" ? LineChart : BarChart;
+    return (
+      <ChartWrapper data={data} margin={{ top: 8, right: 16, bottom: xLabel ? 24 : 8, left: yLabel ? 8 : 0 }}>
+        <CartesianGrid strokeDasharray="3 3" stroke="rgba(255,255,255,0.04)" />
+        <XAxis
+          dataKey="name"
+          {...axisProps}
+          label={xLabel ? { value: xLabel, position: "bottom", offset: 6, fill: "#78716c", fontSize: 11 } : undefined}
+        />
+        <YAxis
+          {...axisProps}
+          label={yLabel ? { value: yLabel, angle: -90, position: "insideLeft", offset: 4, fill: "#78716c", fontSize: 11 } : undefined}
+        />
+        <RechartsTooltip content={<ChartTooltipContent />} cursor={{ fill: "rgba(255,255,255,0.03)" }} />
+        {seriesKeys.length > 1 && (
+          <Legend
+            wrapperStyle={{ fontSize: 11, color: "#a8a29e", paddingTop: 8 }}
+            iconType="circle"
+            iconSize={7}
+          />
+        )}
+        {seriesKeys.map((key, idx) => {
+          const color = CHART_PALETTE[idx % CHART_PALETTE.length];
+          if (activeType === "area") {
+            return (
+              <Area
+                key={key}
+                type="monotone"
+                dataKey={key}
+                fill={color}
+                fillOpacity={0.15}
+                stroke={color}
+                strokeWidth={2}
+                dot={false}
+                activeDot={{ r: 4, stroke: color, strokeWidth: 2, fill: "#141414" }}
+                animationDuration={700}
+              />
+            );
+          }
+          if (activeType === "line") {
+            return (
+              <Line
+                key={key}
+                type="monotone"
+                dataKey={key}
+                stroke={color}
+                strokeWidth={2}
+                dot={{ r: 3, fill: "#141414", stroke: color, strokeWidth: 2 }}
+                activeDot={{ r: 5, stroke: color, strokeWidth: 2, fill: "#141414" }}
+                animationDuration={700}
+              />
+            );
+          }
+          return (
+            <Bar
+              key={key}
+              dataKey={key}
+              fill={color}
+              radius={[4, 4, 0, 0]}
+              animationDuration={700}
+              fillOpacity={0.85}
+            />
+          );
+        })}
+      </ChartWrapper>
+    );
+  };
+
+  const renderPie = () => (
+    <PieChart>
+      <Pie
+        data={data}
+        dataKey="value"
+        nameKey="name"
+        cx="50%"
+        cy="50%"
+        outerRadius="75%"
+        innerRadius="40%"
+        paddingAngle={2}
+        strokeWidth={0}
+        animationDuration={700}
+        label={({ name, percent }) => `${name} ${(percent * 100).toFixed(0)}%`}
+        labelLine={{ stroke: "#57534e", strokeWidth: 1 }}
+      >
+        {data.map((_, idx) => (
+          <Cell
+            key={idx}
+            fill={CHART_PALETTE[idx % CHART_PALETTE.length]}
+            fillOpacity={0.85}
+          />
+        ))}
+      </Pie>
+      <RechartsTooltip content={<ChartTooltipContent />} />
+      <Legend
+        wrapperStyle={{ fontSize: 11, color: "#a8a29e", paddingTop: 4 }}
+        iconType="circle"
+        iconSize={7}
+      />
+    </PieChart>
+  );
+
+  return (
+    <div className="my-4 rounded-2xl border border-white/10 bg-white/[0.02] overflow-hidden">
+      {/* Header */}
+      <div className="flex items-center justify-between gap-3 px-5 py-3 border-b border-white/5">
+        <div className="flex items-center gap-2.5">
+          <span
+            className="h-5 w-[3px] shrink-0 rounded-full"
+            style={{ background: "linear-gradient(180deg, #d6c3a1, rgba(214,195,161,0.4))" }}
+          />
+          {title ? (
+            <h3 className="m-0 text-sm font-semibold text-stone-100">{title}</h3>
+          ) : (
+            <span className="text-xs font-medium text-stone-500">Chart</span>
+          )}
+        </div>
+        {/* Type switcher */}
+        <div className="flex gap-0.5 rounded-lg border border-white/[0.06] bg-white/[0.02] p-0.5">
+          {allowedTypes.map((t) => (
+            <button
+              key={t}
+              type="button"
+              onClick={() => setActiveType(t)}
+              className={cn(
+                "rounded-md px-2.5 py-1 text-[10px] font-semibold uppercase tracking-wider transition-all",
+                activeType === t
+                  ? "bg-white/[0.08] text-stone-200 shadow-sm"
+                  : "text-stone-500 hover:text-stone-300 hover:bg-white/[0.03]"
+              )}
+            >
+              {t}
+            </button>
+          ))}
+        </div>
+      </div>
+      {/* Chart body */}
+      <div className="px-3 py-4" style={{ height: isPie ? 320 : 280 }}>
+        <ResponsiveContainer width="100%" height="100%">
+          {isPie ? renderPie() : renderCartesian()}
+        </ResponsiveContainer>
+      </div>
+    </div>
+  );
+};
+
 const MarkdownAnswer = ({ text }) => {
   if (!text) return null;
 
@@ -479,6 +712,94 @@ const MarkdownAnswer = ({ text }) => {
         i = j;
         continue;
       }
+    }
+
+    // --- Try to detect a <details>/<summary> collapsible block ---
+    if (line.match(/^<details\b/i)) {
+      const detailLines = [];
+      let j = i;
+      let depth = 0;
+      while (j < rawLines.length) {
+        const dl = rawLines[j].trim();
+        if (dl.match(/^<details\b/i)) depth++;
+        if (dl.match(/^<\/details>/i)) {
+          depth--;
+          if (depth <= 0) { j++; break; }
+        }
+        detailLines.push(rawLines[j]);
+        j++;
+      }
+      // Extract summary text
+      let summaryText = "Details";
+      const innerLines = [];
+      let pastSummary = false;
+      for (const dl of detailLines) {
+        const trimDl = dl.trim();
+        if (trimDl.match(/^<details\b/i)) continue;
+        if (!pastSummary) {
+          const sumMatch = trimDl.match(/^<summary>(.*?)<\/summary>$/i);
+          if (sumMatch) {
+            summaryText = sumMatch[1].trim() || "Details";
+            pastSummary = true;
+            continue;
+          }
+        }
+        pastSummary = true;
+        innerLines.push(dl);
+      }
+      // Trim leading/trailing blank lines from inner content
+      while (innerLines.length > 0 && !innerLines[0].trim()) innerLines.shift();
+      while (innerLines.length > 0 && !innerLines[innerLines.length - 1].trim()) innerLines.pop();
+
+      const innerText = innerLines.join("\n");
+      elements.push(
+        <details
+          key={`details-${i}`}
+          className="my-3 rounded-2xl border border-white/10 bg-white/[0.02] overflow-hidden group"
+        >
+          <summary
+            className="cursor-pointer select-none px-5 py-3 text-sm font-semibold text-stone-200 hover:bg-white/[0.04] transition-colors list-none flex items-center gap-2"
+          >
+            <span
+              className="inline-block transition-transform duration-200 group-open:rotate-90 text-stone-500"
+            >▸</span>
+            {renderInlineWithFootnotes(summaryText)}
+          </summary>
+          <div className="px-5 pb-4 pt-1 text-sm leading-7 text-stone-300 border-t border-white/5">
+            <MarkdownAnswer text={innerText} />
+          </div>
+        </details>
+      );
+      i = j;
+      continue;
+    }
+
+    // --- Try to detect a ```chart code fence ---
+    if (/^```chart\s*$/i.test(line)) {
+      const chartLines = [];
+      let j = i + 1;
+      while (j < rawLines.length && rawLines[j].trim() !== "```") {
+        chartLines.push(rawLines[j]);
+        j++;
+      }
+      if (j < rawLines.length) j++; // skip closing ```
+      const chartJson = chartLines.join("\n").trim();
+      if (chartJson) {
+        try {
+          const chartConfig = JSON.parse(chartJson);
+          if (chartConfig && typeof chartConfig === "object" && chartConfig.data) {
+            elements.push(
+              <InteractiveChart key={`chart-${i}`} config={chartConfig} />
+            );
+            i = j;
+            continue;
+          }
+        } catch (parseError) {
+          // Fall through to render as plain text if JSON is invalid
+        }
+      }
+      i = j;
+      continue;
     }
 
     // --- Non-table lines ---
@@ -2266,6 +2587,7 @@ function App() {
   const [searchError, setSearchError] = React.useState("");
   const [sessionPendingDelete, setSessionPendingDelete] = React.useState(null);
   const [hopProgress, setHopProgress] = React.useState(null);
+  const [hopHistory, setHopHistory] = React.useState([]);
   const [moreResearchPrompt, setMoreResearchPrompt] = React.useState(null);
   const [isResearchingGaps, setIsResearchingGaps] = React.useState(false);
   const sessionIdRef = React.useRef("");
@@ -2301,6 +2623,7 @@ function App() {
     setChatStatus("");
     setSearchError("");
     setHopProgress(null);
+    setHopHistory([]);
     setMoreResearchPrompt(null);
     setIsResearchingGaps(false);
   };
@@ -2813,6 +3136,7 @@ function App() {
     const contextChunks = [];
     let latestResearchContext = null;
     let searchedQueries = [...selectedQueries];
+    const collectedIntermediateAnswers = [];
 
     const handleSearchEvent = (event) => {
       if (event.type === "result") {
@@ -2838,6 +3162,17 @@ function App() {
         setSearchStatus(event.message || `Hop ${event.hop} of ${event.max_hops}`);
       }
       if (event.type === "hop_evaluation") {
+        // Accumulate into persistent history
+        setHopHistory((prev) => [
+          ...prev,
+          {
+            hop: event.hop,
+            intermediateAnswer: event.intermediate_answer || "",
+            missingInfo: event.missing_info || "",
+            sufficient: event.sufficient,
+            reasoning: event.reasoning || "",
+          },
+        ]);
         setHopProgress((current) => current ? {
           ...current,
           evaluation: {
@@ -2848,6 +3183,12 @@ function App() {
             nextQueries: event.next_queries || [],
           },
         } : current);
+        if (event.intermediate_answer) {
+          collectedIntermediateAnswers.push({
+            hop: event.hop || collectedIntermediateAnswers.length + 1,
+            answer: event.intermediate_answer,
+          });
+        }
         if (!event.sufficient && event.next_queries?.length) {
           setSearchStatus(`Needs more info: ${event.missing_info || "searching deeper"}`);
         }
@@ -3015,7 +3356,8 @@ function App() {
             search_queries: searchedQueries,
             context: latestResearchContext.context,
             chunks: latestResearchContext.chunks,
-            deep_research: deepResearchActive
+            deep_research: deepResearchActive,
+            intermediate_answers: collectedIntermediateAnswers,
           })
         });
 
@@ -3540,7 +3882,7 @@ function App() {
             />
 
             <AnimatePresence>
-              {hopProgress && hopProgress.maxHops > 1 && isSearching && (
+              {hopHistory.length > 0 && (
                 <motion.div
                   initial={{ opacity: 0, y: 8 }}
                   animate={{ opacity: 1, y: 0 }}
@@ -3551,46 +3893,59 @@ function App() {
                   <div className="border-b border-white/8 px-5 py-4">
                     <div className="flex items-center gap-3">
                       <h2 className="m-0 text-base font-semibold text-stone-100">Multi-hop reasoning</h2>
-                      <span className="rounded-full bg-[#d6c3a1]/15 px-2.5 py-0.5 text-xs font-medium text-[#f5e7cf]">
-                        Hop {hopProgress.hop} / {hopProgress.maxHops}
-                      </span>
+                      {hopProgress && (
+                        <span className="rounded-full bg-[#d6c3a1]/15 px-2.5 py-0.5 text-xs font-medium text-[#f5e7cf]">
+                          {isSearching ? `Hop ${hopProgress.hop} / ${hopProgress.maxHops}` : `${hopHistory.length} hop${hopHistory.length !== 1 ? "s" : ""} completed`}
+                        </span>
+                      )}
                     </div>
-                    <p className="m-0 mt-1 text-xs text-stone-500">{hopProgress.message}</p>
+                    {isSearching && hopProgress && (
+                      <p className="m-0 mt-1 text-xs text-stone-500">{hopProgress.message}</p>
+                    )}
                   </div>
                   <div className="px-5 py-4 space-y-3">
-                    <div className="flex items-center gap-2">
-                      {Array.from({ length: hopProgress.maxHops }, (_, idx) => (
-                        <div key={idx} className="flex-1 flex items-center gap-1">
-                          <div
-                            className={cn(
-                              "h-1.5 flex-1 rounded-full transition-all duration-500",
-                              idx + 1 < hopProgress.hop
-                                ? "bg-[#d6c3a1]/60"
-                                : idx + 1 === hopProgress.hop
-                                  ? "bg-[#d6c3a1] animate-pulse"
-                                  : "bg-white/8"
-                            )}
-                          />
-                        </div>
-                      ))}
-                    </div>
-
-                    {hopProgress.evaluation && (
-                      <div className="space-y-2">
-                        {hopProgress.evaluation.intermediateAnswer && (
-                          <div className="rounded-2xl border border-[#d6c3a1]/15 bg-[#d6c3a1]/[0.035] px-4 py-3">
-                            <p className="m-0 text-xs font-semibold uppercase tracking-wider text-[#d6c3a1]/70 mb-1">Found so far</p>
-                            <p className="m-0 text-sm leading-6 text-stone-200">{hopProgress.evaluation.intermediateAnswer}</p>
+                    {hopProgress && (
+                      <div className="flex items-center gap-2">
+                        {Array.from({ length: hopProgress.maxHops }, (_, idx) => (
+                          <div key={idx} className="flex-1 flex items-center gap-1">
+                            <div
+                              className={cn(
+                                "h-1.5 flex-1 rounded-full transition-all duration-500",
+                                idx + 1 < hopProgress.hop
+                                  ? "bg-[#d6c3a1]/60"
+                                  : idx + 1 === hopProgress.hop
+                                    ? isSearching ? "bg-[#d6c3a1] animate-pulse" : "bg-[#d6c3a1]/60"
+                                    : "bg-white/8"
+                              )}
+                            />
                           </div>
-                        )}
-                        {hopProgress.evaluation.missingInfo && !hopProgress.evaluation.sufficient && (
-                          <div className="rounded-2xl border border-amber-400/15 bg-amber-500/[0.04] px-4 py-3">
-                            <p className="m-0 text-xs font-semibold uppercase tracking-wider text-amber-400/70 mb-1">Still needed</p>
-                            <p className="m-0 text-sm leading-6 text-stone-300">{hopProgress.evaluation.missingInfo}</p>
-                          </div>
-                        )}
+                        ))}
                       </div>
                     )}
+
+                    {/* Show ALL accumulated hop findings */}
+                    <div className="space-y-2">
+                      {hopHistory.map((entry, idx) => (
+                        <React.Fragment key={idx}>
+                          {entry.intermediateAnswer && (
+                            <div className="rounded-2xl border border-[#d6c3a1]/15 bg-[#d6c3a1]/[0.035] px-4 py-3">
+                              <p className="m-0 text-xs font-semibold uppercase tracking-wider text-[#d6c3a1]/70 mb-1">
+                                Hop {entry.hop} — Found so far
+                              </p>
+                              <p className="m-0 text-sm leading-6 text-stone-200">{entry.intermediateAnswer}</p>
+                            </div>
+                          )}
+                          {entry.missingInfo && !entry.sufficient && isSearching && (
+                            <div className="rounded-2xl border border-amber-400/15 bg-amber-500/[0.04] px-4 py-3">
+                              <p className="m-0 text-xs font-semibold uppercase tracking-wider text-amber-400/70 mb-1">
+                                Hop {entry.hop} — Still needed
+                              </p>
+                              <p className="m-0 text-sm leading-6 text-stone-300">{entry.missingInfo}</p>
+                            </div>
+                          )}
+                        </React.Fragment>
+                      ))}
+                    </div>
                   </div>
                 </motion.div>
               )}
